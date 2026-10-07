@@ -132,7 +132,7 @@ ALTER FUNCTION search_idx.search_core(text, text, int, int, text) OWNER TO searc
 REVOKE CREATE ON SCHEMA search_idx FROM search_owner;
 REVOKE ALL ON FUNCTION search_idx.search_core(text, text, int, int, text) FROM PUBLIC;
 
--- The public RPC: POST /api/search_insurers {"q": ..., "customer_id": ..., "lim": 10, "off": 0}
+-- The public RPC: POST /api/rpc/search_insurers {"q": ..., "customer_id": ..., "lim": 10, "off": 0}
 -- CREATE OR REPLACE, never DROP: a drop removes the Caller's EXECUTE grant until step 7 runs,
 -- and live searches fail with 403 in between (measured: 83 of 1,051 during a re-run).
 CREATE OR REPLACE FUNCTION api.search_insurers(
