@@ -33,6 +33,32 @@ If `badgercare → medicaid` were a replacement, every CHIP query would look for
 
 Synonyms are sourced from `data/seed/synonyms.csv` (hand-checked, 35 rows) and `data/seed/synonyms_generated.csv` (computed by `python -m insurer_search.synonyms`; initials, bcbs+state, joined words, with collision rules).
 
+## "Did you mean": when a word is corrected
+
+Before the BM25 word match, each query word is checked against the corpus word list
+(`search_idx.vocab`, every word in the payer names and synonyms). Code:
+[`sql/20_search_function.sql`](../sql/20_search_function.sql).
+
+```text
+for each word w in the query:
+  if len(w) >= 4 and w is not in the word list:
+    candidates = 10 list words nearest to w by trigram
+    keep those with edits(w, candidate) <= max(1, len(w) / 3)     integer division
+    replace w with the one with fewest edits (then most similar)
+then join two neighbour words if the joined form is a list word     "united health" -> "unitedhealth"
+```
+
+| Word length | Edits allowed | Example |
+|---:|---:|---|
+| 1–3 | none (left as typed) | `bc`, `ga` |
+| 4–5 | 1 | `cgna` -> `cigna` |
+| 6–8 | 2 | `georgai` -> `georgia` |
+| 9–11 | 3 | |
+
+Short words are not corrected because one edit turns them into many other words. The corrected
+words feed BM25 only. The trigram match still uses the words as typed, so a bad correction
+cannot remove a good trigram hit.
+
 ## Exact-name sweep
 
 A separate test validates that exact payer names always return the payer in the result set. Run:

@@ -31,6 +31,13 @@ This drops and recreates the materialized views (requires a write lock; searches
 ### For development and testing
 - **2–4 CU**: Sufficient for a few requests/minute (e.g., integration tests, one developer).
 - **Test step, no concurrency**: "Scale to zero" is safe if you set a 5 s client timeout.
+  Deploy with `databricks bundle deploy --var pg_no_suspension=false` to let the compute stop when idle.
+
+### Cost
+You pay for compute (CU-hours while the compute runs) and storage. With `pg_no_suspension=true`
+the compute runs all the time at no less than `pg_min_cu`. Current rates:
+[Lakebase pricing](https://www.databricks.com/product/pricing/lakebase). Actual usage per project:
+`system.billing.usage` where `billing_origin_product = 'LAKEBASE'`.
 
 ### For production
 - **Minimum 2 CU**: Do not use 1 CU. An earlier test at 1 CU returned HTTP 500 "out of memory" under burst load (200+ users). Lesson: undersized compute fails, it does not slow down gracefully ([detailed results](../results/loadtest-cu32-2026-10-06.md#a-failed-earlier-attempt-kept-for-the-lesson)).
@@ -99,7 +106,13 @@ Most connections should be from the search workload (`application_name` like `Po
 The system is stateless:
 - The synced table is read-only and synced from Unity Catalog (rebuild with `SKIP_DATA=1 scripts/setup.sh`).
 - The search index is derived from the synced table (rebuild by running `sql/10_search_index.sql`).
-- The search log is append-only for audit (keep the most recent N days, then delete).
+- The search log is append-only for audit. It grows by one row per search. Decide how long to keep it
+  (your audit policy), then delete older rows on a schedule, for example nightly:
+  ```sql
+  DELETE FROM audit.search_log WHERE searched_at < now() - interval '90 days';
+  ```
+  Run it as the project owner (the caller role cannot). The index `search_log_tenant_time`
+  keeps per-tenant reads fast; the delete scans by `searched_at`.
 
 **Disaster recovery**: A point-in-time restore of the Lakebase branch gives you an old copy of everything. To go back:
 1. `databricks postgres create-branch <project> <branch-id> --json '{"spec":{"source_branch":"<parent>","source_branch_time":"<ISO-8601>"}}'` (PITR).

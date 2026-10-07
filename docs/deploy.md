@@ -4,11 +4,41 @@ From an empty workspace to a working search API in two commands: a bundle for th
 project, then one setup script for everything that is not a bundle resource.
 
 ## What you need
-- A Databricks workspace with Lakebase (Autoscaling) and Unity Catalog. Databricks CLI 1.19 or later.
-- `uv`, `psql` (PostgreSQL 16+ client).
-- A catalog you can create schemas in, and a SQL warehouse (for the Delta load).
-- A service principal for the calling app (OAuth client id + secret). The app calls the API as it.
-- Copy `.env.example` to `.env` and fill it in. Leave `DATA_API_BASE` empty until step 3.
+
+Tools on your laptop: Databricks CLI 1.19 or later, [`uv`](https://docs.astral.sh/uv/), and
+`psql` (PostgreSQL 16+ client).
+
+Ask for these before you start. Most of them need a workspace admin.
+
+| You need | Who can give it | How to check |
+|---|---|---|
+| A workspace with Lakebase (Autoscaling) and Unity Catalog | workspace admin | the left menu has **Lakebase** |
+| Permission to create a Lakebase project | workspace admin | the **Lakebase** page shows **Create project** |
+| `USE CATALOG` + `CREATE SCHEMA` on one catalog | catalog owner or metastore admin | `databricks schemas list <catalog> -p <profile>` works |
+| `CAN USE` on a SQL warehouse | warehouse owner or admin | the warehouse shows in **SQL Warehouses** |
+| A service principal with an OAuth secret, for the calling app | workspace admin | **Settings > Identity and access > Service principals** |
+| A CLI profile logged in as you | you | `databricks current-user me -p <profile>` |
+
+Then copy `.env.example` to `.env` and fill it in ([values](#env-values)). Leave `DATA_API_BASE`
+empty until step 3.
+
+<a id="env-values"></a>
+## .env values
+
+| Name | What it is | Example | Where to find it |
+|---|---|---|---|
+| `DATABRICKS_PROFILE` | the CLI profile that runs setup (you) | `my-profile` | `databricks auth login --host https://your-workspace-host --profile my-profile` |
+| `WORKSPACE_HOST` | the workspace URL | `https://dbc-1234abcd-5678.cloud.databricks.com` | the browser address bar |
+| `LAKEBASE_PROJECT` | the Lakebase project id | `lakebase-payer-search` | must equal the bundle variable `lakebase_project` |
+| `LAKEBASE_BRANCH`, `LAKEBASE_ENDPOINT`, `PG_DATABASE` | made with the project | `production`, `primary`, `databricks_postgres` | keep the defaults |
+| `UC_CATALOG` | a catalog where you can create schemas | `main` | **Catalog** in the left menu |
+| `UC_SCHEMA` | the schema for the source Delta table; setup creates it | `payer_search` | your choice. Not `payer_serving`: the synced table uses that name |
+| `SQL_WAREHOUSE_ID` | the warehouse that loads the Delta table | `1a2b3c4d5e6f7a8b` | **SQL Warehouses** > the warehouse > **Connection details** > the id after `/warehouses/` |
+| `SP_APPLICATION_ID` | the calling app's service principal | a UUID | **Settings > Identity and access > Service principals** > **Application ID** |
+| `SP_CLIENT_SECRET` | its OAuth secret | (secret) | same page > **Secrets** > **Generate secret**. It shows once |
+| `DATA_API_BASE` | the REST base URL | `https://<endpoint-host>/api/2.0/workspace/<id>/rest/databricks_postgres` | printed by `uv run python scripts/enable_data_api.py` |
+
+Do not put spaces, quotes, `<` or `>` in a value: `setup.sh` reads `.env` with bash.
 
 ## 1. Project and compute: the bundle
 ```bash

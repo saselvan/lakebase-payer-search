@@ -33,12 +33,28 @@ rank  payer_id    payer_name                    matched_alias                   
 
 | I want to… | Read | Then run |
 |---|---|---|
+| Try a deployed API, no setup | Ask its owner for `DATA_API_BASE`, a client id and a secret. Then [Call it](#call-it) | the two `curl` commands |
 | Call the API from my app | [Call it](#call-it), [`client.py`](src/insurer_search/client.py), [`postman/`](postman/) | `uv run pytest -q -m live` |
 | Deploy it in my workspace | [Run it in your workspace](#run-it-in-your-workspace), [`docs/deploy.md`](docs/deploy.md) | `databricks bundle deploy` + `scripts/setup.sh` |
 | Understand the ranking | [`docs/architecture.md`](docs/architecture.md), [`sql/20_search_function.sql`](sql/20_search_function.sql) | — |
 | Add or fix a synonym | [`docs/search-quality.md`](docs/search-quality.md), [`data/seed/synonyms.csv`](data/seed/synonyms.csv) | `SKIP_DATA=1 scripts/setup.sh`, then the evaluator |
 | Run it in production | [`docs/operations.md`](docs/operations.md), [`docs/security.md`](docs/security.md) | — |
 | Check a claim | [`results/`](results/): every number in these docs links to a file there | — |
+
+## Words used here
+
+| Word | Meaning |
+|---|---|
+| Lakebase | Databricks' managed Postgres database |
+| CU | compute unit: the size of the Postgres compute. More CU = more memory and connections |
+| Delta table | a Unity Catalog table. Here it holds the source payer list |
+| synced table | a copy of a Delta table inside Postgres, kept up to date by Databricks |
+| Data API | Lakebase's built-in REST API. It turns a Postgres function into a URL |
+| service principal (SP) | a robot identity for an app. It gets an OAuth token, not a password |
+| trigram | 3-letter pieces of a word; used to match typos (`pg_trgm`) |
+| BM25 | a word-match score, like a search engine's (`lakebase_text`) |
+
+More terms: [`CONTEXT.md`](CONTEXT.md).
 
 ## How it works
 
@@ -58,7 +74,7 @@ POST /api/rpc/search_insurers            Lakebase Data API: OAuth token -> the c
       INSERT audit.search_log            tenant, caller, query, count, ms
 ```
 Search reads 33 k normalised keys (`search_idx.alias_key`), not the 3 M alias rows, so cost
-follows the number of distinct names. Why each choice: [`docs/adr/`](docs/adr/). Words used:
+follows the number of distinct names. Why each choice: [`docs/adr/`](docs/adr/). Full glossary:
 [`CONTEXT.md`](CONTEXT.md). More: [`docs/architecture.md`](docs/architecture.md).
 
 ## What it proves

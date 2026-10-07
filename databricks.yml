@@ -17,6 +17,9 @@ variables:
   pg_max_cu:
     description: Maximum compute units (the range max - min can be at most 16)
     default: 16
+  pg_no_suspension:
+    description: true = the compute never scales to zero (production). false = it can scale to zero when idle (dev; the first call then takes about 1.6 s)
+    default: true
 
 resources:
   postgres_projects:
@@ -33,5 +36,5 @@ resources:
       endpoint_type: ENDPOINT_TYPE_READ_WRITE
       autoscaling_limit_min_cu: ${var.pg_min_cu}
       autoscaling_limit_max_cu: ${var.pg_max_cu}
-      no_suspension: true   # no cold start for a user-facing search (results/coldstart-2026-10-06.md)
+      no_suspension: ${var.pg_no_suspension}   # true: no cold start for a user-facing search (results/coldstart-2026-10-06.md)
       replace_existing: true

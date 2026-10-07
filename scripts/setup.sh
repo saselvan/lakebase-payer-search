@@ -6,7 +6,14 @@
 # Re-runs refresh the search index with no downtime; REBUILD=1 drops and rebuilds it (short outage).
 set -euo pipefail
 cd "$(dirname "$0")/.."
+[ -f .env ] || { echo "No .env. Run: cp .env.example .env, then fill it in (docs/deploy.md#env-values)"; exit 1; }
 set -a; source .env; set +a
+missing=""
+for v in DATABRICKS_PROFILE LAKEBASE_PROJECT LAKEBASE_BRANCH PG_DATABASE UC_CATALOG UC_SCHEMA SQL_WAREHOUSE_ID SP_APPLICATION_ID; do
+  [ -n "${!v:-}" ] || missing="$missing $v"
+done
+[ -z "$missing" ] || { echo "Empty in .env:$missing (see docs/deploy.md#env-values)"; exit 1; }
+[ "$UC_SCHEMA" != payer_serving ] || { echo "UC_SCHEMA must not be payer_serving: the synced table uses that schema"; exit 1; }
 ROWS=${ROWS:-3000000}
 T="$UC_CATALOG.$UC_SCHEMA.insurer_alias"
 VOL="/Volumes/$UC_CATALOG/$UC_SCHEMA/landing/insurer_alias"
@@ -37,11 +44,13 @@ if [ -z "${SKIP_DATA:-}" ]; then
   uv run python scripts/uc_sql.py "INSERT OVERWRITE $T SELECT alias_id, payer_id, payer_name, alias, alias_type, state, plan_type FROM read_files('$VOL/', format => 'parquet')" >/dev/null
   uv run python scripts/uc_sql.py "SELECT count(*), count(DISTINCT payer_id) FROM $T"
   echo "== 3 sync to Lakebase"
-  if uv run python -c "import sys; sys.path.insert(0,'scripts'); from uc_sql import load_env; load_env(); import os; from databricks.sdk import WorkspaceClient as W; W(profile=os.environ['DATABRICKS_PROFILE']).postgres.get_synced_table(name=f\"synced_tables/{os.environ['UC_CATALOG']}.payer_serving.insurer_alias\")" 2>/dev/null; then
-    uv run python scripts/refresh_sync.py
-  else
-    uv run python scripts/create_synced_table.py
-  fi
+  # exists_synced_table.py: exit 0 = exists, 3 = not found, other = error (stop).
+  set +e; uv run python scripts/exists_synced_table.py; rc=$?; set -e
+  case $rc in
+    0) uv run python scripts/refresh_sync.py ;;
+    3) uv run python scripts/create_synced_table.py ;;
+    *) echo "Could not check the synced table (exit $rc)"; exit 1 ;;
+  esac
 fi
 echo "== 4 search index";    scripts/psql.sh -q ${REBUILD:+-v rebuild=1} -f sql/10_search_index.sql
 echo "== 5 search function"; scripts/psql.sh -q -f sql/20_search_function.sql

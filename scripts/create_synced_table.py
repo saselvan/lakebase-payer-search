@@ -1,6 +1,7 @@
 """Create the SNAPSHOT synced table: UC Delta insurer_alias -> Lakebase schema payer_serving.
 
-Idempotent: an existing synced table is left as is. Waits until the first sync is online.
+Idempotent: an existing synced table is left as is. Waits until the first sync is online,
+at most SYNC_TIMEOUT_S seconds (default 3600).
 Usage: uv run python scripts/create_synced_table.py
 """
 import os
@@ -14,6 +15,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from uc_sql import load_env, run  # noqa: E402
 
 SERVING_SCHEMA = "payer_serving"
+SYNC_TIMEOUT_S = int(os.environ.get("SYNC_TIMEOUT_S", "3600"))
 
 
 def main() -> None:
@@ -47,6 +49,8 @@ def main() -> None:
             return
         if "FAILED" in state:
             raise SystemExit(state)
+        if time.time() - t0 > SYNC_TIMEOUT_S:
+            raise SystemExit(f"sync not online after {SYNC_TIMEOUT_S}s; last state: {state[:200]}")
         time.sleep(20)
 
 
