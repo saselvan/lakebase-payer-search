@@ -45,7 +45,7 @@ The autoscaling maximum is 32 CU per endpoint. To exceed that, add read-only end
 
 ## Cold start
 
-The first API call after the compute sleeps (autoscaling idle timeout) takes ~1.6 s (not an error). Subsequent calls take ~140–160 ms.
+The first API call after the compute sleeps (autoscaling idle timeout) takes ~1.6 s (not an error). The next calls took about 130–170 ms from a laptop client ([results](../results/coldstart-2026-10-06.md)).
 
 **Endpoint settings for production**:
 - Do not rely on scale-to-zero for a user-facing search. Keep the compute on.
