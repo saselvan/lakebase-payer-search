@@ -76,9 +76,12 @@ class InsurerSearchClient:
         return self.call("search_insurers", body)
 
     def call(self, fn: str, body: dict) -> list[dict]:
+        """Sends at most max_retries + 1 times for 429/5xx. One 401 gets a new token and is sent
+        again at once; that resend does not use a retry. Any other error is raised as is."""
         url = f"{self.api_base.rstrip('/')}/api/rpc/{fn}"
         refreshed = False
-        for attempt in range(self.max_retries + 1):
+        attempt = 0
+        while True:
             r = self.session.post(url, json=body, timeout=self.timeout_s, headers={
                 "Authorization": f"Bearer {self.tokens.token()}", "Content-Type": "application/json"})
             if r.status_code == 200:
@@ -87,9 +90,8 @@ class InsurerSearchClient:
                 self.tokens.token(force=True)
                 refreshed = True
                 continue
-            if r.status_code == 429 or r.status_code >= 500:
-                if attempt < self.max_retries:
-                    time.sleep(min(2 ** attempt * 0.2, 2.0) + random.random() * 0.1)
-                    continue
+            if (r.status_code == 429 or r.status_code >= 500) and attempt < self.max_retries:
+                time.sleep(min(2 ** attempt * 0.2, 2.0) + random.random() * 0.1)
+                attempt += 1
+                continue
             raise SearchError(r.status_code, r.text)
-        raise SearchError(599, "retries exhausted")
