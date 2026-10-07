@@ -7,8 +7,10 @@ It is the shape an insurance-company dropdown in an EHR needs: type `blu cros ge
 
 Built on Databricks: Unity Catalog Delta table → Lakebase (Postgres) synced table → one SQL
 function → the Lakebase Data API. No app server, no connection pool, no Postgres passwords.
-The search itself is plain Postgres: `pg_trgm` for typos, `lakebase_text` BM25 for words and
-synonyms. Reuse it for any closed list of names (drugs, providers, suppliers).
+The search itself is plain Postgres: `pg_trgm` for typos, `lakebase_text` BM25 full-text ranking
+for words and synonyms. The Data API serves the SQL function as a PostgREST-style RPC call.
+Reuse it for any typeahead or autocomplete box over a closed list of names (drugs, providers,
+suppliers). Coding agents: start with [`AGENTS.md`](AGENTS.md) and [`llms.txt`](llms.txt).
 
 > All data is synthetic or public: real public payer brand names, synthetic IDs and plans.
 > Proven on Databricks on AWS (us-east-1). The same Lakebase API runs on Azure.
@@ -217,6 +219,7 @@ rows appear in `system.access.audit`. (Not tested here: the test workspace has n
 
 ```text
 lakebase-payer-search/
+├── AGENTS.md             # guide for coding agents (llms.txt: guide for LLMs)
 ├── databricks.yml        # bundle: Lakebase project + compute            (start here to deploy)
 ├── scripts/setup.sh      # steps 0-7, idempotent; ci_proof.sh = build from zero, test, delete
 ├── sql/

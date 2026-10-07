@@ -1,168 +1,50 @@
-# llms.txt: AI-friendly guide to the insurer search repo
+# lakebase-payer-search
 
-This file helps LLMs understand the key docs and entry points.
+> Typo-tolerant name search (fuzzy search, typeahead, autocomplete) served as one REST endpoint by the Databricks Lakebase Data API (PostgREST-style RPC), with service-principal OAuth and no database connection in the client. Plain Postgres inside: pg_trgm for typos, lakebase_text BM25 for words and synonyms. The example corpus is US health insurers (payers), synthetic IDs; reuse it for any closed list of names.
 
-## Overview
+Facts an agent should not get wrong:
+- Endpoint: `POST <DATA_API_BASE>/api/rpc/search_insurers`, body `{"q", "customer_id", "lim", "off"}`. 10 per page, 50 results max. Bad input returns HTTP 400.
+- Auth: Databricks OAuth M2M token for a service principal (`/oidc/v1/token`, `client_credentials`). Not a Postgres password. The built-in connection pooler is not used.
+- The caller's Postgres role can EXECUTE one function and read zero tables (`SECURITY DEFINER` function owned by a `NOLOGIN` role).
+- Deploy = `databricks bundle deploy` (project + compute, 2–16 CU) then `scripts/setup.sh` (steps 0–7). Step 0 turns on Lakebase Search for the project via `POST /api/2.0/postgres/projects/<id>/search-extensions`; it restarts the compute once and cannot be undone.
+- Measured on AWS, 3M synthetic alias rows: 9.8 ms p50 inside Postgres; 315–331 requests/s at 2–16 CU; right brand in the top 10 for 98.4% of 899 test queries. Not measured on Azure (same API).
 
-A typo-tolerant search for US health insurers (payers) on Databricks Lakebase. One REST endpoint, service-principal OAuth, no client-side database connection. Built for an EHR's insurance company dropdown.
+## Start here
+- [README.md](README.md): what it does, example request and response, how it works, numbers
+- [docs/deploy.md](docs/deploy.md): prerequisites (who grants what), every `.env` value, setup steps 0–7, teardown order
+- [DATA_CONTRACT.md](DATA_CONTRACT.md): request and response fields, and fields that do not exist
+- [CONTEXT.md](CONTEXT.md): glossary of the words used in this repo
+- [AGENTS.md](AGENTS.md): how to build, test and change this repo as a coding agent
 
-## Key files to read
+## Code
+- [sql/10_search_index.sql](sql/10_search_index.sql): synonyms (replace vs expand), search keys, GiST trigram + BM25 indexes, word list, search log
+- [sql/20_search_function.sql](sql/20_search_function.sql): `api.search_insurers` -> `search_idx.search_core`: input checks, "did you mean", candidates, scoring, paging, log
+- [sql/40_caller_grants.sql](sql/40_caller_grants.sql): the caller gets EXECUTE on one function, nothing else
+- [src/insurer_search/client.py](src/insurer_search/client.py): reference client: token cache, retry 429/5xx, one refresh on 401, no retry on 400/403, 5 s timeout
+- [databricks.yml](databricks.yml): bundle: Lakebase project and read-write compute
+- [scripts/setup.sh](scripts/setup.sh): idempotent setup, steps 0–7
+- [scripts/ci_proof.sh](scripts/ci_proof.sh): build everything on a new project, run all tests, delete it all
+- [postman/](postman/): token, search, paging, typos, errors, security checks
 
-### Documentation
-- **[README.md](README.md)** — Start here. What it does, how it works, quick start, performance numbers.
-- **[docs/architecture.md](docs/architecture.md)** — How it works under the hood (Postgres, Lakebase, GiST + BM25).
-- **[docs/search-quality.md](docs/search-quality.md)** — Synonyms, exact-name matching, and quality metrics (98.4% brand@10, v2).
-- **[docs/operations.md](docs/operations.md)** — Refresh (zero downtime), CU sizing (2–32 CU), cold start, monitoring.
-- **[docs/security.md](docs/security.md)** — OAuth, audit log, HIPAA compliance, Private Link.
-- **[docs/faq.md](docs/faq.md)** — Common questions (performance, scaling, troubleshooting).
-- **[DATA_CONTRACT.md](DATA_CONTRACT.md)** — The API schema (request/response fields).
+## Docs
+- [docs/architecture.md](docs/architecture.md): how one search runs
+- [docs/search-quality.md](docs/search-quality.md): synonym rules, "did you mean" edit limits, exact-name sweep, evaluator
+- [docs/operations.md](docs/operations.md): zero-downtime refresh, compute sizing, cold start, cost, search-log retention
+- [docs/security.md](docs/security.md): OAuth, roles, audit, HIPAA, Private Link
+- [docs/faq.md](docs/faq.md): common questions
+- [docs/adr/](docs/adr/): why Data API (not Model Serving or an App), why trigram + BM25, why normalised keys, why one definer function
 
-### Code
-- **[sql/10_search_index.sql](sql/10_search_index.sql)** — Index (33k search keys), tokenizer synonyms, corpus vocab, audit log.
-- **[sql/20_search_function.sql](sql/20_search_function.sql)** — Search function (trigram + BM25, "did you mean", scoring).
-- **[src/insurer_search/](src/insurer_search/)** — Data generator, synonym generator, quality evaluator, reference client.
-- **[tests/](tests/)** — Offline tests + live API suite (security, functionality, quality).
+## Evidence
+- [results/exact-name-deepdive-2026-10-06.md](results/exact-name-deepdive-2026-10-06.md): exact-name sweep (0 misses of 6,291 payers), v2 load test at 2–16 CU
+- [results/quality-fn-v2-synfix.json](results/quality-fn-v2-synfix.json): evaluator, 899 queries by kind
+- [results/wider-word-2026-10-07.md](results/wider-word-2026-10-07.md): wider-word queries, 80 of 88 in the top 10, and the 8 misses
+- [results/loadtest-cu32-2026-10-06.md](results/loadtest-cu32-2026-10-06.md): 16–32 CU load test; 1 CU ran out of memory (HTTP 500)
+- [results/coldstart-2026-10-06.md](results/coldstart-2026-10-06.md): first call after scale-to-zero about 1.6 s, HTTP 200
+- [results/zero-downtime-2026-10-06.md](results/zero-downtime-2026-10-06.md): 7,486 of 7,486 searches succeeded during a full resync + index refresh
 
-### Results & evidence
-- **[results/exact-name-deepdive-2026-10-06.md](results/exact-name-deepdive-2026-10-06.md)** — v2 load test: 315–331 rps at 16 CU. Why 100 candidates + full BM25 scoring = 0 misses. 98.4% brand@10.
-- **[results/quality-fn-v2-synfix.json](results/quality-fn-v2-synfix.json)** — v2 evaluator (899 queries, 98.4% brand@10, 0 exact-name misses).
-- **[results/loadtest-2026-10-06.md](results/loadtest-2026-10-06.md)** — v1: 200–245 rps at 16 CU (original function for reference).
-- **[results/loadtest-cu32-2026-10-06.md](results/loadtest-cu32-2026-10-06.md)** — v1: 32 CU: 440–465 rps (single-endpoint max). 1 CU OOM warning.
-- **[results/coldstart-2026-10-06.md](results/coldstart-2026-10-06.md)** — Cold start: 1.6 s (not an error), then ~140 ms.
-- **[results/zero-downtime-2026-10-06.md](results/zero-downtime-2026-10-06.md)** — 7,486/7,486 searches succeeded during full sync + index refresh.
-
-## Quick reference
-
-### How it works
-1. **Sync**: Unity Catalog Delta table → Lakebase SNAPSHOT synced table (3M rows).
-2. **Index**: 3M rows → 33k normalized search keys (Materialized View).
-3. **Search**: Query → trigram KNN (100 keys) + BM25 (100 keys) + unified scoring.
-4. **Result**: Ranked payers (best first), 10 per page, 50 max.
-5. **Audit**: One row per search (query, tenant, caller, duration).
-
-### Performance (AWS, 3M rows, v2)
-- **Throughput**: ~315–331 requests/s at 16 CU (v2). 32 CU max: ~440–465 rps (v1 for reference).
-- **Latency**: p50 ~27–64 ms (10–25 users). p50 9.8 ms inside Postgres (exact-name sweep).
-- **Bottleneck**: Database CPU.
-
-### Search quality (v2)
-- **Brand@10**: 98.4% (899 generated queries, [quality-fn-v2-synfix.json](results/quality-fn-v2-synfix.json)).
-- **Exact-name misses**: 0 / 6,291 payers. Wider-word queries: 80 / 88 in the top 10 ([results/wider-word-2026-10-07.md](results/wider-word-2026-10-07.md)).
-- **Per-kind**: exact 99.3%, typo 98.0%, brand_typo 99.3%, joined 100%, state_first 100%, initials 98.9%, dropped 91.1%.
-
-### Security
-- **Auth**: Service-principal OAuth (M2M, 1 h expiry).
-- **Data access**: One function, `SECURITY DEFINER` owned by a `NOLOGIN` role.
-- **Audit**: Per-search log (query, tenant, caller, duration).
-- **Compliance**: HIPAA supported, pgaudit included, Private Link available.
-
-## Common tasks
-
-| Task | Files |
-|---|---|
-| **Deploy** | `scripts/setup.sh` (idempotent) |
-| **Refresh data** | `SKIP_DATA=1 scripts/setup.sh` |
-| **Add synonyms** | Edit `data/seed/synonyms.csv`, then `SKIP_DATA=1 scripts/setup.sh` |
-| **Test quality** | `uv run python -m insurer_search.evaluate --sample 150` |
-| **Load test** | `uv run python scripts/run_loadtest.py --tasks 4 --steps 10,25,50,100,200,400` |
-| **Run tests** | `uv run pytest` (offline + live suite) |
-| **Call API** | See [README: Call it](README.md#call-it) for curl/Python examples |
-
-## Key numbers (always link to source)
-
-- **3M** alias rows → **33k** search keys ([sql/10_search_index.sql](sql/10_search_index.sql), lines 78–94)
-- **315–331 rps** at 16 CU (v2) ([results/exact-name-deepdive-2026-10-06.md](results/exact-name-deepdive-2026-10-06.md), load test table)
-- **440–465 rps** at 32 CU (v1, reference) ([results/loadtest-cu32-2026-10-06.md](results/loadtest-cu32-2026-10-06.md), table)
-- **98.4%** brand@10 accuracy (v2, 899 queries) ([results/quality-fn-v2-synfix.json](results/quality-fn-v2-synfix.json))
-- **0** exact-name misses / 6,291 payers ([results/exact-name-deepdive-2026-10-06.md](results/exact-name-deepdive-2026-10-06.md), table)
-- **p50 9.8 ms** inside Postgres (exact-name sweep) ([results/exact-name-deepdive-2026-10-06.md](results/exact-name-deepdive-2026-10-06.md), table)
-- **1.6 s** cold start ([results/coldstart-2026-10-06.md](results/coldstart-2026-10-06.md))
-- **7,486 / 7,486** live searches during sync + index refresh ([results/zero-downtime-2026-10-06.md](results/zero-downtime-2026-10-06.md))
-- **1 CU returns HTTP 500 out of memory** at 200+ users ([results/loadtest-cu32-2026-10-06.md](results/loadtest-cu32-2026-10-06.md), failed earlier attempt)
-
-## Decision records
-
-- **[ADR 0001](docs/adr/0001-lakebase-data-api-not-model-serving.md)**: Why Data API (REST) not Model Serving (gRPC).
-- **[ADR 0002](docs/adr/0002-trigram-plus-bm25.md)**: Why both trigram (typo tolerance) and BM25 (synonyms, multi-word).
-- **[ADR 0003](docs/adr/0003-search-normalised-keys-not-raw-aliases.md)**: Why normalize & deduplicate upfront (scale follows corpus, not alias count).
-- **[ADR 0004](docs/adr/0004-definer-function-is-the-only-door.md)**: Why SECURITY DEFINER (the function owns all data access, no client access to tables).
-
-## Repo map
-
-```
-├── README.md              # Start here
-├── llms.txt               # This file
-├── DATA_CONTRACT.md       # API schema
-├── CONTEXT.md             # Terminology used in the repo
-├── docs/
-│   ├── architecture.md    # How it works (Postgres, Lakebase, search algorithm)
-│   ├── search-quality.md  # Synonyms, exact-name, evaluator (98.4% accuracy, v2)
-│   ├── operations.md      # Refresh, CU sizing, cold start, monitoring
-│   ├── security.md        # OAuth, audit, HIPAA, Private Link
-│   ├── faq.md             # Common questions
-│   ├── adr/               # Architecture decision records
-│   ├── research/          # Synonym method, vocabulary analysis
-│   └── quality-flywheel.md # MLflow optimization loop
-├── sql/
-│   ├── 10_search_index.sql   # Index, tokenizer synonyms, vocab, audit log
-│   ├── 20_search_function.sql # Search core + wrapper
-│   └── 40_caller_grants.sql  # Role grants
-├── src/insurer_search/
-│   ├── client.py          # Reference REST client (token cache, retries)
-│   ├── search.py          # CLI search (exact-name sweep, live tests)
-│   ├── evaluate.py        # Quality evaluator (899 generated queries)
-│   ├── synonyms.py        # Synonym generator (initials, bcbs+state, joined words)
-│   └── generate.py        # Synthetic data generator
-├── tests/
-│   ├── test_api_live.py   # Live API suite (security, functionality)
-│   ├── test_synonyms.py   # Synonym logic
-│   ├── test_generate.py   # Data generator
-│   └── conftest.py        # Fixtures
-├── scripts/
-│   ├── setup.sh           # End-to-end setup (data, sync, index, function, grants)
-│   ├── run_loadtest.py    # Load test runner (Locust in-region)
-│   ├── zero_downtime_check.py # Zero-downtime verification
-│   └── ops/               # Operational tools (refresh, CU change, etc.)
-├── loadtest/
-│   ├── locustfile.py      # Locust load script
-│   └── run_loadtest_job.py # In-region notebook runner
-├── postman/               # Postman collection (token, search, errors, security)
-├── data/seed/
-│   ├── synonyms.csv       # Hand-checked synonyms (35 rows)
-│   └── synonyms_generated.csv # Generated by synonyms.py (initials, etc.)
-└── results/               # Measurement results (load test, cold start, quality)
-```
-
-## External references
-
-- **Databricks**:
-  - [Databricks Lakebase docs](https://docs.databricks.com/aws/en/oltp/) (query engine for Postgres)
-  - [Data API docs](https://docs.databricks.com/api/workspace/endpoints/list-get) (REST interface)
-  - [HIPAA compliance](https://docs.databricks.com/aws/en/oltp/projects/hipaa-compliance)
-  - [Private Link](https://docs.databricks.com/aws/en/oltp/projects/private-link)
-
-- **Postgres / Lakebase**:
-  - [pg_trgm (trigram indexing)](https://www.postgresql.org/docs/current/pgtrgm.html)
-  - [lakebase_text (BM25 ranking)](https://docs.databricks.com/aws/en/oltp/lakebase-search/) (TODO: confirm public URL)
-  - [lakebase_tokenizer (synonym dictionary)](https://docs.databricks.com/aws/en/oltp/lakebase-search/)
-
-- **Testing**:
-  - [Locust (load test)](https://docs.locust.io/)
-  - [pytest](https://docs.pytest.org/)
-
-## Questions an LLM might ask
-
-1. **How does the system ensure a brand name is not erased by a hypernym synonym?**
-   See [Search quality: Synonym rules](docs/search-quality.md#synonym-rules-replace-vs-expand). The rule checks if a word is a live brand in the payer list; if so, it expands instead of replacing.
-
-2. **Why is the exact-name miss rate zero while the load test shows 0 failures but not 0 latency variance?**
-   Exact-name miss rate is a quality metric (does the payer appear in top 50). Latency variance is a performance metric (how spread out is response time). Both are measured, both are 0 failures / low variance respectively ([sources](results/)).
-
-3. **How do I know when to increase CU?**
-   Watch `audit.search_log.duration_ms` (in-database time) and client-side latency. If p50 latency > 100 ms or p99 > 500 ms, increase CU (measured ceiling at each level in [load tests](results/loadtest-2026-10-06.md)).
-
-4. **What is the difference between a SNAPSHOT and a TRIGGERED sync?**
-   SNAPSHOT copies the entire table once (idempotent, ~60 s for 3M rows). TRIGGERED copies only changes (CDC, requires source table to have CDF). The search uses SNAPSHOT (simpler, no ongoing CDC cost).
-
-5. **Can I run this on Azure?**
-   Yes, the API is the same. Load tests were on AWS. To verify on Azure, run your own load test (same code, point at Azure endpoint).
+## Optional
+- [Lakebase Data API docs](https://docs.databricks.com/aws/en/oltp/projects/data-api)
+- [Lakebase Search docs](https://docs.databricks.com/aws/en/oltp/projects/lakebase-search)
+- [Synced tables docs](https://docs.databricks.com/aws/en/oltp/projects/sync-tables)
+- [Lakebase extensions docs](https://docs.databricks.com/aws/en/oltp/projects/extensions)
+- [pg_trgm](https://www.postgresql.org/docs/current/pgtrgm.html)
