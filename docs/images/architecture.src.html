@@ -1,0 +1,67 @@
+<!doctype html>
+<!-- Source of docs/images/architecture.png.
+     Render: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars \
+       --force-device-scale-factor=2 --window-size=1400,900 --screenshot=docs/images/architecture.png \
+       "file://$PWD/docs/images/architecture.src.html" -->
+<html><head><meta charset="utf-8"><title>lakebase-payer-search architecture</title>
+<style>
+  body{margin:0;background:#fff;font:15px/1.35 -apple-system,"Helvetica Neue",Arial,sans-serif;color:#0f172a}
+  .wrap{width:1360px;padding:24px 20px}
+  h1{font-size:22px;margin:0 0 4px} .sub{color:#475569;margin:0 0 18px}
+  .lane{border:1px solid #cbd5e1;border-radius:10px;padding:14px 16px 16px;margin-bottom:14px}
+  .lane h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#475569;margin:0 0 10px}
+  .row{display:flex;align-items:stretch;gap:0}
+  .box{flex:1;border:1.5px solid;border-radius:8px;padding:9px 11px;min-height:74px}
+  .box b{display:block;font-size:15px;margin-bottom:3px}
+  .box span{color:#334155;font-size:13.5px}
+  .n{display:inline-block;min-width:20px;height:20px;border-radius:10px;background:#0f172a;color:#fff;
+     font-size:12px;text-align:center;line-height:20px;margin-right:6px}
+  .box .n{color:#fff;font-size:12px}
+  .arrow{flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#475569;font-size:22px}
+  .data{background:#eef2ff;border-color:#4f46e5} .pg{background:#ecfdf5;border-color:#059669}
+  .sec{background:#fef2f2;border-color:#dc2626} .app{background:#f0f9ff;border-color:#0284c7}
+  .ops{background:#f8fafc;border-color:#64748b}
+  .note{margin-top:10px;color:#334155;font-size:13.5px}
+  .note code,.box code{font:12.5px Menlo,monospace;background:#f1f5f9;padding:1px 4px;border-radius:4px}
+</style></head><body><div class="wrap">
+<h1>lakebase-payer-search: typo-tolerant search as a REST API on Lakebase Postgres</h1>
+<p class="sub">Three parts. Numbers show the order of the steps.</p>
+
+<div class="lane"><h2>A · Build the index (setup, then each data refresh)</h2>
+ <div class="row">
+  <div class="box data"><b><span class="n">1</span>Payer aliases</b><span>Delta table in Unity Catalog</span></div>
+  <div class="arrow">→</div>
+  <div class="box pg"><b><span class="n">2</span>Synced table</b><span><code>payer_serving</code>, snapshot sync into Postgres</span></div>
+  <div class="arrow">→</div>
+  <div class="box ops"><b><span class="n">3</span>Synonyms</b><span><code>data/seed/*.csv</code>: equivalents replace, "is a kind of" rows expand</span></div>
+  <div class="arrow">→</div>
+  <div class="box pg"><b><span class="n">4</span>Search keys</b><span><code>alias_key</code> + <code>vocab</code>, GiST trigram + BM25 indexes, <code>REFRESH … CONCURRENTLY</code></span></div>
+ </div>
+</div>
+
+<div class="lane"><h2>B · Answer one search</h2>
+ <div class="row">
+  <div class="box app"><b><span class="n">5</span>Your backend</b><span>OAuth token of a service principal</span></div>
+  <div class="arrow">→</div>
+  <div class="box sec"><b><span class="n">6</span>Lakebase Data API</b><span>HTTPS <code>POST /api/search_insurers</code></span></div>
+  <div class="arrow">→</div>
+  <div class="box sec"><b><span class="n">7</span>api.search_insurers</b><span>SECURITY INVOKER; caller has EXECUTE only</span></div>
+  <div class="arrow">→</div>
+  <div class="box pg"><b><span class="n">8</span>search_core</b><span>SECURITY DEFINER, owner <code>search_owner</code></span></div>
+  <div class="arrow">→</div>
+  <div class="box pg"><b><span class="n">9</span>Did you mean</b><span>fix query words against <code>vocab</code></span></div>
+  <div class="arrow">→</div>
+  <div class="box pg"><b><span class="n">10</span>Rank</b><span>100 trigram ∪ 100 BM25 candidates (reads step 4), score all, top 10 back to step 5</span></div>
+ </div>
+</div>
+
+<div class="lane"><h2>C · Improve quality (offline)</h2>
+ <div class="row">
+  <div class="box ops"><b><span class="n">11</span>audit.search_log</b><span>one row per search: tenant, caller, query, count, ms</span></div>
+  <div class="arrow">→</div>
+  <div class="box ops"><b><span class="n">12</span>Evaluator + MLflow</b><span>brand@10, product@10, MRR, exact-name sweep</span></div>
+  <div class="arrow">→</div>
+  <div class="box ops"><b><span class="n">13</span>Review synonyms</b><span>edit the CSV, then rebuild: back to step 3</span></div>
+ </div>
+</div>
+</div></body></html>

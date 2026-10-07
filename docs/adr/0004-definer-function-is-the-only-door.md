@@ -1,0 +1,3 @@
+# The Caller can only execute one function; a definer function owns all data access
+
+The Data API runs every request as the Caller's own Postgres role, so whatever that role can read, the API can expose. We give the Caller EXECUTE on one public function (`api.search_insurers`, the only exposed schema) and nothing else: no SELECT on any table, no INSERT on the log. The public function passes the Caller's identity to a SECURITY DEFINER function owned by a NOLOGIN role, which alone reads the search keys and appends to the Search log. A leaked token can search payers, and nothing more. Trade-off: the search writes a log row, so it cannot run on a read-only replica.

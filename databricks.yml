@@ -1,0 +1,37 @@
+# Databricks Asset Bundle: the Lakebase project and its compute.
+#   databricks bundle deploy -p <profile> [--var lakebase_project=<id>]
+#   then: scripts/setup.sh   (search on, data, synced table, index, function, Data API, grants)
+#   remove: databricks bundle destroy -p <profile>
+# The bundle owns what is declarative (project, compute size). setup.sh owns what is not a bundle
+# resource: the Lakebase Search switch, the SQL, the Data API and the Postgres grants. See docs/deploy.md.
+bundle:
+  name: lakebase-payer-search
+
+variables:
+  lakebase_project:
+    description: Lakebase project id (3-63 chars, lowercase letters, digits, hyphens)
+    default: lakebase-payer-search
+  pg_min_cu:
+    description: Minimum compute units. Keep 2 or more; 1 CU ran out of memory under load (results/loadtest-cu32-2026-10-06.md)
+    default: 2
+  pg_max_cu:
+    description: Maximum compute units (the range max - min can be at most 16)
+    default: 16
+
+resources:
+  postgres_projects:
+    payer_search:
+      project_id: ${var.lakebase_project}
+      display_name: lakebase-payer-search
+      pg_version: 17
+
+  postgres_endpoints:
+    primary:
+      # A new project already has this endpoint; replace_existing makes the bundle manage it.
+      endpoint_id: primary
+      parent: ${resources.postgres_projects.payer_search.name}/branches/production
+      endpoint_type: ENDPOINT_TYPE_READ_WRITE
+      autoscaling_limit_min_cu: ${var.pg_min_cu}
+      autoscaling_limit_max_cu: ${var.pg_max_cu}
+      no_suspension: true   # no cold start for a user-facing search (results/coldstart-2026-10-06.md)
+      replace_existing: true

@@ -1,0 +1,163 @@
+{
+ "total": {
+  "n": 899,
+  "brand@10": 0.98,
+  "product@10": 0.84,
+  "mrr": 0.969
+ },
+ "by_kind": {
+  "brand_typo": {
+   "n": 150,
+   "brand@10": 0.98,
+   "product@10": 0.633,
+   "mrr": 0.969
+  },
+  "dropped_word": {
+   "n": 90,
+   "brand@10": 0.922,
+   "product@10": 0.722,
+   "mrr": 0.857
+  },
+  "exact": {
+   "n": 150,
+   "brand@10": 0.987,
+   "product@10": 0.98,
+   "mrr": 0.987
+  },
+  "initials": {
+   "n": 90,
+   "brand@10": 0.989,
+   "product@10": 0.767,
+   "mrr": 0.966
+  },
+  "joined": {
+   "n": 119,
+   "brand@10": 0.992,
+   "product@10": 0.706,
+   "mrr": 0.985
+  },
+  "state_first": {
+   "n": 150,
+   "brand@10": 1.0,
+   "product@10": 1.0,
+   "mrr": 1.0
+  },
+  "typo": {
+   "n": 150,
+   "brand@10": 0.973,
+   "product@10": 0.967,
+   "mrr": 0.973
+  }
+ },
+ "misses": [
+  {
+   "kind": "typo",
+   "q": "aar pmedicare advantage hmo",
+   "target": "AARP Medicare Advantage HMO - ID",
+   "top": "Medicare Advantage HMO - AK"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "medicare advantage",
+   "target": "AARP Medicare Advantage HMO - ID",
+   "top": "Medicare Advantage HMO - AK"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "health plan",
+   "target": "Affinity Health Plan Open Access",
+   "top": "Oregon Health Plan CHIP"
+  },
+  {
+   "kind": "exact",
+   "q": "badgercare chip",
+   "target": "BadgerCare CHIP",
+   "top": "Soonercare CHIP"
+  },
+  {
+   "kind": "typo",
+   "q": "badgecare chip",
+   "target": "BadgerCare CHIP",
+   "top": "TennCare CHIP"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsmo",
+   "target": "Blue Cross and Blue Shield of Kansas City Open Access - MO",
+   "top": "Blue Cross and Blue Shield of Missouri HMO"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "blue cross and blue shield of",
+   "target": "Blue Cross and Blue Shield of Kentucky PPO",
+   "top": "Blue Cross and Blue Shield of Iowa EPO"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "blue cross and blue shield of",
+   "target": "Blue Cross and Blue Shield of Minnesota PPO",
+   "top": "Blue Cross and Blue Shield of Iowa EPO"
+  },
+  {
+   "kind": "brand_typo",
+   "q": "fidelis cae",
+   "target": "Fidelis Care Dual Choice",
+   "top": "Centene EPO - DC"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "health care",
+   "target": "MVP Health Care Choice PPO - CT",
+   "top": "Cigna Healthcare HMO - AK"
+  },
+  {
+   "kind": "typo",
+   "q": "mainceare chip",
+   "target": "MaineCare CHIP",
+   "top": "TennCare CHIP"
+  },
+  {
+   "kind": "exact",
+   "q": "medicaid chip",
+   "target": "Medicaid CHIP - VA",
+   "top": "CHIP Medicaid - AK"
+  },
+  {
+   "kind": "joined",
+   "q": "oregonhealth plan",
+   "target": "Oregon Health Plan Managed Medicaid",
+   "top": "WellCare Community Plan - AK"
+  },
+  {
+   "kind": "brand_typo",
+   "q": "welcare",
+   "target": "WellCare Medicaid Managed Care - IA",
+   "top": "Ambetter Bronze - AK"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "medicare advantage",
+   "target": "AARP Medicare Advantage D-SNP - AZ",
+   "top": "Medicare Advantage HMO - AK"
+  },
+  {
+   "kind": "typo",
+   "q": "aap medicare advantage ppo",
+   "target": "AARP Medicare Advantage PPO - DC",
+   "top": "Medicare Advantage PPO - AK"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "medicare advantage",
+   "target": "AARP Medicare Advantage PPO - DC",
+   "top": "Medicare Advantage HMO - AK"
+  },
+  {
+   "kind": "brand_typo",
+   "q": "osacr health",
+   "target": "Oscar Health Open Access - TN",
+   "top": "Meritain Health Group Health - AK"
+  }
+ ],
+ "seconds": 21.3
+}

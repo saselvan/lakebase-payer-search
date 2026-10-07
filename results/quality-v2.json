@@ -1,0 +1,331 @@
+{
+ "total": {
+  "n": 899,
+  "brand@10": 0.949,
+  "product@10": 0.812,
+  "mrr": 0.937
+ },
+ "by_kind": {
+  "brand_typo": {
+   "n": 150,
+   "brand@10": 0.98,
+   "product@10": 0.633,
+   "mrr": 0.963
+  },
+  "dropped_word": {
+   "n": 90,
+   "brand@10": 0.911,
+   "product@10": 0.722,
+   "mrr": 0.858
+  },
+  "exact": {
+   "n": 150,
+   "brand@10": 0.993,
+   "product@10": 0.993,
+   "mrr": 0.993
+  },
+  "initials": {
+   "n": 90,
+   "brand@10": 0.656,
+   "product@10": 0.433,
+   "mrr": 0.63
+  },
+  "joined": {
+   "n": 119,
+   "brand@10": 1.0,
+   "product@10": 0.714,
+   "mrr": 0.993
+  },
+  "state_first": {
+   "n": 150,
+   "brand@10": 1.0,
+   "product@10": 1.0,
+   "mrr": 1.0
+  },
+  "typo": {
+   "n": 150,
+   "brand@10": 0.98,
+   "product@10": 0.98,
+   "mrr": 0.977
+  }
+ },
+ "misses": [
+  {
+   "kind": "typo",
+   "q": "aar pmedicare advantage hmo",
+   "target": "AARP Medicare Advantage HMO - ID",
+   "top": "Medicare Advantage HMO - AK"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "medicare advantage",
+   "target": "AARP Medicare Advantage HMO - ID",
+   "top": "Medicare Advantage HMO - AK"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "health plan",
+   "target": "Affinity Health Plan Open Access",
+   "top": "Passport Health Plan HMO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsm",
+   "target": "Blue Cross Blue Shield of Michigan HMO",
+   "top": "Blue Cross Blue Shield of Massachusetts EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsa",
+   "target": "Blue Cross and Blue Shield of Arizona Choice PPO",
+   "top": "Blue Cross and Blue Shield of Alabama EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsf",
+   "target": "Blue Cross and Blue Shield of Florida POS",
+   "top": "Blue Cross and Blue Shield of Utah EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsg",
+   "target": "Blue Cross and Blue Shield of Georgia Select",
+   "top": "Blue Cross and Blue Shield of Utah EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsi",
+   "target": "Blue Cross and Blue Shield of Idaho PPO",
+   "top": "Blue Cross and Blue Shield of Iowa EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsi",
+   "target": "Blue Cross and Blue Shield of Illinois PPO",
+   "top": "Blue Cross and Blue Shield of Iowa EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsi",
+   "target": "Blue Cross and Blue Shield of Indiana Choice PPO",
+   "top": "Blue Cross and Blue Shield of Iowa EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsk",
+   "target": "Blue Cross and Blue Shield of Kansas Open Access",
+   "top": "Blue Cross and Blue Shield of Utah EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbskc",
+   "target": "Blue Cross and Blue Shield of Kansas City Open Access - MO",
+   "top": "Blue Cross and Blue Shield of Utah EPO"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "blue cross and blue shield of",
+   "target": "Blue Cross and Blue Shield of Kentucky PPO",
+   "top": "Blue Cross and Blue Shield of Iowa EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsk",
+   "target": "Blue Cross and Blue Shield of Kentucky PPO",
+   "top": "Blue Cross and Blue Shield of Utah EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsl",
+   "target": "Blue Cross and Blue Shield of Louisiana PPO",
+   "top": "Blue Cross and Blue Shield of Utah EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsm",
+   "target": "Blue Cross and Blue Shield of Maine POS",
+   "top": "Blue Cross Blue Shield of Massachusetts EPO"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "blue cross and blue shield of",
+   "target": "Blue Cross and Blue Shield of Minnesota PPO",
+   "top": "Blue Cross and Blue Shield of Iowa EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsm",
+   "target": "Blue Cross and Blue Shield of Minnesota PPO",
+   "top": "Blue Cross Blue Shield of Massachusetts EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsm",
+   "target": "Blue Cross and Blue Shield of Mississippi EPO",
+   "top": "Blue Cross Blue Shield of Massachusetts EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsm",
+   "target": "Blue Cross and Blue Shield of Missouri POS",
+   "top": "Blue Cross Blue Shield of Massachusetts EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsm",
+   "target": "Blue Cross and Blue Shield of Montana Choice PPO",
+   "top": "Blue Cross Blue Shield of Massachusetts EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsn",
+   "target": "Blue Cross and Blue Shield of Nevada POS",
+   "top": "Blue Cross and Blue Shield of Nebraska EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsnh",
+   "target": "Blue Cross and Blue Shield of New Hampshire Choice PPO",
+   "top": "Blue Cross and Blue Shield of Nebraska EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsnm",
+   "target": "Blue Cross and Blue Shield of New Mexico Choice PPO",
+   "top": "Blue Cross and Blue Shield of Nebraska EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsnc",
+   "target": "Blue Cross and Blue Shield of North Carolina Choice PPO",
+   "top": "Blue Cross and Blue Shield of Nebraska EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsnd",
+   "target": "Blue Cross and Blue Shield of North Dakota EPO",
+   "top": "Blue Cross and Blue Shield of Nebraska EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbso",
+   "target": "Blue Cross and Blue Shield of Oklahoma EPO",
+   "top": "Blue Cross and Blue Shield of Utah EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsp",
+   "target": "Blue Cross and Blue Shield of Pennsylvania POS",
+   "top": "Blue Cross and Blue Shield of Utah EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsri",
+   "target": "Blue Cross and Blue Shield of Rhode Island Choice PPO",
+   "top": "Blue Cross and Blue Shield of Missouri HMO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbssc",
+   "target": "Blue Cross and Blue Shield of South Carolina Select",
+   "top": "Blue Cross and Blue Shield of Utah EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbssd",
+   "target": "Blue Cross and Blue Shield of South Dakota Open Access",
+   "top": "Blue Cross and Blue Shield of Utah EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbst",
+   "target": "Blue Cross and Blue Shield of Texas HMO",
+   "top": "CareFirst Blue Cross Blue Shield EPO - DC"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbswv",
+   "target": "Blue Cross and Blue Shield of West Virginia POS",
+   "top": "Blue Cross and Blue Shield of Wisconsin EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsw",
+   "target": "Blue Cross and Blue Shield of Wyoming EPO",
+   "top": "Blue Cross and Blue Shield of Wisconsin EPO"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "bluecross blueshield",
+   "target": "Excellus BlueCross BlueShield HMO",
+   "top": "Arkansas Blue Cross Blue Shield EPO"
+  },
+  {
+   "kind": "brand_typo",
+   "q": "fidelis cae",
+   "target": "Fidelis Care Dual Choice",
+   "top": "Centene EPO - AK"
+  },
+  {
+   "kind": "typo",
+   "q": "mainceare chip",
+   "target": "MaineCare CHIP",
+   "top": "TennCare CHIP"
+  },
+  {
+   "kind": "exact",
+   "q": "medicaid chip",
+   "target": "Medicaid CHIP - VA",
+   "top": "CHIP Medicaid - AK"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "oregon plan",
+   "target": "Oregon Health Plan Managed Medicaid",
+   "top": "WellCare Community Plan - OR"
+  },
+  {
+   "kind": "brand_typo",
+   "q": "welcare",
+   "target": "WellCare Medicaid Managed Care - IA",
+   "top": "Ambetter Bronze - AK"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsi",
+   "target": "Blue Cross and Blue Shield of Idaho Open Access",
+   "top": "Blue Cross and Blue Shield of Iowa EPO"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "medicare advantage",
+   "target": "AARP Medicare Advantage D-SNP - AZ",
+   "top": "Medicare Advantage HMO - AK"
+  },
+  {
+   "kind": "typo",
+   "q": "aap medicare advantage ppo",
+   "target": "AARP Medicare Advantage PPO - DC",
+   "top": "Medicare Advantage PPO - AK"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "medicare advantage",
+   "target": "AARP Medicare Advantage PPO - DC",
+   "top": "Medicare Advantage HMO - AK"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbssc",
+   "target": "Blue Cross and Blue Shield of South Carolina Select",
+   "top": "Blue Cross and Blue Shield of Utah EPO"
+  },
+  {
+   "kind": "brand_typo",
+   "q": "osacr health",
+   "target": "Oscar Health Open Access - TN",
+   "top": "Meritain Health Group Health - OH"
+  }
+ ],
+ "seconds": 22.2
+}

@@ -1,0 +1,3 @@
+# Serve search through the Lakebase Data API, not Model Serving or an App
+
+The EHR engineering team will only call a REST endpoint with a service-principal bearer token; they will not hold database connections. Model Serving was their only approved REST path, but there it would wrap a Python function around a database query: more parts, cold starts, and a broad database role. The Lakebase Data API takes the same Databricks OAuth token and calls one SQL function directly, so we build only that function. The same function can sit behind Model Serving or an App later if security insists. Risk we accept: the Data API's throughput limit is undocumented and its role has an 8 s statement timeout, so we load test before claiming scale.

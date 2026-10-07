@@ -1,0 +1,65 @@
+abbrev,expansion,note
+BC,Blue Cross,part of BCBS plans
+BS,Blue Shield,part of BCBS plans
+BCBS,Blue Cross Blue Shield,major national federation
+BCBC,BlueCross BlueShield,alternate spelling
+UHC,UnitedHealthcare,major national carrier
+UHG,United Health Group,parent company of UHC
+MA,Medicare Advantage,coverage type
+MA,Mutual Aid,less common usage
+POS,Point of Service,plan type
+HMO,Health Maintenance Organization,plan type
+PPO,Preferred Provider Organization,plan type
+EPO,Exclusive Provider Organization,plan type
+MCO,Managed Care Organization,plan administrator
+PBM,Pharmacy Benefit Manager,pharmacy services
+CHIP,Children's Health Insurance Program,government program
+Medicaid,Medicaid,state program (abbreviated)
+Medicare,Medicare,federal program (abbreviated)
+AARP,American Association of Retired Persons,Medicare brand partner
+AARP MA,AARP Medicare Advantage,retiree plans via UHC
+EMC,Empire Blue Cross,New York plan
+Independence BC,Independence Blue Cross,PA/NJ plan
+Capital BC,Capital Blue Cross,Pennsylvania plan
+Horizon BCBS,Horizon Blue Cross Blue Shield,New Jersey plan
+Regence,Regence BlueShield,Oregon/Washington regional
+Premera,Premera Blue Cross,Washington regional
+Excellus,Excellus BlueCross BlueShield,New York plan
+CareFirst,CareFirst Blue Cross,Maryland/Virginia plan
+Wellmark,Wellmark Blue Cross,Iowa/South Dakota plan
+HealthPartners,HealthPartners,Minnesota-based regional
+Anthem,Elevance Health,rebranded 2024
+Elevance,Elevance Health,formerly Anthem
+WellCare,Centene subsidiary,Medicare and Medicaid
+Ambetter,Centene subsidiary,ACA marketplace
+Health Net,Centene subsidiary,Medicaid and commercial
+Magellan,Molina subsidiary,behavioral health and Medicaid
+Molina,Molina Healthcare,Medicaid MCO
+CareSource,CareSource,Ohio-based Medicaid
+Centene,Centene,national Medicaid MCO
+Aetna,CVS Aetna,commercial and Medicare
+Cigna,Cigna Group,commercial and Medicare
+Humana,Humana Inc,major insurance carrier
+Kaiser,Kaiser Permanente,integrated health system
+Geisinger,Geisinger Health Plan,Pennsylvania regional
+UMR,Union Management Services,TPA for self-funded plans
+Meritain,Meritain Health,TPA acquired by Aetna
+Allied Benefit,Allied Benefit Systems,TPA services
+Medi-Cal,California Medicaid,state program brand
+MassHealth,Massachusetts Medicaid,state program brand
+TennCare,Tennessee Medicaid,state program brand
+Soonercare,Oklahoma Medicaid,state program brand
+Oregon HP,Oregon Health Plan,state program brand
+Apple Health,Washington Medicaid,state program brand
+TRICARE,Department of Defense,military healthcare
+VA CCN,VA Community Care Network,Veterans healthcare
+FCM,Federal Employees Program,federal employee coverage
+FEP,Federal Employees Program,federal employee coverage
+FEHB,Federal Employees Health Benefit Program,federal employee coverage
+MAPD,Medicare Advantage Prescription Drug,Medicare plan type
+SNP,Special Needs Plan,Medicare plan type
+DSNP,Dual Special Needs Plan,Medicare plan type
+IBX,Independence Blue Cross,Pennsylvania/New Jersey plan
+HMSA,Hawaii Medical Service Association,Hawaii plan
+Medigap,Medicare Supplement,Medicare supplement coverage
+AHCCCS,Arizona Health Care Cost Containment System,Arizona Medicaid

@@ -1,0 +1,288 @@
+word,canonical,kind,brand,source
+aaa,auto_club_insurance,abbreviation,Auto Club Insurance,fm:databricks-claude-sonnet-4-5
+acc,ahcccs,abbreviation,AHCCCS,fm:databricks-claude-sonnet-4-5
+accchs,ahcccs,misspelling,AHCCCS,fm:databricks-claude-sonnet-4-5
+acchs,ahcccs,abbreviation,AHCCCS,fm:databricks-claude-sonnet-4-5
+achccs,ahcccs,misspelling,AHCCCS,fm:databricks-claude-sonnet-4-5
+acia,auto_club_insurance,card_text,Auto Club Insurance,fm:databricks-claude-sonnet-4-5
+aenta,aetna,misspelling,Aetna,fm:databricks-claude-sonnet-4-5
+aet,aetna,abbreviation,Aetna,fm:databricks-claude-sonnet-4-5
+aetena,aetna,misspelling,Aetna,fm:databricks-claude-sonnet-4-5
+affinitiy,affinity,misspelling,Affinity Health Plan,fm:databricks-claude-sonnet-4-5
+affinnity,affinity,misspelling,Affinity Health Plan,fm:databricks-claude-sonnet-4-5
+affintiy,affinity,misspelling,Affinity Health Plan,fm:databricks-claude-sonnet-4-5
+afinity,affinity,misspelling,Affinity Health Plan,fm:databricks-claude-sonnet-4-5
+afinty,affinity,misspelling,Affinity Health Plan,fm:databricks-claude-sonnet-4-5
+agp,amerigroup,abbreviation,Amerigroup,fm:databricks-claude-sonnet-4-5
+ahc,amerihealth_caritas,abbreviation,AmeriHealth Caritas,fm:databricks-claude-sonnet-4-5
+ahccccs,ahcccs,misspelling,AHCCCS,fm:databricks-claude-sonnet-4-5
+ahccs,ahcccs,misspelling,AHCCCS,fm:databricks-claude-sonnet-4-5
+ahccss,ahcccs,misspelling,AHCCCS,fm:databricks-claude-sonnet-4-5
+ahhccs,ahcccs,misspelling,AHCCCS,fm:databricks-claude-sonnet-4-5
+ahwa,apple_health,abbreviation,Apple Health,fm:databricks-claude-sonnet-4-5
+amb,ambetter,abbreviation,Ambetter,fm:databricks-claude-sonnet-4-5
+ambbetter,ambetter,misspelling,Ambetter,fm:databricks-claude-sonnet-4-5
+ambeter,ambetter,misspelling,Ambetter,fm:databricks-claude-sonnet-4-5
+ambitter,ambetter,misspelling,Ambetter,fm:databricks-claude-sonnet-4-5
+amergroup,amerigroup,misspelling,Amerigroup,fm:databricks-claude-sonnet-4-5
+americgroup,amerigroup,misspelling,Amerigroup,fm:databricks-claude-sonnet-4-5
+americhealth,amerihealth,misspelling,AmeriHealth Caritas,fm:databricks-claude-sonnet-4-5
+amerigoup,amerigroup,misspelling,Amerigroup,fm:databricks-claude-sonnet-4-5
+amerigrop,amerigroup,misspelling,Amerigroup,fm:databricks-claude-sonnet-4-5
+amerigroupe,amerigroup,misspelling,Amerigroup,fm:databricks-claude-sonnet-4-5
+amerigrp,amerigroup,misspelling,Amerigroup,fm:databricks-claude-sonnet-4-5
+ameriheath,amerihealth,misspelling,AmeriHealth Caritas,fm:databricks-claude-sonnet-4-5
+amg,amerigroup,abbreviation,Amerigroup,fm:databricks-claude-sonnet-4-5
+ammerigroup,amerigroup,misspelling,Amerigroup,fm:databricks-claude-sonnet-4-5
+antem,anthem,misspelling,Anthem Blue Cross,fm:databricks-claude-sonnet-4-5
+antham,anthem,misspelling,Anthem Blue Cross,fm:databricks-claude-sonnet-4-5
+anthom,anthem,misspelling,Anthem Blue Cross,fm:databricks-claude-sonnet-4-5
+anthum,anthem,misspelling,Anthem Blue Cross,fm:databricks-claude-sonnet-4-5
+arbcbs,arkansas_blue_cross_blue_shield,abbreviation,Arkansas Blue Cross Blue Shield,fm:databricks-claude-sonnet-4-5
+arkbcbs,arkansas_blue_cross_blue_shield,abbreviation,Arkansas Blue Cross Blue Shield,fm:databricks-claude-sonnet-4-5
+arp,aarp,misspelling,AARP Medicare Advantage,fm:databricks-claude-sonnet-4-5
+arrp,aarp,misspelling,AARP Medicare Advantage,fm:databricks-claude-sonnet-4-5
+atena,aetna,misspelling,Aetna,fm:databricks-claude-sonnet-4-5
+athem,anthem,misspelling,Anthem Blue Cross,fm:databricks-claude-sonnet-4-5
+azblue,blue_cross_and_blue_shield_of_arizona,abbreviation,Blue Cross and Blue Shield of Arizona,fm:databricks-claude-sonnet-4-5
+badgacare,badgercare,misspelling,BadgerCare,fm:databricks-claude-sonnet-4-5
+badger,badgercare,misspelling,BadgerCare,fm:databricks-claude-sonnet-4-5
+badgercar,badgercare,misspelling,BadgerCare,fm:databricks-claude-sonnet-4-5
+badgercarr,badgercare,misspelling,BadgerCare,fm:databricks-claude-sonnet-4-5
+badgercarre,badgercare,misspelling,BadgerCare,fm:databricks-claude-sonnet-4-5
+bcbsala,blue_cross_and_blue_shield_of_alabama,abbreviation,Blue Cross and Blue Shield of Alabama,fm:databricks-claude-sonnet-4-5
+bcbsct,connecticut_blue_cross_blue_shield,abbreviation,Connecticut Blue Cross Blue Shield,fm:databricks-claude-sonnet-4-5
+bcbsd,delaware_blue_cross,abbreviation,Delaware Blue Cross,fm:databricks-claude-sonnet-4-5
+bcbsm,blue_cross_blue_shield_of_michigan,abbreviation,Blue Cross Blue Shield of Michigan,fm:databricks-claude-sonnet-4-5
+bcbsn,blue_cross_and_blue_shield_of_nevada,abbreviation,Blue Cross and Blue Shield of Nevada,fm:databricks-claude-sonnet-4-5
+bcbsnj,horizon_blue_cross_blue_shield_of_new_jersey,abbreviation,Horizon Blue Cross Blue Shield of New Jersey,fm:databricks-claude-sonnet-4-5
+bcbsofmi,blue_cross_blue_shield_of_michigan,abbreviation,Blue Cross Blue Shield of Michigan,fm:databricks-claude-sonnet-4-5
+bcbst,bluecross_blueshield_of_tennessee,abbreviation,BlueCross BlueShield of Tennessee,fm:databricks-claude-sonnet-4-5
+bcbsu,blue_cross_and_blue_shield_of_utah,abbreviation,Blue Cross and Blue Shield of Utah,fm:databricks-claude-sonnet-4-5
+bcbsvt,bluecross_blueshield_of_vermont,abbreviation,BlueCross BlueShield of Vermont,fm:databricks-claude-sonnet-4-5
+bcbsw,blue_cross_and_blue_shield_of_wisconsin,abbreviation,Blue Cross and Blue Shield of Wisconsin,fm:databricks-claude-sonnet-4-5
+bcca,blue_cross_of_california,abbreviation,Blue Cross of California,fm:databricks-claude-sonnet-4-5
+bcga,blue_cross_and_blue_shield_of_georgia,abbreviation,Blue Cross and Blue Shield of Georgia,fm:databricks-claude-sonnet-4-5
+bcky,blue_cross_and_blue_shield_of_kentucky,abbreviation,Blue Cross and Blue Shield of Kentucky,fm:databricks-claude-sonnet-4-5
+bcma,blue_cross_blue_shield_of_massachusetts,abbreviation,Blue Cross Blue Shield of Massachusetts,fm:databricks-claude-sonnet-4-5
+bcmo,blue_cross_and_blue_shield_of_missouri,abbreviation,Blue Cross and Blue Shield of Missouri,fm:databricks-claude-sonnet-4-5
+bcn,blue_cross_blue_shield_of_michigan,card_text,Blue Cross Blue Shield of Michigan,fm:databricks-claude-sonnet-4-5
+bcnc,blue_cross_and_blue_shield_of_north_carolina,abbreviation,Blue Cross and Blue Shield of North Carolina,fm:databricks-claude-sonnet-4-5
+bcnd,blue_cross_and_blue_shield_of_north_dakota,abbreviation,Blue Cross and Blue Shield of North Dakota,fm:databricks-claude-sonnet-4-5
+bcne,blue_cross_and_blue_shield_of_nebraska,abbreviation,Blue Cross and Blue Shield of Nebraska,fm:databricks-claude-sonnet-4-5
+bcnh,blue_cross_and_blue_shield_of_new_hampshire,abbreviation,Blue Cross and Blue Shield of New Hampshire,fm:databricks-claude-sonnet-4-5
+bcnm,blue_cross_and_blue_shield_of_new_mexico,abbreviation,Blue Cross and Blue Shield of New Mexico,fm:databricks-claude-sonnet-4-5
+bcoc,blue_cross_of_california,abbreviation,Blue Cross of California,fm:databricks-claude-sonnet-4-5
+bcp,badgercare,abbreviation,BadgerCare,fm:databricks-claude-sonnet-4-5
+bcpa,blue_cross_and_blue_shield_of_pennsylvania,abbreviation,Blue Cross and Blue Shield of Pennsylvania,fm:databricks-claude-sonnet-4-5
+bcplus,badgercare,abbreviation,BadgerCare,fm:databricks-claude-sonnet-4-5
+bcri,blue_cross_and_blue_shield_of_rhode_island,abbreviation,Blue Cross and Blue Shield of Rhode Island,fm:databricks-claude-sonnet-4-5
+bcs,blue_cross_and_blue_shield_of_idaho,abbreviation,Blue Cross and Blue Shield of Idaho,fm:databricks-claude-sonnet-4-5
+bcsc,blue_cross_and_blue_shield_of_south_carolina,abbreviation,Blue Cross and Blue Shield of South Carolina,fm:databricks-claude-sonnet-4-5
+bcsd,blue_cross_and_blue_shield_of_south_dakota,abbreviation,Blue Cross and Blue Shield of South Dakota,fm:databricks-claude-sonnet-4-5
+bcvt,bluecross_blueshield_of_vermont,abbreviation,BlueCross BlueShield of Vermont,fm:databricks-claude-sonnet-4-5
+bcwv,blue_cross_and_blue_shield_of_west_virginia,abbreviation,Blue Cross and Blue Shield of West Virginia,fm:databricks-claude-sonnet-4-5
+bcwy,blue_cross_and_blue_shield_of_wyoming,abbreviation,Blue Cross and Blue Shield of Wyoming,fm:databricks-claude-sonnet-4-5
+bcy,blue_cross_and_blue_shield_of_kentucky,abbreviation,Blue Cross and Blue Shield of Kentucky,fm:databricks-claude-sonnet-4-5
+blucross,cross,misspelling,Blue Cross and Blue Shield of North Dakota,fm:databricks-claude-sonnet-4-5
+bsbc,blue_cross_and_blue_shield_of_kansas_city,abbreviation,Blue Cross and Blue Shield of Kansas City,fm:databricks-claude-sonnet-4-5
+bsca,blue_shield_of_california,abbreviation,Blue Shield of California,fm:databricks-claude-sonnet-4-5
+bsid,regence_blueshield_of_idaho,abbreviation,Regence BlueShield of Idaho,fm:databricks-claude-sonnet-4-5
+bsnd,blue_cross_and_blue_shield_of_north_dakota,abbreviation,Blue Cross and Blue Shield of North Dakota,fm:databricks-claude-sonnet-4-5
+bsvt,bluecross_blueshield_of_vermont,abbreviation,BlueCross BlueShield of Vermont,fm:databricks-claude-sonnet-4-5
+carefirsts,carefirst,misspelling,CareFirst Blue Cross Blue Shield,fm:databricks-claude-sonnet-4-5
+careforst,carefirst,misspelling,CareFirst Blue Cross Blue Shield,fm:databricks-claude-sonnet-4-5
+carefrist,carefirst,misspelling,CareFirst Blue Cross Blue Shield,fm:databricks-claude-sonnet-4-5
+caresorse,caresource,misspelling,CareSource,fm:databricks-claude-sonnet-4-5
+caresouce,caresource,misspelling,CareSource,fm:databricks-claude-sonnet-4-5
+caresourc,caresource,misspelling,CareSource,fm:databricks-claude-sonnet-4-5
+caresourec,caresource,misspelling,CareSource,fm:databricks-claude-sonnet-4-5
+carfirst,carefirst,misspelling,CareFirst Blue Cross Blue Shield,fm:databricks-claude-sonnet-4-5
+carsouce,caresource,misspelling,CareSource,fm:databricks-claude-sonnet-4-5
+cen,centene,abbreviation,Centene,fm:databricks-claude-sonnet-4-5
+centane,centene,misspelling,Centene,fm:databricks-claude-sonnet-4-5
+centeen,centene,misspelling,Centene,fm:databricks-claude-sonnet-4-5
+centeene,centene,misspelling,Centene,fm:databricks-claude-sonnet-4-5
+centena,centene,misspelling,Centene,fm:databricks-claude-sonnet-4-5
+centine,centene,misspelling,Centene,fm:databricks-claude-sonnet-4-5
+cfbcbs,carefirst_blue_cross_blue_shield,abbreviation,CareFirst Blue Cross Blue Shield,fm:databricks-claude-sonnet-4-5
+champus,tricare,former_name,TRICARE,fm:databricks-claude-sonnet-4-5
+chips,chip,misspelling,CHIP,fm:databricks-claude-sonnet-4-5
+cignah,cigna,misspelling,Cigna Healthcare,fm:databricks-claude-sonnet-4-5
+cinga,cigna,misspelling,Cigna Healthcare,fm:databricks-claude-sonnet-4-5
+cms,medicare,card_text,Medicare,fm:databricks-claude-sonnet-4-5
+commhp,community_health_plan,abbreviation,Community Health Plan,fm:databricks-claude-sonnet-4-5
+communitty,community,misspelling,VA Community Care Network,fm:databricks-claude-sonnet-4-5
+comunity,community,misspelling,VA Community Care Network,fm:databricks-claude-sonnet-4-5
+connecticare,connecticut_blue_cross_blue_shield,card_text,Connecticut Blue Cross Blue Shield,fm:databricks-claude-sonnet-4-5
+csrc,caresource,abbreviation,CareSource,fm:databricks-claude-sonnet-4-5
+ctbcbs,connecticut_blue_cross_blue_shield,abbreviation,Connecticut Blue Cross Blue Shield,fm:databricks-claude-sonnet-4-5
+ctne,centene,abbreviation,Centene,fm:databricks-claude-sonnet-4-5
+cygna,cigna,misspelling,Cigna Medicare,fm:databricks-claude-sonnet-4-5
+dhcs,medi_cal,card_text,Medi-Cal,fm:databricks-claude-sonnet-4-5
+dhhs,mainecare,card_text,MaineCare,fm:databricks-claude-sonnet-4-5
+eatna,aetna,misspelling,Aetna,fm:databricks-claude-sonnet-4-5
+ebc,empire_bluechoice_health_insurance,abbreviation,Empire BlueChoice Health Insurance,fm:databricks-claude-sonnet-4-5
+ebcbs,excellus_bluecross_blueshield,abbreviation,Excellus BlueCross BlueShield,fm:databricks-claude-sonnet-4-5
+ebchi,empire_bluechoice_health_insurance,abbreviation,Empire BlueChoice Health Insurance,fm:databricks-claude-sonnet-4-5
+emphesys,humana,former_name,Humana,fm:databricks-claude-sonnet-4-5
+empier,empire,misspelling,Empire BlueChoice Health Insurance,fm:databricks-claude-sonnet-4-5
+empyre,empire,misspelling,Empire BlueChoice Health Insurance,fm:databricks-claude-sonnet-4-5
+envolve,centene,card_text,Centene,fm:databricks-claude-sonnet-4-5
+excelsus,excellus,misspelling,Excellus BlueCross BlueShield,fm:databricks-claude-sonnet-4-5
+excelus,excellus,misspelling,Excellus BlueCross BlueShield,fm:databricks-claude-sonnet-4-5
+fedilis,fidelis,misspelling,Fidelis Care,fm:databricks-claude-sonnet-4-5
+fidelas,fidelis,misspelling,Fidelis Care,fm:databricks-claude-sonnet-4-5
+fideles,fidelis,misspelling,Fidelis Care,fm:databricks-claude-sonnet-4-5
+fidelius,fidelis,misspelling,Fidelis Care,fm:databricks-claude-sonnet-4-5
+fidellis,fidelis,misspelling,Fidelis Care,fm:databricks-claude-sonnet-4-5
+fidelus,fidelis,misspelling,Fidelis Care,fm:databricks-claude-sonnet-4-5
+geiko,geico,misspelling,Geico Auto,fm:databricks-claude-sonnet-4-5
+geisenger,geisinger,misspelling,Geisinger Health Plan,fm:databricks-claude-sonnet-4-5
+ghmsi,carefirst_blue_cross_blue_shield,former_name,CareFirst Blue Cross Blue Shield,fm:databricks-claude-sonnet-4-5
+gico,geico,misspelling,Geico Auto,fm:databricks-claude-sonnet-4-5
+giecko,geico,misspelling,Geico Auto,fm:databricks-claude-sonnet-4-5
+gieco,geico,misspelling,Geico Auto,fm:databricks-claude-sonnet-4-5
+giesenger,geisinger,misspelling,Geisinger Health Plan,fm:databricks-claude-sonnet-4-5
+giesinger,geisinger,misspelling,Geisinger Health Plan,fm:databricks-claude-sonnet-4-5
+gigheath,gighealth,misspelling,Gig Health,fm:databricks-claude-sonnet-4-5
+hawkeye,hawk,misspelling,Hawk-i,fm:databricks-claude-sonnet-4-5
+hawky,hawk,misspelling,Hawk-i,fm:databricks-claude-sonnet-4-5
+hbcbs,horizon_blue_cross_blue_shield_of_new_jersey,abbreviation,Horizon Blue Cross Blue Shield of New Jersey,fm:databricks-claude-sonnet-4-5
+hci,healthchoice_illinois,abbreviation,HealthChoice Illinois,fm:databricks-claude-sonnet-4-5
+hcil,healthchoice_illinois,abbreviation,HealthChoice Illinois,fm:databricks-claude-sonnet-4-5
+healthnett,healthnet,misspelling,Health Net,fm:databricks-claude-sonnet-4-5
+healthparners,healthpartners,misspelling,HealthPartners,fm:databricks-claude-sonnet-4-5
+healthparters,healthpartners,misspelling,HealthPartners,fm:databricks-claude-sonnet-4-5
+healthpartner,healthpartners,misspelling,HealthPartners,fm:databricks-claude-sonnet-4-5
+healthspring,cigna_medicare,former_name,Cigna Medicare,fm:databricks-claude-sonnet-4-5
+helthchoice,healthchoice,misspelling,HealthChoice Illinois,fm:databricks-claude-sonnet-4-5
+hmna,humana,abbreviation,Humana,fm:databricks-claude-sonnet-4-5
+hnet,health_net,abbreviation,Health Net,fm:databricks-claude-sonnet-4-5
+horison,horizon,misspelling,Horizon Blue Cross Blue Shield of New Jersey,fm:databricks-claude-sonnet-4-5
+horizan,horizon,misspelling,Horizon Blue Cross Blue Shield of New Jersey,fm:databricks-claude-sonnet-4-5
+horizen,horizon,misspelling,Horizon Blue Cross Blue Shield of New Jersey,fm:databricks-claude-sonnet-4-5
+horizion,horizon,misspelling,Horizon Blue Cross Blue Shield of New Jersey,fm:databricks-claude-sonnet-4-5
+hpm,healthpartners,abbreviation,HealthPartners,fm:databricks-claude-sonnet-4-5
+hpn,healthpartners,abbreviation,HealthPartners,fm:databricks-claude-sonnet-4-5
+hum,humana,abbreviation,Humana,fm:databricks-claude-sonnet-4-5
+humama,humana,misspelling,Humana,fm:databricks-claude-sonnet-4-5
+humanah,humana,misspelling,Humana,fm:databricks-claude-sonnet-4-5
+humane,humana,misspelling,Humana,fm:databricks-claude-sonnet-4-5
+humanna,humana,misspelling,Humana,fm:databricks-claude-sonnet-4-5
+humna,humana,misspelling,Humana,fm:databricks-claude-sonnet-4-5
+humuna,humana,misspelling,Humana,fm:databricks-claude-sonnet-4-5
+huskee,husky,misspelling,HUSKY,fm:databricks-claude-sonnet-4-5
+huskey,husky,misspelling,HUSKY,fm:databricks-claude-sonnet-4-5
+huski,husky,misspelling,HUSKY,fm:databricks-claude-sonnet-4-5
+huskie,husky,misspelling,HUSKY,fm:databricks-claude-sonnet-4-5
+independance,independence,misspelling,Independence Blue Cross,fm:databricks-claude-sonnet-4-5
+kidcare,nj_familycare,former_name,NJ FamilyCare,fm:databricks-claude-sonnet-4-5
+madv,medicare_advantage,abbreviation,Medicare Advantage,fm:databricks-claude-sonnet-4-5
+magelin,magellan,misspelling,Magellan Health,fm:databricks-claude-sonnet-4-5
+magellen,magellan,misspelling,Magellan Health,fm:databricks-claude-sonnet-4-5
+magellon,magellan,misspelling,Magellan Health,fm:databricks-claude-sonnet-4-5
+maggellan,magellan,misspelling,Magellan Health,fm:databricks-claude-sonnet-4-5
+malina,molina,misspelling,Molina Healthcare,fm:databricks-claude-sonnet-4-5
+manecare,mainecare,misspelling,MaineCare,fm:databricks-claude-sonnet-4-5
+mashealth,masshealth,misspelling,MassHealth,fm:databricks-claude-sonnet-4-5
+masheath,masshealth,misspelling,MassHealth,fm:databricks-claude-sonnet-4-5
+massheath,masshealth,misspelling,MassHealth,fm:databricks-claude-sonnet-4-5
+mcaid,medicaid,abbreviation,Medicaid,fm:databricks-claude-sonnet-4-5
+mcal,medi_cal,abbreviation,Medi-Cal,fm:databricks-claude-sonnet-4-5
+mcare,medicare,abbreviation,Medicare,fm:databricks-claude-sonnet-4-5
+mcd,medicaid,abbreviation,Medicaid,fm:databricks-claude-sonnet-4-5
+mcr,medicare,abbreviation,Medicare,fm:databricks-claude-sonnet-4-5
+medcaid,medicaid,misspelling,Medicaid,fm:databricks-claude-sonnet-4-5
+medcal,medical,misspelling,Medi-Cal,fm:databricks-claude-sonnet-4-5
+medcare,medicare,misspelling,Medicare,fm:databricks-claude-sonnet-4-5
+mediacal,medical,misspelling,Medi-Cal,fm:databricks-claude-sonnet-4-5
+medicade,medicaid,misspelling,Medicaid,fm:databricks-claude-sonnet-4-5
+medicaire,medicare,misspelling,Medicare,fm:databricks-claude-sonnet-4-5
+medicar,medicare,misspelling,Medicare,fm:databricks-claude-sonnet-4-5
+medicard,medicaid,misspelling,Medicaid,fm:databricks-claude-sonnet-4-5
+medicarr,medicare,misspelling,Medicare,fm:databricks-claude-sonnet-4-5
+medicate,medicaid,misspelling,Medicaid,fm:databricks-claude-sonnet-4-5
+medicl,medical,misspelling,Medi-Cal,fm:databricks-claude-sonnet-4-5
+mediical,medical,misspelling,Medi-Cal,fm:databricks-claude-sonnet-4-5
+medikare,medicare,misspelling,Medicare,fm:databricks-claude-sonnet-4-5
+medmut,medical_mutual,abbreviation,Medical Mutual,fm:databricks-claude-sonnet-4-5
+meratain,meritain,misspelling,Meritain Health,fm:databricks-claude-sonnet-4-5
+meritan,meritain,misspelling,Meritain Health,fm:databricks-claude-sonnet-4-5
+meritane,meritain,misspelling,Meritain Health,fm:databricks-claude-sonnet-4-5
+meritian,meritain,misspelling,Meritain Health,fm:databricks-claude-sonnet-4-5
+mhi,magellan_health,abbreviation,Magellan Health,fm:databricks-claude-sonnet-4-5
+mmed,medical_mutual,abbreviation,Medical Mutual,fm:databricks-claude-sonnet-4-5
+molena,molina,misspelling,Molina Healthcare,fm:databricks-claude-sonnet-4-5
+moliina,molina,misspelling,Molina Healthcare,fm:databricks-claude-sonnet-4-5
+molino,molina,misspelling,Molina Healthcare,fm:databricks-claude-sonnet-4-5
+mvphc,mvp_health_care,abbreviation,MVP Health Care,fm:databricks-claude-sonnet-4-5
+ncci,national_council_on_compensation_insurance,abbreviation,National Council on Compensation Insurance,fm:databricks-claude-sonnet-4-5
+njfam,nj_familycare,abbreviation,NJ FamilyCare,fm:databricks-claude-sonnet-4-5
+njfc,nj_familycare,abbreviation,NJ FamilyCare,fm:databricks-claude-sonnet-4-5
+oascar,oscar,misspelling,Oscar Health,fm:databricks-claude-sonnet-4-5
+ohca,soonercare,card_text,Soonercare,fm:databricks-claude-sonnet-4-5
+okdhs,soonercare,abbreviation,Soonercare,fm:databricks-claude-sonnet-4-5
+oscaar,oscar,misspelling,Oscar Health,fm:databricks-claude-sonnet-4-5
+oscer,oscar,misspelling,Oscar Health,fm:databricks-claude-sonnet-4-5
+oscr,oscar,misspelling,Oscar Health,fm:databricks-claude-sonnet-4-5
+oskar,oscar,misspelling,Oscar Health,fm:databricks-claude-sonnet-4-5
+pasport,passport,misspelling,Passport Health Plan,fm:databricks-claude-sonnet-4-5
+passpart,passport,misspelling,Passport Health Plan,fm:databricks-claude-sonnet-4-5
+passprt,passport,misspelling,Passport Health Plan,fm:databricks-claude-sonnet-4-5
+pc3,va_community_care_network,former_name,VA Community Care Network,fm:databricks-claude-sonnet-4-5
+premara,premera,misspelling,Premera Blue Cross,fm:databricks-claude-sonnet-4-5
+premeera,premera,misspelling,Premera Blue Cross,fm:databricks-claude-sonnet-4-5
+premiera,premera,misspelling,Premera Blue Cross,fm:databricks-claude-sonnet-4-5
+premira,premera,misspelling,Premera Blue Cross,fm:databricks-claude-sonnet-4-5
+providerone,apple_health,card_text,Apple Health,fm:databricks-claude-sonnet-4-5
+rbs,regence_blueshield,abbreviation,Regence BlueShield,fm:databricks-claude-sonnet-4-5
+rbsid,regence_blueshield_of_idaho,abbreviation,Regence BlueShield of Idaho,fm:databricks-claude-sonnet-4-5
+regance,regence,misspelling,Regence BlueShield,fm:databricks-claude-sonnet-4-5
+regeance,regence,misspelling,Regence BlueShield,fm:databricks-claude-sonnet-4-5
+regense,regence,misspelling,Regence BlueShield,fm:databricks-claude-sonnet-4-5
+rejence,regence,misspelling,Regence BlueShield,fm:databricks-claude-sonnet-4-5
+rmh,rocky_mountain_health_plans,abbreviation,Rocky Mountain Health Plans,fm:databricks-claude-sonnet-4-5
+schip,chip,former_name,CHIP,fm:databricks-claude-sonnet-4-5
+sentene,centene,misspelling,Centene,fm:databricks-claude-sonnet-4-5
+shs,spectrum_health,abbreviation,Spectrum Health,fm:databricks-claude-sonnet-4-5
+signah,cigna,misspelling,Cigna Healthcare,fm:databricks-claude-sonnet-4-5
+signha,cigna,misspelling,Cigna Medicare,fm:databricks-claude-sonnet-4-5
+soonercar,soonercare,misspelling,Soonercare,fm:databricks-claude-sonnet-4-5
+specrum,spectrum,misspelling,Spectrum Health,fm:databricks-claude-sonnet-4-5
+spectrium,spectrum,misspelling,Spectrum Health,fm:databricks-claude-sonnet-4-5
+spectrm,spectrum,misspelling,Spectrum Health,fm:databricks-claude-sonnet-4-5
+spectum,spectrum,misspelling,Spectrum Health,fm:databricks-claude-sonnet-4-5
+specturm,spectrum,misspelling,Spectrum Health,fm:databricks-claude-sonnet-4-5
+spetrum,spectrum,misspelling,Spectrum Health,fm:databricks-claude-sonnet-4-5
+statefram,statefarmauto,misspelling,State Farm Auto,fm:databricks-claude-sonnet-4-5
+sunercare,soonercare,misspelling,Soonercare,fm:databricks-claude-sonnet-4-5
+tencare,tenncare,misspelling,TennCare,fm:databricks-claude-sonnet-4-5
+tenesse,tennessee,misspelling,BlueCross BlueShield of Tennessee,fm:databricks-claude-sonnet-4-5
+tennesee,tennessee,misspelling,BlueCross BlueShield of Tennessee,fm:databricks-claude-sonnet-4-5
+tennesse,tennessee,misspelling,BlueCross BlueShield of Tennessee,fm:databricks-claude-sonnet-4-5
+tennessecare,tenncare,misspelling,TennCare,fm:databricks-claude-sonnet-4-5
+tncare,tenncare,abbreviation,TennCare,fm:databricks-claude-sonnet-4-5
+trc,tricare,abbreviation,TRICARE,fm:databricks-claude-sonnet-4-5
+tricae,tricare,misspelling,TRICARE,fm:databricks-claude-sonnet-4-5
+tricar,tricare,misspelling,TRICARE,fm:databricks-claude-sonnet-4-5
+tricarre,tricare,misspelling,TRICARE,fm:databricks-claude-sonnet-4-5
+trycare,tricare,misspelling,TRICARE,fm:databricks-claude-sonnet-4-5
+txwc,texas_workers_compensation,abbreviation,Texas Workers Compensation,fm:databricks-claude-sonnet-4-5
+umar,umr,misspelling,UMR,fm:databricks-claude-sonnet-4-5
+umor,umr,misspelling,UMR,fm:databricks-claude-sonnet-4-5
+umrr,umr,misspelling,UMR,fm:databricks-claude-sonnet-4-5
+united,unitedhealthcare,abbreviation,UnitedHealthcare,fm:databricks-claude-sonnet-4-5
+unitedhealthcar,unitedhealthcare,misspelling,UnitedHealthcare,fm:databricks-claude-sonnet-4-5
+vacc,va_community_care_network,abbreviation,VA Community Care Network,fm:databricks-claude-sonnet-4-5
+vaccn,va_community_care_network,abbreviation,VA Community Care Network,fm:databricks-claude-sonnet-4-5
+vcp,va_community_care_network,former_name,VA Community Care Network,fm:databricks-claude-sonnet-4-5
+wchp,wellcare,abbreviation,WellCare,fm:databricks-claude-sonnet-4-5
+wcr,wellcare,abbreviation,WellCare,fm:databricks-claude-sonnet-4-5
+welcare,wellcare,misspelling,WellCare,fm:databricks-claude-sonnet-4-5
+wellcar,wellcare,misspelling,WellCare,fm:databricks-claude-sonnet-4-5
+wellcarre,wellcare,misspelling,WellCare,fm:databricks-claude-sonnet-4-5
+wellkare,wellcare,misspelling,WellCare,fm:databricks-claude-sonnet-4-5
+welllcare,wellcare,misspelling,WellCare,fm:databricks-claude-sonnet-4-5
+wellmark,blue_cross_and_blue_shield_of_iowa,card_text,Blue Cross and Blue Shield of Iowa,fm:databricks-claude-sonnet-4-5
+wps,regence_blueshield,former_name,Regence BlueShield,fm:databricks-claude-sonnet-4-5

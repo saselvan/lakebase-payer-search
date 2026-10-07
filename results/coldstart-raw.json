@@ -1,0 +1,74 @@
+[
+ {
+  "trial": 1,
+  "state_before": "IDLE",
+  "waited_s": 177,
+  "first": [
+   "200",
+   10,
+   1748
+  ],
+  "warm_ms": [
+   172,
+   158,
+   145,
+   131,
+   141
+  ],
+  "state_after": "ACTIVE"
+ },
+ {
+  "trial": 2,
+  "state_before": "IDLE",
+  "waited_s": 399,
+  "first": [
+   "200",
+   10,
+   1577
+  ],
+  "warm_ms": [
+   165,
+   140,
+   164,
+   144,
+   135
+  ],
+  "state_after": "ACTIVE"
+ },
+ {
+  "trial": 3,
+  "state_before": "IDLE",
+  "waited_s": 240,
+  "first": [
+   "200",
+   10,
+   1549
+  ],
+  "warm_ms": [
+   155,
+   304,
+   135,
+   135,
+   139
+  ],
+  "state_after": "ACTIVE"
+ },
+ {
+  "trial": 4,
+  "state_before": "IDLE",
+  "waited_s": 70,
+  "first": [
+   "200",
+   10,
+   1591
+  ],
+  "warm_ms": [
+   161,
+   159,
+   153,
+   136,
+   140
+  ],
+  "state_after": "ACTIVE"
+ }
+]

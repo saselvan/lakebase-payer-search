@@ -1,0 +1,52 @@
+# Data contract — `POST /api/rpc/search_insurers`
+
+The one API this repo exposes. Anything not listed here does not exist.
+
+## 1. What exists
+
+**Request** (JSON body, `Authorization: Bearer <service-principal OAuth token>`)
+
+| Field | Type | Required | Rule |
+|---|---|---|---|
+| `q` | string | yes | 2–100 characters after trimming. Free text: typos, abbreviations, any word order. |
+| `customer_id` | string | yes | The Tenant. 1–64 characters of `A-Z a-z 0-9 _ . -`. Logged; does not filter results. |
+| `lim` | integer | no, default 10 | 1–10. Page size. |
+| `off` | integer | no, default 0 | 0 or more. `off` ≥ 50 returns `[]` (hard cap: 50 results = 5 pages of 10). |
+
+**Response** `200`: a JSON array, best first, at most `lim` rows. Each row:
+
+| Field | Type | Source |
+|---|---|---|
+| `rank` | integer | 1-based position in the full ranked list (page 2 starts at 11). |
+| `payer_id` | string | `insurer_alias.payer_id`. Synthetic in this demo (`SYN000123`). |
+| `payer_name` | string | `insurer_alias.payer_name`. The Payer's display name. |
+| `matched_alias` | string | The Payer's alias that matched the query best (the canonical name when it ties). |
+| `state` | string | Two-letter state code, or `US` for a national payer. |
+| `plan_type` | string | One of: `commercial`, `medicare_advantage`, `medicare`, `medicaid`, `medicaid_mco`, `marketplace`, `military`, `workers_comp`, `auto`, `tpa`. |
+| `score` | number | Relevance. Higher is better. Only comparable within one response. |
+
+**Errors**
+
+| Status | When | Body |
+|---|---|---|
+| 400 | Bad input (`q`, `customer_id`, `lim`, `off` out of range) | `{"code":"22023","message":"lim must be 1 to 10", ...}` |
+| 400 | Token missing, not a JWT, or bad signature (Lakebase gateway behaviour) | `{"message":"missing authentication credentials ..."}` / `"signature error"` |
+| 403 | Valid token for an identity that was not granted | `{"code":"42501","message":"permission denied to set role ..."}` |
+| 404 | Unknown function or wrong argument names | `{"code":"PGRST202", ...}` |
+
+## 2. What does NOT exist (do not invent these)
+
+- No `total_count`, `has_more`, or `next_page` field. Page 6 is always empty; a short page means the end.
+- No real clearinghouse / EDI payer IDs, NPI, tax ID, phone, address, or website.
+- No per-Tenant payer lists: `customer_id` never changes the results.
+- No filter or sort parameters (`state`, `plan_type`, `sort`). Relevance is the only order.
+- No `GET` search, no table endpoints: `payer_serving`, `search_idx`, `audit` are not exposed.
+- No patient data of any kind. The corpus is public payer names plus synthetic IDs.
+
+## 3. Interpretation rules
+
+- `score` is not a probability or a percentage. Do not show it to users or compare it across queries.
+- Equal scores are ordered by `payer_name`, then `payer_id`, so paging is stable.
+- `matched_alias` explains *why* a row matched; show `payer_name` as the label.
+- A national payer has one row per state (`UnitedHealthcare PPO - TX`). Several rows of the same brand on one page are expected.
+- An empty array is a valid answer ("no payer looks like this"), not an error.

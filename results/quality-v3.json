@@ -1,0 +1,205 @@
+{
+ "total": {
+  "n": 899,
+  "brand@10": 0.972,
+  "product@10": 0.833,
+  "mrr": 0.962
+ },
+ "by_kind": {
+  "brand_typo": {
+   "n": 150,
+   "brand@10": 0.98,
+   "product@10": 0.627,
+   "mrr": 0.969
+  },
+  "dropped_word": {
+   "n": 90,
+   "brand@10": 0.911,
+   "product@10": 0.711,
+   "mrr": 0.866
+  },
+  "exact": {
+   "n": 150,
+   "brand@10": 0.993,
+   "product@10": 0.993,
+   "mrr": 0.993
+  },
+  "initials": {
+   "n": 90,
+   "brand@10": 0.889,
+   "product@10": 0.678,
+   "mrr": 0.863
+  },
+  "joined": {
+   "n": 119,
+   "brand@10": 1.0,
+   "product@10": 0.706,
+   "mrr": 0.993
+  },
+  "state_first": {
+   "n": 150,
+   "brand@10": 1.0,
+   "product@10": 1.0,
+   "mrr": 1.0
+  },
+  "typo": {
+   "n": 150,
+   "brand@10": 0.98,
+   "product@10": 0.98,
+   "mrr": 0.98
+  }
+ },
+ "misses": [
+  {
+   "kind": "typo",
+   "q": "aar pmedicare advantage hmo",
+   "target": "AARP Medicare Advantage HMO - ID",
+   "top": "Medicare Advantage HMO - AK"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "medicare advantage",
+   "target": "AARP Medicare Advantage HMO - ID",
+   "top": "Medicare Advantage HMO - AK"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "health plan",
+   "target": "Affinity Health Plan Open Access",
+   "top": "Passport Health Plan HMO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsmo",
+   "target": "Blue Cross and Blue Shield of Kansas City Open Access - MO",
+   "top": "Blue Cross and Blue Shield of Missouri HMO"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "blue cross and blue shield of",
+   "target": "Blue Cross and Blue Shield of Kentucky PPO",
+   "top": "Blue Cross and Blue Shield of Iowa EPO"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "blue cross and blue shield of",
+   "target": "Blue Cross and Blue Shield of Minnesota PPO",
+   "top": "Blue Cross and Blue Shield of Iowa EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsnh",
+   "target": "Blue Cross and Blue Shield of New Hampshire Choice PPO",
+   "top": "Blue Cross and Blue Shield of Nebraska EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsnm",
+   "target": "Blue Cross and Blue Shield of New Mexico Choice PPO",
+   "top": "Blue Cross and Blue Shield of Nebraska EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsnc",
+   "target": "Blue Cross and Blue Shield of North Carolina Choice PPO",
+   "top": "Blue Cross and Blue Shield of Nebraska EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsnd",
+   "target": "Blue Cross and Blue Shield of North Dakota EPO",
+   "top": "Blue Cross and Blue Shield of Nebraska EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbsri",
+   "target": "Blue Cross and Blue Shield of Rhode Island Choice PPO",
+   "top": "Anthem Blue Cross and Blue Shield EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbssc",
+   "target": "Blue Cross and Blue Shield of South Carolina Select",
+   "top": "Anthem Blue Cross and Blue Shield EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbssd",
+   "target": "Blue Cross and Blue Shield of South Dakota Open Access",
+   "top": "Anthem Blue Cross and Blue Shield EPO"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbswv",
+   "target": "Blue Cross and Blue Shield of West Virginia POS",
+   "top": "Blue Cross and Blue Shield of Wisconsin EPO"
+  },
+  {
+   "kind": "brand_typo",
+   "q": "fidelis cae",
+   "target": "Fidelis Care Dual Choice",
+   "top": "Centene EPO - AK"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "health care",
+   "target": "MVP Health Care Choice PPO - CT",
+   "top": "Cigna Healthcare HMO - AK"
+  },
+  {
+   "kind": "typo",
+   "q": "mainceare chip",
+   "target": "MaineCare CHIP",
+   "top": "TennCare CHIP"
+  },
+  {
+   "kind": "exact",
+   "q": "medicaid chip",
+   "target": "Medicaid CHIP - VA",
+   "top": "CHIP Medicaid - AK"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "oregon plan",
+   "target": "Oregon Health Plan Managed Medicaid",
+   "top": "WellCare Community Plan - OR"
+  },
+  {
+   "kind": "brand_typo",
+   "q": "welcare",
+   "target": "WellCare Medicaid Managed Care - IA",
+   "top": "Ambetter Bronze - AK"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "medicare advantage",
+   "target": "AARP Medicare Advantage D-SNP - AZ",
+   "top": "Medicare Advantage HMO - AK"
+  },
+  {
+   "kind": "typo",
+   "q": "aap medicare advantage ppo",
+   "target": "AARP Medicare Advantage PPO - DC",
+   "top": "Medicare Advantage PPO - AK"
+  },
+  {
+   "kind": "dropped_word",
+   "q": "medicare advantage",
+   "target": "AARP Medicare Advantage PPO - DC",
+   "top": "Medicare Advantage HMO - AK"
+  },
+  {
+   "kind": "initials",
+   "q": "bcbssc",
+   "target": "Blue Cross and Blue Shield of South Carolina Select",
+   "top": "Anthem Blue Cross and Blue Shield EPO"
+  },
+  {
+   "kind": "brand_typo",
+   "q": "osacr health",
+   "target": "Oscar Health Open Access - TN",
+   "top": "Meritain Health Group Health - OH"
+  }
+ ],
+ "seconds": 21.9
+}

@@ -1,0 +1,10 @@
+.env
+*.secret
+.venv/
+__pycache__/
+.pytest_cache/
+data/out/
+graphify-out/
+.scratch/
+results/raw/
+.DS_Store

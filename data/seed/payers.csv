@@ -1,0 +1,120 @@
+base_name,parent_org,plan_type,states
+UnitedHealthcare,UnitedHealth Group,commercial,ALL
+Anthem Blue Cross,Elevance Health,commercial,ALL
+Cigna Healthcare,Cigna Group,commercial,ALL
+Humana,Humana Inc,commercial,ALL
+Aetna,CVS Health,commercial,ALL
+Kaiser Permanente,Kaiser Foundation,commercial,"CA,CO,GA,HI,MD,OR,VA,WA"
+Geisinger Health Plan,Geisinger,commercial,"PA,NJ"
+HealthPartners,HealthPartners,commercial,"MN,WI,CO"
+Priority Health,Priority Health,commercial,"MI,OH"
+Oscar Health,Oscar Health,commercial,"AL,AZ,AR,CO,DE,FL,GA,IL,IN,KS,LA,MD,MI,MN,MS,MO,NE,NY,NV,OH,OK,SC,TN,UT,VA,WI"
+Regence BlueShield,Regence,commercial,"OR,WA,ID,UT"
+Premera Blue Cross,Premera,commercial,"WA,AK,OR,ID,MT"
+CareSource,CareSource,commercial,"OH,IN,KY,WV,MI"
+Gig Health,Gig Health,commercial,"NY,PA,NJ"
+Molina Healthcare,Molina Healthcare,commercial,"AZ,CA,FL,ID,IL,KY,MA,MI,NV,NM,NY,OH,SC,TX,UT,VA,WA,WI,IA,PR"
+Centene,Centene,commercial,ALL
+Affinity Health Plan,Molina Healthcare,commercial,NY
+Passport Health Plan,Molina Healthcare,commercial,KY
+Blue Cross and Blue Shield of Alabama,BCBS,commercial,AL
+Blue Cross and Blue Shield of Arizona,BCBS,commercial,AZ
+Arkansas Blue Cross Blue Shield,BCBS,commercial,AR
+Blue Cross of California,BCBS,commercial,CA
+Blue Shield of California,BCBS,commercial,CA
+Rocky Mountain Health Plans,BCBS,commercial,CO
+Connecticut Blue Cross Blue Shield,BCBS,commercial,CT
+Delaware Blue Cross,BCBS,commercial,DE
+Blue Cross and Blue Shield of Florida,BCBS,commercial,FL
+Blue Cross and Blue Shield of Georgia,BCBS,commercial,GA
+Hawaii Medical Service Association,BCBS,commercial,HI
+Blue Cross and Blue Shield of Idaho,BCBS,commercial,ID
+Regence BlueShield of Idaho,BCBS,commercial,ID
+Blue Cross and Blue Shield of Illinois,BCBS,commercial,IL
+Blue Cross and Blue Shield of Indiana,BCBS,commercial,IN
+Blue Cross and Blue Shield of Iowa,BCBS,commercial,IA
+Blue Cross and Blue Shield of Kansas,BCBS,commercial,KS
+Blue Cross and Blue Shield of Kansas City,BCBS,commercial,"KS,MO"
+Blue Cross and Blue Shield of Kentucky,BCBS,commercial,KY
+Blue Cross and Blue Shield of Louisiana,BCBS,commercial,LA
+Blue Cross and Blue Shield of Maine,BCBS,commercial,ME
+CareFirst Blue Cross Blue Shield,BCBS,commercial,"MD,VA,DC"
+Blue Cross Blue Shield of Massachusetts,BCBS,commercial,MA
+Blue Cross Blue Shield of Michigan,BCBS,commercial,MI
+Blue Cross and Blue Shield of Minnesota,BCBS,commercial,MN
+Blue Cross and Blue Shield of Mississippi,BCBS,commercial,MS
+Blue Cross and Blue Shield of Missouri,BCBS,commercial,MO
+Blue Cross and Blue Shield of Montana,BCBS,commercial,MT
+Blue Cross and Blue Shield of Nebraska,BCBS,commercial,NE
+Blue Cross and Blue Shield of Nevada,BCBS,commercial,NV
+Blue Cross and Blue Shield of New Hampshire,BCBS,commercial,NH
+Horizon Blue Cross Blue Shield of New Jersey,BCBS,commercial,NJ
+Blue Cross and Blue Shield of New Mexico,BCBS,commercial,NM
+Excellus BlueCross BlueShield,BCBS,commercial,NY
+Empire BlueChoice Health Insurance,BCBS,commercial,NY
+Independence Blue Cross,BCBS,commercial,"PA,NJ,DE"
+Blue Cross and Blue Shield of North Carolina,BCBS,commercial,NC
+Blue Cross and Blue Shield of North Dakota,BCBS,commercial,ND
+Medical Mutual of Ohio,BCBS,commercial,OH
+Blue Cross and Blue Shield of Oklahoma,BCBS,commercial,OK
+Regence BlueShield,BCBS,commercial,"OR,WA,ID,UT"
+Capital Blue Cross,BCBS,commercial,PA
+Blue Cross and Blue Shield of Pennsylvania,BCBS,commercial,PA
+Blue Cross and Blue Shield of Rhode Island,BCBS,commercial,RI
+Blue Cross and Blue Shield of South Carolina,BCBS,commercial,SC
+Blue Cross and Blue Shield of South Dakota,BCBS,commercial,SD
+BlueCross BlueShield of Tennessee,BCBS,commercial,TN
+Blue Cross and Blue Shield of Texas,BCBS,commercial,TX
+Blue Cross and Blue Shield of Utah,BCBS,commercial,UT
+BlueCross BlueShield of Vermont,BCBS,commercial,VT
+Anthem Blue Cross and Blue Shield,BCBS,commercial,VA
+Premera Blue Cross,BCBS,commercial,WA
+Blue Cross and Blue Shield of West Virginia,BCBS,commercial,WV
+Blue Cross and Blue Shield of Wisconsin,BCBS,commercial,WI
+Blue Cross and Blue Shield of Wyoming,BCBS,commercial,WY
+Medi-Cal,State of California,medicaid,CA
+MassHealth,State of Massachusetts,medicaid,MA
+TennCare,State of Tennessee,medicaid,TN
+Soonercare,State of Oklahoma,medicaid,OK
+Apple Health,State of Washington,medicaid,WA
+MaineCare,State of Maine,medicaid,ME
+AHCCCS,State of Arizona,medicaid,AZ
+Medicaid,State Health Agency,medicaid,ALL
+CHIP,State Health Agency,medicaid,ALL
+HealthChoice Illinois,State of Illinois,medicaid,IL
+Oregon Health Plan,State of Oregon,medicaid,OR
+NJ FamilyCare,State of New Jersey,medicaid,NJ
+BadgerCare,State of Wisconsin,medicaid,WI
+HUSKY,State of Connecticut,medicaid,CT
+Hawk-i,State of Iowa,medicaid,IA
+Medicare,U.S. Centers for Medicare and Medicaid Services,medicare,ALL
+Medicare Advantage,CMS / Multiple Carriers,medicare_advantage,ALL
+AARP Medicare Advantage,UnitedHealth Group,medicare_advantage,ALL
+Humana Medicare Advantage,Humana Inc,medicare_advantage,ALL
+Cigna Medicare,Cigna Group,medicare_advantage,ALL
+Anthem Medicare,Elevance Health,medicare_advantage,ALL
+TRICARE,U.S. Department of Defense,military,ALL
+VA Community Care Network,U.S. Department of Veterans Affairs,military,ALL
+State Compensation Insurance Fund,California,workers_comp,CA
+Texas Workers Compensation,State of Texas,workers_comp,TX
+National Council on Compensation Insurance,NCCI,workers_comp,ALL
+Medical Mutual,National,workers_comp,ALL
+Auto Club Insurance,Regional,auto,MI
+State Farm Auto,State Farm,auto,ALL
+Geico Auto,Berkshire Hathaway,auto,ALL
+UMR,Labor Management,tpa,ALL
+Meritain Health,Aetna,tpa,ALL
+Allied Benefit Systems,Private,tpa,ALL
+Ambetter,Centene,marketplace,ALL
+WellCare,Centene,medicaid_mco,ALL
+Molina Healthcare,Molina Healthcare,medicaid_mco,ALL
+CareSource,CareSource,medicaid_mco,"OH,IN,KY,WV,MI"
+Magellan Health,Molina Healthcare,medicaid_mco,"AZ,MA,VA"
+AmeriHealth Caritas,Elevance Health,medicaid_mco,"AL,DE,FL,GA,LA,MS,NJ,NM,NY,OH,PA,SC,TX,WI"
+Amerigroup,Elevance Health,medicaid_mco,"CA,CO,CT,DE,FL,GA,KS,LA,MD,MS,MO,NC,OH,OK,OR,PA,SC,TX,VA,WA,WI,DC"
+Health Net,Centene,medicaid_mco,"CA,OR,WA"
+Fidelis Care,Centene,medicaid_mco,NY
+MVP Health Care,MVP Health Care,commercial,"NY,PA,VT,NH,CT,MA"
+Spectrum Health,Spectrum Health,commercial,"MI,IN,IL,OH,WI,KY"
+Community Health Plan,Multiple States,commercial,"OR,WA,ID"
+Sanford Health Plan,Sanford Health,commercial,"SD,NE,ND,MN,IA"
