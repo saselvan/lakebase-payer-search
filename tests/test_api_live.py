@@ -2,7 +2,6 @@
 
 Each test names the behaviour it proves. Run: uv run pytest -m live
 """
-import json
 import os
 import re
 import subprocess
@@ -13,6 +12,7 @@ import pytest
 import requests
 
 from insurer_search.client import SearchError
+from insurer_search.top_hits import load_top_hits
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -25,22 +25,10 @@ def names(rows):
     return [r["payer_name"] for r in rows]
 
 
-def load_top_hit_cases():
-    """Load top-hit test cases from the shared data file.
-
-    This is the shared list for the flywheel gate (ticket #8).
-    """
-    data_file = ROOT / "data" / "test_top_hit_cases.json"
-    with open(data_file) as f:
-        return json.load(f)
-
-
 # ---- Search quality: typos, abbreviations, synonyms, word order --------------------------------
 
-# Load test cases from the shared data file (also used by ticket #8 flywheel gate)
-_TOP_HIT_CASES = [(case["query"], case["expected_brand"]) for case in load_top_hit_cases()]
-
-@pytest.mark.parametrize("q,must_contain", _TOP_HIT_CASES)
+# The shared top-hit list (data/test_top_hit_cases.json); the flywheel gate reads the same file.
+@pytest.mark.parametrize("q,must_contain", load_top_hits())
 def test_top_hit(client, q, must_contain):
     rows = client.search(q, T)
     assert rows, f"no results for {q!r}"
