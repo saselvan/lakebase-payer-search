@@ -69,13 +69,14 @@ POST /api/rpc/search_insurers            Lakebase Data API: OAuth token -> the c
     search_idx.search_core(...)          SECURITY DEFINER, owned by NOLOGIN role search_owner
       check input                        bad input -> SQLSTATE 22023 -> HTTP 400
       did you mean                       fix unknown words against the corpus word list
-      near = 100 keys by trigram KNN     typo tolerance (GiST index)
-      bm   = 100 keys by BM25            whole words + synonyms
+      near = 100 texts by trigram KNN    typo tolerance (GiST index on Search texts)
+      bm   = 100 texts by best key BM25  whole words + synonyms + the Payer's state word
+      expand each text to its Payers     a text shared by 561 Payers takes one place in the cut
       score every candidate              trigram similarity + BM25 scaled to the best hit
-      best alias per payer -> rank -> page (10 per page, 50 max)
+      best text per payer -> rank (ties: Own name, Specificity, name) -> page (10 per page, 50 max)
       INSERT audit.search_log            tenant, caller, query, count, ms
 ```
-Search reads 33 k normalised keys (`search_idx.alias_key`), not the 3 M alias rows, so cost
+Search reads 22 k Search texts and 48 k normalised keys (`search_idx.search_text`, `search_idx.alias_key`), not the 3 M alias rows, so cost
 follows the number of distinct names. Why each choice: [`docs/adr/`](docs/adr/). Full glossary:
 [`CONTEXT.md`](CONTEXT.md). More: [`docs/architecture.md`](docs/architecture.md).
 
