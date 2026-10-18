@@ -79,6 +79,18 @@ def _payers_f9():
     return rows
 
 
+def _payers_f10():
+    # HOSTILE (F10 ties at the cut): 150 Payers "Vorpal Plan 001".."150", each with its own card Alias
+    # "Vorpal A001".."A150". All 300 texts match "vorpal" equally, more than the cut of 100 holds. Only the
+    # text-id tie-break makes the cut keep the same 100 texts on every build; without it the cut follows the
+    # index's physical order. Inserted in REVERSE order, so a physical-order cut keeps the high numbers.
+    rows = []
+    for i in range(150, 0, -1):
+        pid, name = f"{TAG}0P{i:03d}", f"Vorpal Plan {i:03d}"
+        rows += [(pid, name, name, "canonical", "TX"), (pid, name, f"Vorpal A{i:03d}", "card_text", "TX")]
+    return rows
+
+
 def _values(rows):
     out = []
     for i, (pid, name, alias, atype, st) in enumerate(rows):
@@ -119,7 +131,7 @@ def fixtures(admin_sql):
     if not branch.startswith("t-"):
         pytest.skip("hostile fixtures write Alias rows: only on a throwaway t- branch (set BRANCH)")
     _delete(admin_sql)
-    _insert(admin_sql, _payers_f1() + _payers_f2() + _payers_f3() + _payers_f8() + _payers_f9())
+    _insert(admin_sql, _payers_f1() + _payers_f2() + _payers_f3() + _payers_f8() + _payers_f9() + _payers_f10())
     _refresh(admin_sql)
     yield
     _delete(admin_sql)
@@ -179,6 +191,12 @@ def test_f7_state_form_keeps_the_state_payers_first(client, fixtures):
     rows = client.search("aarp maine", T)
     assert [r["state"] for r in rows[:4]] == ["ME"] * 4, [(r["payer_name"], r["state"]) for r in rows[:5]]
     assert all("AARP" in r["payer_name"] for r in rows[:4]), [r["payer_name"] for r in rows[:5]]
+    # "bcbs ny" / "ny bcbs": the best Alias is "Empire BCBS", which holds no state; only the Payer's state word
+    # in its key's document (NY) puts the New York Payer first. A per-text document without it loses them
+    # (spike shape (b), runs/2026-10-18-t56/SPIKE.md in the blog repo).
+    for q in ("bcbs ny", "ny bcbs"):
+        top = client.search(q, T)[0]
+        assert "Empire BlueChoice" in top["payer_name"] and top["state"] == "NY", (q, top["payer_name"], top["state"])
 
 
 def test_f8_own_name_counts_when_the_best_text_is_shared(client, fixtures):
@@ -189,6 +207,13 @@ def test_f8_own_name_counts_when_the_best_text_is_shared(client, fixtures):
 def test_f9_a_text_held_by_one_payer_beats_an_equal_shared_text(client, fixtures):
     rows = client.search("quillon trust", T)
     assert rows and rows[0]["payer_id"] == f"{TAG}9R", [(r["payer_id"], r["score"]) for r in rows[:3]]
+
+
+def test_f10_tied_texts_at_the_cut_resolve_by_text(client, fixtures):
+    # Text ids follow the text: "vorpal a001".."a100" sort first, so the cut keeps Payers 001-100 and the
+    # 50 results are Payers 001-050 in name order.
+    ids = _ids(_all_pages(client, "vorpal"))
+    assert ids == [f"{TAG}0P{i:03d}" for i in range(1, 51)], (ids[:3], ids[-3:])
 
 
 def test_identical_runs_give_identical_order(client, fixtures):
