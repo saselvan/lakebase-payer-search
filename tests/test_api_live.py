@@ -208,3 +208,28 @@ def test_a_direct_login_cannot_forge_the_caller(caller_sql, admin_sql, forged):
     caller_sql(f"SELECT count(*) FROM search_idx.search_core('cigna ppo', '{tenant}', 10, 0, {arg})")
     rows = admin_sql(f"SELECT caller FROM audit.search_log WHERE customer_id = '{tenant}'")
     assert rows == [[os.environ["SP_APPLICATION_ID"]]]
+
+
+def test_caller_cannot_set_role_authenticator_to_forge_data_api_identity(caller_sql, admin_sql):
+    # Attacker item 3: The Caller tries `SET ROLE authenticator` to look like a Data API call.
+    # Even if the caller manages to set ROLE authenticator, session_user (the login identity) does not change,
+    # so the fix still records the true caller.
+    import os
+    tenant = f"t-{uuid.uuid4().hex[:12]}"
+    # Try to SET ROLE and then call search_core
+    caller_sql(f"SET ROLE authenticator; SELECT count(*) FROM search_idx.search_core('cigna ppo', '{tenant}', 10, 0, NULL)")
+    rows = admin_sql(f"SELECT caller FROM audit.search_log WHERE customer_id = '{tenant}'")
+    # Even with SET ROLE, the fix records session_user, not the current_role
+    assert rows == [[os.environ["SP_APPLICATION_ID"]]]
+
+
+def test_data_api_call_records_the_token_identity_not_a_passed_caller(client, admin_sql):
+    # Attacker item 4: A Data API call (session_user = authenticator) must still record the token's identity.
+    # The Data API passes through to search_core with caller = NULL, which is fine because the Data API
+    # gateway fills in the current_user (the Caller SP identity) via the SECURITY INVOKER wrapper.
+    import os
+    tenant = f"t-{uuid.uuid4().hex[:12]}"
+    client.search("cigna ppo", tenant)
+    rows = admin_sql(f"SELECT caller FROM audit.search_log WHERE customer_id = '{tenant}'")
+    # The Data API logs the Caller SP identity, not the authenticator role
+    assert rows == [[os.environ["SP_APPLICATION_ID"]]]
