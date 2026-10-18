@@ -25,23 +25,24 @@ The search flow runs in `search_idx.search_core()`:
 
 2. **"Did you mean" correction**: Each word of 4+ letters not found in `search_idx.vocab` is replaced with the closest corpus word (edit distance ≤ ⌈word_length/3⌉). Adjacent words are joined if the joined form is a corpus word (`united health` → `unitedhealth`, which maps to UnitedHealthcare).
 
-3. **Candidate generation**:
-   - **Trigram path**: 100 nearest keys by `word_similarity()` using GiST index on `alias_key.key_norm` (no full-text parsing).
-   - **BM25 path**: 100 best keys by `lakebase_bm25()` on the full-text vector after synonym expansion.
+3. **Candidate generation** (by Search text, [ADR 0005](adr/0005-rank-payers-from-shared-search-texts.md)):
+   - **Trigram path**: 100 nearest Search texts by `word_similarity()` using the GiST index on `search_text.key_norm`. Ties at the cut by `text_id`.
+   - **BM25 path**: the best 1,000 Search keys by `lakebase_bm25` after synonym expansion (each key's document holds its Payer's state word), cut to the 100 texts with the best key score. Ties by `text_id`.
+   - **Expansion**: each candidate text goes to every Payer that has it (btree on `alias_key.key_norm`), so a text shared by 561 Payers takes one place in the cut, not 561.
 
-4. **Scoring**: For every candidate from either path:
-   - Trigram relevance = `word_similarity(query, key_norm) + 0.1 × similarity(query, key_norm)`
-   - BM25 relevance: standalone `<@>` scoring on every candidate (not just top-100), scaled by the best BM25 score in the result set. This ensures perfect trigram matches are never lost to BM25 ranking.
-   - Combined score = trigram + scaled BM25.
+4. **Scoring**: trigram scores once per text, BM25 per key:
+   - Trigram relevance = `word_similarity(query, text) + 0.1 × similarity(query, text)`
+   - BM25 relevance: standalone `<@>` scoring on every expanded key, scaled by the best BM25 score in the result set.
+   - Relevance = trigram + scaled BM25. A Payer's Relevance is that of its best text.
 
-5. **Deduplication**: One row per payer, keeping the best-scoring alias. Drop candidates below 0.3 word similarity and 0 BM25 (weak trigram-only matches). Hard cap: 50 results (5 pages of 10).
+5. **Ranking**: one row per Payer. Drop candidates below 0.3 word similarity and 0 BM25 (weak trigram-only matches). Order: Relevance, then Own-name match (any of the Payer's canonical, brand, state, or abbreviation texts matches the query by trigram ≥ 0.6 or holds every query word), then Specificity (fewer Payers share the matched text), then name, then `payer_id`. Hard cap: 50 results (5 pages of 10).
 
 6. **Audit**: Insert one row into `audit.search_log` (query, tenant, caller, duration, result count).
 
 ## Why each component
 
 ### Trigram + BM25 union
-Trigram distance (`<<->`) handles typos by finding the 100 nearest keys regardless of whether the query is a known word. BM25 handles multi-word queries and applies synonym expansion. Using both ensures a perfect name match (100% trigram similarity) is never lost if it falls outside the BM25 top-100 ([detailed analysis](../results/exact-name-deepdive-2026-10-06.md)).
+Trigram distance (`<<->`) handles typos by finding the 100 nearest Search texts regardless of whether the query is a known word. BM25 handles multi-word queries and applies synonym expansion. Using both ensures a perfect name match (100% trigram similarity) is never lost if it falls outside the BM25 top-100 ([detailed analysis](../results/exact-name-deepdive-2026-10-06.md)).
 
 ### Synonym expand-vs-replace rule
 A `lakebase_tokenizer` synonym replaces the word (one lexeme) like Postgres' own synonym dictionary. This is correct for equivalent forms (`bluecross` → `blue cross`, `bcbs` → `blue cross blue shield`) but wrong for hypernyms (`badgercare` → `medicaid` would erase the brand). 
