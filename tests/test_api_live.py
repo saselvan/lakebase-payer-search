@@ -2,13 +2,18 @@
 
 Each test names the behaviour it proves. Run: uv run pytest -m live
 """
+import os
 import re
+import subprocess
 import uuid
+from pathlib import Path
 
 import pytest
 import requests
 
 from insurer_search.client import SearchError
+
+ROOT = Path(__file__).resolve().parents[1]
 
 pytestmark = pytest.mark.live
 
@@ -210,17 +215,24 @@ def test_a_direct_login_cannot_forge_the_caller(caller_sql, admin_sql, forged):
     assert rows == [[os.environ["SP_APPLICATION_ID"]]]
 
 
-def test_caller_cannot_set_role_authenticator_to_forge_data_api_identity(caller_sql, admin_sql):
+def test_caller_cannot_set_role_authenticator_to_forge_data_api_identity(admin_sql):
     # Attacker item 3: The Caller tries `SET ROLE authenticator` to look like a Data API call.
-    # Even if the caller manages to set ROLE authenticator, session_user (the login identity) does not change,
-    # so the fix still records the true caller.
-    import os
+    # In reality, the Caller SP is not a member of the `authenticator` role (40_caller_grants.sql
+    # runs GRANT sp TO authenticator, not the reverse). So SET ROLE authenticator is refused.
+    # This test verifies the precondition: the Caller cannot assume the role, so the fix's
+    # session_user check is necessary and cannot be bypassed by role-switching.
     tenant = f"t-{uuid.uuid4().hex[:12]}"
-    # Try to SET ROLE and then call search_core
-    caller_sql(f"SET ROLE authenticator; SELECT count(*) FROM search_idx.search_core('cigna ppo', '{tenant}', 10, 0, NULL)")
+    # Attempt SET ROLE authenticator as the Caller (will fail)
+    result = subprocess.run([str(ROOT / "scripts/psql.sh"), "-At", "-c",
+                            f"SET ROLE authenticator; SELECT 'ok'"],
+                           capture_output=True, text=True,
+                           env={**os.environ, "AS_CALLER": "1"})
+    # The SET ROLE is refused because the Caller is not a member of authenticator
+    assert result.returncode != 0, "SET ROLE authenticator should be refused"
+    assert "permission denied to set role" in result.stderr, result.stderr
+    # Verify no log row was created (the SET ROLE failed before search_core ran)
     rows = admin_sql(f"SELECT caller FROM audit.search_log WHERE customer_id = '{tenant}'")
-    # Even with SET ROLE, the fix records session_user, not the current_role
-    assert rows == [[os.environ["SP_APPLICATION_ID"]]]
+    assert rows == [], f"No log row expected (SET ROLE failed); got {rows}"
 
 
 def test_data_api_call_records_the_token_identity_not_a_passed_caller(client, admin_sql):

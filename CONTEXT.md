@@ -48,7 +48,7 @@ _Avoid_: User, app
 One request with a query text, a Tenant, and a Page. Returns Payers ranked by Relevance.
 
 **Relevance**:
-How well the query fits a Payer: by spelling and by Synonym, through the Payer's best-matching Search text. A match on the Payer's Own name counts more than an Alias match, and a match on a Search text with low Specificity counts less. The only sort order.
+How well the query fits a Payer: by spelling and by Synonym, through the Payer's best-matching Search text. Candidates are found by trigram word distance to the query and by BM25 full-text match, then scored by both metrics. Own-name matches and low-Specificity texts are future improvements (ADR 0005). The only sort order.
 
 **Page**:
 A window of at most 10 results. A Search can reach at most 5 Pages (50 results); asking past that returns nothing.
