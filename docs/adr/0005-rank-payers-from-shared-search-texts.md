@@ -1,11 +1,3 @@
 # Rank Payers from shared Search texts, not from Search keys
 
-## Status: Proposed
-
-The problem: ADR 0003 stopped one Payer's copies from filling the candidates; the same failure came back across Payers. On production, 48,283 Search keys hold only 22,417 Search texts, and 44 texts are shared by more than 100 Payers each, so for `uhc` the 100 nearest Search keys were all the text "uhc" and none belonged to a UnitedHealthcare-named Payer.
-
-The proposal: Find candidates by Search text (not Search key), expand each text to every Payer that has it, and score Payers: a match on the Payer's Own name counts more than an Alias match, and an Alias shared by many Payers counts less (Specificity), with ties broken by Own-name match, then name, then `payer_id`.
-
-We rejected removing the shared Aliases (a former company name truly belongs to every Payer of that company, and a cloner's own data will have them) and a larger candidate cut (any fixed cut fails once one text is shared by more Payers than the cut).
-
-**Note:** The current `search_core` implementation (as of ticket #2) uses trigram distance and BM25 scoring only. Own-name and Specificity scoring are not yet implemented; this ADR remains accepted but awaits implementation in a follow-up ticket.
+ADR 0003 stopped one Payer's copies from filling the candidates; the same failure came back across Payers. On production, 48,283 Search keys hold only 22,417 Search texts, and 44 texts are shared by more than 100 Payers each, so for `uhc` the 100 nearest Search keys were all the text "uhc" and none belonged to a UnitedHealthcare-named Payer. We find candidates by Search text, expand each text to every Payer that has it, and score Payers: a match on the Payer's Own name counts more than an Alias match, and an Alias shared by many Payers counts less (Specificity), with ties broken by Own-name match, then name, then `payer_id`. We rejected removing the shared Aliases (a former company name truly belongs to every Payer of that company, and a cloner's own data will have them) and a larger candidate cut (any fixed cut fails once one text is shared by more Payers than the cut).

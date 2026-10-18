@@ -217,28 +217,28 @@ def test_a_direct_login_cannot_forge_the_caller(caller_sql, admin_sql, forged):
 
 def test_caller_cannot_set_role_authenticator_to_forge_data_api_identity(admin_sql):
     # Attacker item 3: The Caller tries `SET ROLE authenticator` to look like a Data API call.
-    # In reality, the Caller SP is not a member of the `authenticator` role (40_caller_grants.sql
-    # runs GRANT sp TO authenticator, not the reverse). So SET ROLE authenticator is refused.
-    # This test verifies the precondition: the Caller cannot assume the role, so the fix's
-    # session_user check is necessary and cannot be bypassed by role-switching.
+    # The Caller SP is not a member of the `authenticator` role (40_caller_grants.sql runs
+    # GRANT sp TO authenticator, not the reverse). So SET ROLE authenticator is refused.
+    # This test verifies the refusal, confirming the fix's session_user check cannot be bypassed
+    # by role-switching.
     tenant = f"t-{uuid.uuid4().hex[:12]}"
-    # Attempt SET ROLE authenticator as the Caller (will fail)
+    # Attempt SET ROLE authenticator as the Caller (will fail with permission denied)
     result = subprocess.run([str(ROOT / "scripts/psql.sh"), "-At", "-c",
                             f"SET ROLE authenticator; SELECT 'ok'"],
                            capture_output=True, text=True,
                            env={**os.environ, "AS_CALLER": "1"})
-    # The SET ROLE is refused because the Caller is not a member of authenticator
+    # Assert SET ROLE is refused
     assert result.returncode != 0, "SET ROLE authenticator should be refused"
     assert "permission denied to set role" in result.stderr, result.stderr
-    # Verify no log row was created (the SET ROLE failed before search_core ran)
+    # Verify no audit row was created (the SET ROLE failed before any search ran)
     rows = admin_sql(f"SELECT caller FROM audit.search_log WHERE customer_id = '{tenant}'")
-    assert rows == [], f"No log row expected (SET ROLE failed); got {rows}"
+    assert rows == [], f"No log row expected; got {rows}"
 
 
 def test_data_api_call_records_the_token_identity_not_a_passed_caller(client, admin_sql):
     # Attacker item 4: A Data API call (session_user = authenticator) must still record the token's identity.
-    # The Data API passes through to search_core with caller = NULL, which is fine because the Data API
-    # gateway fills in the current_user (the Caller SP identity) via the SECURITY INVOKER wrapper.
+    # The Data API wrapper (api.search_insurers) passes current_user (the Caller SP identity) as the
+    # caller parameter to search_core. The SECURITY INVOKER wrapper ensures the token identity is logged.
     import os
     tenant = f"t-{uuid.uuid4().hex[:12]}"
     client.search("cigna ppo", tenant)
