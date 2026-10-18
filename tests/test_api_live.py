@@ -197,3 +197,14 @@ def test_every_search_is_logged_with_tenant_and_caller(client, admin_sql):
     assert [r[2] for r in rows] == ["0", "10"]
     assert all(r[0] == os.environ["SP_APPLICATION_ID"] and r[1] == "cigna ppo" for r in rows)
     assert all(int(r[3]) == 10 for r in rows)
+
+
+@pytest.mark.parametrize("forged", ["forged-caller", None])
+def test_a_direct_login_cannot_forge_the_caller(caller_sql, admin_sql, forged):
+    # The Caller holds EXECUTE on search_core, so it can skip the Data API and pass any caller text.
+    import os
+    tenant = f"t-{uuid.uuid4().hex[:12]}"
+    arg = "NULL" if forged is None else f"'{forged}'"
+    caller_sql(f"SELECT count(*) FROM search_idx.search_core('cigna ppo', '{tenant}', 10, 0, {arg})")
+    rows = admin_sql(f"SELECT caller FROM audit.search_log WHERE customer_id = '{tenant}'")
+    assert rows == [[os.environ["SP_APPLICATION_ID"]]]

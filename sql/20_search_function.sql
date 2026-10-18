@@ -6,6 +6,9 @@
 --   search_idx.search_core SECURITY DEFINER, owned by NOLOGIN role search_owner, which alone can
 --                         read the index and append to the log. The caller gets EXECUTE only:
 --                         no SELECT on any table, no INSERT on the log.
+--   The caller also holds EXECUTE on search_core (the INVOKER wrapper needs it), so it can log in to
+--   Postgres directly and pass any caller text. Only the Data API logs in as authenticator, so on any
+--   other login search_core records session_user, which the caller cannot set.
 \set ON_ERROR_STOP on
 
 DO $$ BEGIN
@@ -34,6 +37,8 @@ DECLARE
   i  int;
   n  int;
 BEGIN
+  -- A direct login records its own login name, never the caller argument (see the security model).
+  IF session_user::text <> 'authenticator' THEN caller := session_user::text; END IF;
   -- Input contract. SQLSTATE 22023 -> HTTP 400 from the Data API.
   IF length(qn) < 2 OR length(qn) > 100 THEN
     RAISE EXCEPTION 'q must be 2 to 100 characters' USING ERRCODE = '22023';
@@ -86,7 +91,7 @@ BEGIN
                            -- every candidate is scored by BM25 below, not only the BM25 top-k.
     SELECT k.key_id, k.key_norm
     FROM search_idx.alias_key k
-    ORDER BY qn <<-> k.key_norm
+    ORDER BY qn <<-> k.key_norm, k.key_id   -- key_id: ties at the cut resolve the same on every build
     LIMIT 100
   ), bm AS (               -- synonyms + exact words: BM25, index-ordered top-k
     SELECT k.key_id,
@@ -94,7 +99,7 @@ BEGIN
                                     'search_idx.alias_key_bm25')) AS b
     FROM search_idx.alias_key k
     ORDER BY k.tsv <@> to_bm25query(to_tsvector('search_idx.payer_cfg', qc),
-                                    'search_idx.alias_key_bm25')
+                                    'search_idx.alias_key_bm25'), k.key_id
     LIMIT 100
   ), cand AS (             -- union of both candidate sets; each is scored by both methods.
                            -- BM25 is scored for EVERY candidate (standalone <@> scoring, ~free): a
