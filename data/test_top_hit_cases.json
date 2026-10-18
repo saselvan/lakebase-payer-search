@@ -1,0 +1,57 @@
+[
+  {
+    "query": "bcbs georgia",
+    "expected_brand": "Blue Cross and Blue Shield of Georgia",
+    "comment": "abbreviation"
+  },
+  {
+    "query": "ga bcbs",
+    "expected_brand": "Blue Cross and Blue Shield of Georgia",
+    "comment": "state first, both short"
+  },
+  {
+    "query": "blue cross blue shield of georgia",
+    "expected_brand": "Blue Cross and Blue Shield of Georgia",
+    "comment": "missing 'and'"
+  },
+  {
+    "query": "united helth",
+    "expected_brand": "UnitedHealthcare",
+    "comment": "typo"
+  },
+  {
+    "query": "unitedhealth care",
+    "expected_brand": "UnitedHealthcare",
+    "comment": "word split"
+  },
+  {
+    "query": "uhc",
+    "expected_brand": "UnitedHealthcare",
+    "comment": "abbreviation, no shared letters"
+  },
+  {
+    "query": "medicad",
+    "expected_brand": "Medicaid",
+    "comment": "typo"
+  },
+  {
+    "query": "masshealth",
+    "expected_brand": "MassHealth",
+    "comment": "state program brand"
+  },
+  {
+    "query": "ma blue cross",
+    "expected_brand": "Blue Cross Blue Shield of Massachusetts",
+    "comment": "MA = state, not plan"
+  },
+  {
+    "query": "aetna",
+    "expected_brand": "Aetna",
+    "comment": "simple match"
+  },
+  {
+    "query": "tricare prime",
+    "expected_brand": "TRICARE Prime",
+    "comment": "multi-word brand"
+  }
+]

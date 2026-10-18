@@ -12,6 +12,7 @@ import pytest
 import requests
 
 from insurer_search.client import SearchError
+from insurer_search.top_hits import load_top_hits
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -26,19 +27,8 @@ def names(rows):
 
 # ---- Search quality: typos, abbreviations, synonyms, word order --------------------------------
 
-@pytest.mark.parametrize("q,must_contain", [
-    ("bcbs georgia", "Blue Cross and Blue Shield of Georgia"),      # abbreviation
-    ("ga bcbs", "Blue Cross and Blue Shield of Georgia"),           # state first, both short
-    ("blue cross blue shield of georgia", "Blue Cross and Blue Shield of Georgia"),  # missing "and"
-    ("united helth", "UnitedHealthcare"),                           # typo
-    ("unitedhealth care", "UnitedHealthcare"),                      # word split
-    ("uhc", "UnitedHealthcare"),                                    # abbreviation, no shared letters
-    ("medicad", "Medicaid"),                                        # typo
-    ("masshealth", "MassHealth"),                                   # state program brand
-    ("ma blue cross", "Blue Cross Blue Shield of Massachusetts"),   # MA = state, not plan
-    ("aetna", "Aetna"),
-    ("tricare prime", "TRICARE Prime"),
-])
+# The shared top-hit list (data/test_top_hit_cases.json); the flywheel gate reads the same file.
+@pytest.mark.parametrize("q,must_contain", load_top_hits())
 def test_top_hit(client, q, must_contain):
     rows = client.search(q, T)
     assert rows, f"no results for {q!r}"
