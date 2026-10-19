@@ -41,7 +41,7 @@ GRANT EXECUTE ON FUNCTION api.search_insurers TO "my-service-principal-id";
 -- 5. search_core reads the index and appends to the log
 ```
 
-The caller has **no direct `SELECT` or `INSERT` grants**; all data access is through the one function. This prevents:
+The caller has **no direct `SELECT` or `INSERT` grants**; all data access is through the two functions, and only the owner's definer function reads tables. This prevents:
 - Reading the raw aliases table.
 - Reading the search log (which contains other tenants' queries).
 - Inserting or modifying anything.
@@ -134,7 +134,7 @@ END IF;
 |---|---|---|
 | **Network** | HTTPS only, no insecure HTTP | Databricks |
 | **Authentication** | OAuth M2M token (1 h expiry) | Databricks identity service |
-| **Authorization** | `EXECUTE` on one function, no table access | Lakebase Postgres |
+| **Authorization** | `EXECUTE` on two functions (the wrapper and the core), no table access | Lakebase Postgres |
 | **Data isolation** | `SECURITY DEFINER` core, `NOLOGIN` owner | Postgres |
 | **Input validation** | Length, format, charset (error = HTTP 400) | Search function |
 | **Audit** | Per-search log + HIPAA pgaudit (if enabled) | Postgres + Databricks |

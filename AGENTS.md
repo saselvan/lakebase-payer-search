@@ -15,7 +15,7 @@ Setup in a workspace: `cp .env.example .env`, fill it in ([docs/deploy.md](docs/
 
 ## Where things live
 - Ranking and search behaviour: `sql/20_search_function.sql`. Index and synonyms: `sql/10_search_index.sql`.
-- Caller permissions: `sql/40_caller_grants.sql`. The caller must keep EXECUTE on one function and nothing else.
+- Caller permissions: `sql/40_caller_grants.sql`. The caller must keep EXECUTE on the two functions (`api.search_insurers` and `search_idx.search_core`) and nothing else. Do not revoke the second: the wrapper runs as the caller and needs it.
 - Synonyms: `data/seed/synonyms.csv` (hand-checked) and `src/insurer_search/synonyms.py` (generated).
 - Client behaviour (retries, token refresh): `src/insurer_search/client.py`, tested in `tests/test_client.py`.
 

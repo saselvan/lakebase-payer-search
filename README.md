@@ -86,7 +86,7 @@ follows the number of distinct names. Why each choice: [`docs/adr/`](docs/adr/).
 |---|---|
 | **It works** | 3,000,000 alias rows. Live tests call the real API with the real service principal. Built from zero on a new project by [`scripts/ci_proof.sh`](scripts/ci_proof.sh). |
 | **Search quality** | Brand in the top 10 for **98.4 %** of 899 queries ([v2 evaluator](results/quality-fn-v2-synfix.json)). Exact-name misses: 0 of 6,291 payers ([exact-name sweep](results/exact-name-deepdive-2026-10-06.md)). |
-| **It is secure** | Tests prove: missing / malformed / tampered token refused; a valid token of another identity gets 403; the caller can execute one function and read zero tables; every search is logged with tenant and caller. |
+| **It is secure** | Tests prove: missing / malformed / tampered token refused; a valid token of another identity gets 403; the caller can execute two functions and read zero tables; every search is logged with tenant and caller. |
 | **It is fast** | Search runs in 9.8 ms inside Postgres (p50, exact-name sweep). See [Performance](#performance). |
 | **It can be operated** | One idempotent `scripts/setup.sh`; re-runs refresh the data and the index with no downtime (7,486/7,486 live searches succeeded during a full sync + index refresh: [results](results/zero-downtime-2026-10-06.md)). |
 
@@ -226,7 +226,7 @@ lakebase-payer-search/
 ├── sql/
 │   ├── 10_search_index.sql     # synonyms, search keys, GiST + BM25, vocab, search log
 │   ├── 20_search_function.sql  # api.search_insurers -> search_core   (start here for ranking)
-│   ├── 40_caller_grants.sql    # caller: EXECUTE on one function, nothing else
+│   ├── 40_caller_grants.sql    # caller: EXECUTE on two functions, nothing else
 │   └── proposed/               # experiments and the exact-name sweep
 ├── src/insurer_search/   # client, evaluator, data + synonym generators, wider-word check
 ├── data/seed/            # payer brands, abbreviations, synonyms     (start here for synonyms)
