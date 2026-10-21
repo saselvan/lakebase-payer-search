@@ -68,7 +68,7 @@ Every search is logged in `audit.search_log` with:
 | `result_count` | Results returned | `8` |
 | `duration_ms` | Time in Postgres | `14.25` |
 
-**Interpretation**: The query is not hidden; `customer_id` is the Tenant but does NOT filter results. For per-tenant data isolation, add a WHERE clause or a separate `search_log` per tenant.
+**Interpretation**: The query is not hidden; `customer_id` is the Tenant but does NOT filter results. For per-tenant data isolation, filter inside `search_idx.search_core` (the caller cannot read tables, so the application cannot add the filter), or keep a separate `search_log` per tenant.
 
 Query for audit trail:
 ```sql
@@ -141,7 +141,7 @@ END IF;
 
 ## Known limits
 
-- **`customer_id` is trusted**: It is logged but does not filter results. Add a WHERE clause in your application if you need per-tenant result filtering.
+- **`customer_id` is trusted**: It is logged but does not filter results. If you need per-tenant result filtering, add the filter inside `search_idx.search_core` and take `customer_id` from a trusted source (for example, the calling gateway), not the request body.
 - **No row-level security (RLS)** on the payer list. All callers see all payers.
 - **Query text is logged in `audit.search_log`** (not PHI, but potentially sensitive if queries embed patient context). Use generic queries if privacy is a concern.
 - **The Data API rate limits are not documented**. Load-test at your peak to confirm headroom.
