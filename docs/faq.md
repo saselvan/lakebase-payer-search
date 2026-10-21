@@ -136,7 +136,7 @@ In a HIPAA workspace, SQL audit (`pgaudit`) also logs statements to `system.acce
 
 **Q: Can different tenants see each other's search queries?**
 
-A: No, only your application sees the `audit.search_log`. Other tenants cannot query it. The `customer_id` parameter is logged for audit but does NOT filter results (all tenants see all payers). If you need per-tenant result filtering, add a WHERE clause in your application.
+A: No, only your application sees the `audit.search_log`. Other tenants cannot query it. The `customer_id` parameter is logged for audit but does NOT filter results (all tenants see all payers). If you need per-tenant result filtering, the filter has to go inside `search_idx.search_core`: the caller holds EXECUTE only and cannot read the tables, so the application has no query to add a WHERE clause to. `customer_id` must then come from a trusted source (for example, the calling gateway), not from the request body.
 
 ## Troubleshooting
 
