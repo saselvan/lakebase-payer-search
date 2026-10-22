@@ -353,3 +353,29 @@ SELECT fn, count(*), round(percentile_cont(0.5) WITHIN GROUP (ORDER BY ms)::nume
     assert set(stat) == {"old", "new"}
     assert stat["new"][0] <= stat["old"][0] * 1.3, stat      # p50 within 30 percent
     assert stat["new"][1] <= stat["old"][1] * 1.5, stat      # p95 within 50 percent
+
+
+# ---------- guard: the inlined to_bm25query ------------------------------------------------------------------
+
+# What search_core inlines: ROW(tsvector, regclass)::public.bm25query_tsvector, which is the extension's own body.
+TO_BM25QUERY_BODY = "SELECT ROW($1, $2)::bm25query_tsvector"
+TO_BM25QUERY_ARGS = "tsvector, regclass"
+TO_BM25QUERY_RESULT = "bm25query_tsvector"
+BM25_TYPE_SCHEMA = "public"
+BM25_TYPE_ATTRS = "tsvector,regclass"
+
+
+def test_the_inlined_to_bm25query_still_matches_the_extension(admin_sql):
+    msg = "lakebase_text changed: re-check the inlined to_bm25query in search_core"
+    fn = "public.to_bm25query(tsvector,regclass)"
+    got = admin_sql(f"SELECT pg_get_function_arguments(oid), pg_get_function_result(oid) "
+                    f"FROM pg_proc WHERE oid = '{fn}'::regprocedure")
+    assert got == [[TO_BM25QUERY_ARGS, TO_BM25QUERY_RESULT]], msg
+    body = subprocess.run([str(ROOT / "scripts/psql.sh"), "-At", "-c",
+                           f"SELECT prosrc FROM pg_proc WHERE oid = '{fn}'::regprocedure"],
+                          capture_output=True, text=True, check=True).stdout.strip()
+    assert body == TO_BM25QUERY_BODY, msg
+    assert admin_sql("SELECT typnamespace::regnamespace::text FROM pg_type WHERE oid = 'public.bm25query_tsvector'::regtype") \
+        == [[BM25_TYPE_SCHEMA]], msg
+    assert admin_sql("SELECT string_agg(format_type(atttypid, null), ',' ORDER BY attnum) FROM pg_attribute "
+                     "WHERE attrelid = 'public.bm25query_tsvector'::regclass AND attnum > 0") == [[BM25_TYPE_ATTRS]], msg
