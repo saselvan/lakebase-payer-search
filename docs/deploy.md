@@ -63,7 +63,7 @@ Every step can run again safely.
 | 4 | Search index | [`sql/10_search_index.sql`](../sql/10_search_index.sql) |
 | 5 | Search function | [`sql/20_search_function.sql`](../sql/20_search_function.sql) |
 | 6 | Data API, schema `api` only | [`scripts/enable_data_api.py`](../scripts/enable_data_api.py) |
-| 7 | Caller grants: EXECUTE on one function, nothing else | [`sql/40_caller_grants.sql`](../sql/40_caller_grants.sql) |
+| 7 | Caller grants: EXECUTE on two functions, nothing else | [`sql/40_caller_grants.sql`](../sql/40_caller_grants.sql) |
 
 **Step 0, Lakebase Search.** A new project does not load `lakebase_text` (it is a preload
 library), so `CREATE EXTENSION lakebase_text` fails with "must be loaded via

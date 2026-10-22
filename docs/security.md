@@ -32,6 +32,8 @@ The search function is exposed through the Data API with a **SECURITY INVOKER** 
 ```sql
 -- The caller's Postgres role (created by databricks_create_role, granted to 'authenticator')
 GRANT EXECUTE ON FUNCTION api.search_insurers TO "my-service-principal-id";
+-- The wrapper runs as the caller, so the caller needs the core function too:
+GRANT EXECUTE ON FUNCTION search_idx.search_core TO "my-service-principal-id";
 
 -- The service principal then:
 -- 1. Authenticates with their OAuth secret

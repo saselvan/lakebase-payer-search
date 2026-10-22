@@ -560,7 +560,7 @@
             }
           ]
         },
-        "description": "The service principal can only execute the search function. Tables are not exposed.",
+        "description": "The service principal can only execute the two search functions. Tables are not exposed.",
         "auth": {
           "type": "bearer",
           "bearer": [

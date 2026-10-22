@@ -186,7 +186,7 @@ kind of" would erase the brand. Wider-word queries: 80 of 88 hit
 - The client holds a **service-principal OAuth secret**, never a database password or connection string.
 - The Data API exposes **only schema `api`**. CORS is off. Max 50 rows per response.
 - The caller's Postgres role (made with `databricks_create_role`, granted to `authenticator`) has
-  **EXECUTE on the search function and nothing else**. All reads and the log write happen inside a
+  **EXECUTE on the two search functions (the wrapper and the core) and nothing else**. All reads and the log write happen inside a
   `SECURITY DEFINER` function owned by a `NOLOGIN` role ([ADR 0004](docs/adr/0004-definer-function-is-the-only-door.md)).
 - Input is validated in SQL and passed as parameters; SQL text in `q` is just text (tested).
 - `audit.search_log`: tenant, query, page, result count, duration and caller, one row per search.
