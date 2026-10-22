@@ -9,7 +9,11 @@
 --   The caller also holds EXECUTE on search_core (the INVOKER wrapper needs it), so it can log in to
 --   Postgres directly and pass any caller text. Only the Data API logs in as authenticator, so on any
 --   other login search_core records session_user, which the caller cannot set.
+-- One transaction (BEGIN ... COMMIT): on a fresh install the functions do not exist for any other
+-- session until the owner change and both REVOKEs are done, so PUBLIC never holds EXECUTE on either,
+-- not even for an instant. With ON_ERROR_STOP the first error ends the session and rolls back everything.
 \set ON_ERROR_STOP on
+BEGIN;
 
 DO $$ BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'search_owner') THEN
@@ -176,7 +180,7 @@ CREATE OR REPLACE FUNCTION api.search_insurers(
 RETURNS TABLE (rank int, payer_id text, payer_name text, matched_alias text,
                state text, plan_type text, score real)
 LANGUAGE plpgsql VOLATILE SECURITY INVOKER
-SET search_path = pg_catalog, public, pg_temp
+SET search_path = pg_catalog, pg_temp
 AS $fn$
 DECLARE
   -- Read the caller into a variable first. Passing current_user straight into the call made the
@@ -189,3 +193,4 @@ $fn$;
 REVOKE ALL ON FUNCTION api.search_insurers(text, text, int, int) FROM PUBLIC;
 COMMENT ON FUNCTION api.search_insurers(text, text, int, int) IS
   'Typo-tolerant insurer search. Max 10 per page, max 50 results. customer_id = the Tenant.';
+COMMIT;

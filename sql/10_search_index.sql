@@ -104,6 +104,8 @@ LANGUAGE sql STABLE SET search_path = pg_catalog, pg_temp AS $$
     WHERE s.expand AND ' ' || key_norm || ' ' LIKE '% ' || replace(s.word, '_', ' ') || ' %'
   ) e
 $$;
+-- A helper used only while the index is built, by the owner: nobody else needs EXECUTE (hardening H5).
+REVOKE ALL ON FUNCTION search_idx.extra_words(text) FROM PUBLIC;
 CREATE MATERIALIZED VIEW IF NOT EXISTS search_idx.alias_key AS
 WITH norm AS (
   SELECT a.payer_id, a.payer_name, a.alias, a.alias_type, a.state, a.plan_type,
