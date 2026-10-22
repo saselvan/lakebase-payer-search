@@ -74,7 +74,7 @@ DROP MATERIALIZED VIEW IF EXISTS search_idx.alias_doc CASCADE;  -- earlier per-r
 -- A structural change cannot be refreshed into an existing view: stop, and ask for the rebuild, rather
 -- than leave a view the search function cannot read (ADR 0005 added alias_key.alias_types).
 SELECT to_regclass('search_idx.alias_key') IS NOT NULL
-   AND NOT EXISTS (SELECT 1 FROM pg_attribute WHERE attrelid = 'search_idx.alias_key'::regclass
+   AND NOT EXISTS (SELECT 1 FROM pg_attribute WHERE attrelid = to_regclass('search_idx.alias_key')
                    AND attname = 'alias_types' AND NOT attisdropped) AS keys_outdated \gset
 \if :keys_outdated
 \if :{?rebuild}
