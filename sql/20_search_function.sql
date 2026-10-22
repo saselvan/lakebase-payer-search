@@ -27,7 +27,7 @@ CREATE OR REPLACE FUNCTION search_idx.search_core(
 RETURNS TABLE (rank int, payer_id text, payer_name text, matched_alias text,
                state text, plan_type text, score real)
 LANGUAGE plpgsql VOLATILE SECURITY DEFINER
-SET search_path = pg_catalog, public, pg_temp
+SET search_path = pg_catalog, pg_temp
 AS $fn$
 DECLARE
   t0 timestamptz := clock_timestamp();
@@ -62,11 +62,11 @@ BEGIN
   FROM regexp_split_to_table(qn, ' ') WITH ORDINALITY AS t(w, ord)
   LEFT JOIN LATERAL (
     SELECT v.word
-    FROM (SELECT word FROM search_idx.vocab ORDER BY word <-> t.w LIMIT 10) v
+    FROM (SELECT word FROM search_idx.vocab ORDER BY word::text OPERATOR(public.<->) t.w::text LIMIT 10) v
     WHERE length(t.w) >= 4
       AND NOT EXISTS (SELECT 1 FROM search_idx.vocab x WHERE x.word = t.w)
-      AND levenshtein(v.word, t.w) <= greatest(1, length(t.w) / 3)
-    ORDER BY levenshtein(v.word, t.w), similarity(v.word, t.w) DESC, v.word
+      AND public.levenshtein(v.word::text, t.w::text) <= greatest(1, length(t.w) / 3)
+    ORDER BY public.levenshtein(v.word::text, t.w::text), public.similarity(v.word::text, t.w::text) DESC, v.word
     LIMIT 1
   ) fix ON true;
   qc := '';
@@ -87,21 +87,24 @@ BEGIN
   -- a text shared by hundreds of Payers takes one place. Each candidate text expands to every Payer that
   -- has it. Relevance is then computed per Payer.
   RETURN QUERY
+  -- No to_bm25query() call: that extension SQL function resolves its result type bm25query_tsvector by the
+  -- CALLER's search_path, so it fails once public is out of the pin. ROW(tsvector, regclass)::public.bm25query_tsvector
+  -- is its body, with the type schema-qualified.
   WITH qv AS MATERIALIZED (  -- the query, built once: BM25 query on the keys, and "all query words" for Own name
-    SELECT to_bm25query(x.v, 'search_idx.alias_key_bm25') AS qk,
+    SELECT ROW(x.v, 'search_idx.alias_key_bm25'::regclass)::public.bm25query_tsvector AS qk,
            (SELECT string_agg(quote_literal(l), ' & ') FROM unnest(tsvector_to_array(x.v)) l)::tsquery AS qall
     FROM (SELECT to_tsvector('search_idx.payer_cfg', qc) AS v) x
   ), near AS (             -- typo tolerance: the 100 nearest texts by trigram word distance (GiST)
     SELECT t.text_id, t.key_norm, t.n_payers
     FROM search_idx.search_text t
-    ORDER BY qn <<-> t.key_norm, t.text_id   -- text_id: ties at the cut resolve the same on every build
+    ORDER BY qn::text OPERATOR(public.<<->) t.key_norm::text, t.text_id   -- text_id: ties at the cut resolve the same on every build
     LIMIT 100
   ), bmk AS (              -- synonyms + exact words: BM25 on the keys (each key's document holds its
                            -- Payer's state word), index-ordered
     SELECT k.key_norm,
-           -(k.tsv <@> to_bm25query(to_tsvector('search_idx.payer_cfg', qc), 'search_idx.alias_key_bm25')) AS b
+           -(k.tsv OPERATOR(public.<@>) ROW(to_tsvector('search_idx.payer_cfg', qc), 'search_idx.alias_key_bm25'::regclass)::public.bm25query_tsvector) AS b
     FROM search_idx.alias_key k
-    ORDER BY k.tsv <@> to_bm25query(to_tsvector('search_idx.payer_cfg', qc), 'search_idx.alias_key_bm25'), k.key_id
+    ORDER BY k.tsv OPERATOR(public.<@>) ROW(to_tsvector('search_idx.payer_cfg', qc), 'search_idx.alias_key_bm25'::regclass)::public.bm25query_tsvector, k.key_id
     LIMIT 1000
   ), bm AS (               -- ... cut over different texts: each text's best key score, 100 texts
     SELECT t.text_id, t.key_norm, t.n_payers
@@ -111,12 +114,12 @@ BEGIN
     LIMIT 100
   ), tsc AS MATERIALIZED (  -- trigram scores, once per candidate text
     SELECT t.key_norm, t.n_payers,
-           word_similarity(qn, t.key_norm) AS ws,
-           word_similarity(qn, t.key_norm) + 0.1 * similarity(qn, t.key_norm) AS tri
+           public.word_similarity(qn::text, t.key_norm::text) AS ws,
+           public.word_similarity(qn::text, t.key_norm::text) + 0.1 * public.similarity(qn::text, t.key_norm::text) AS tri
     FROM (SELECT * FROM near UNION SELECT * FROM bm) t
   ), ex AS MATERIALIZED (               -- expansion: every Payer that has a candidate text; BM25 per key (state word)
     SELECT k.payer_id, k.payer_name, k.sample_alias, k.state, k.plan_type, k.is_canon, k.key_norm,
-           s.n_payers, s.ws, s.tri, nullif(greatest(-(k.tsv <@> qv.qk), 0), 0) AS b
+           s.n_payers, s.ws, s.tri, nullif(greatest(-(k.tsv OPERATOR(public.<@>) qv.qk), 0), 0) AS b
     FROM tsc s JOIN search_idx.alias_key k ON k.key_norm = s.key_norm
     CROSS JOIN qv
   ), scored AS (           -- text Relevance = trigram word similarity (+0.1 x whole-string similarity)
@@ -138,7 +141,7 @@ BEGIN
            EXISTS (SELECT 1 FROM search_idx.alias_key o
                    WHERE o.payer_id = b.payer_id
                      AND o.alias_types && ARRAY['canonical', 'brand', 'state_variant', 'state_first', 'abbreviation']
-                     AND (word_similarity(qn, o.key_norm) >= 0.6 OR o.tsv @@ qv.qall)) AS own
+                     AND (public.word_similarity(qn::text, o.key_norm::text) >= 0.6 OR o.tsv @@ qv.qall)) AS own
     FROM best b CROSS JOIN floor CROSS JOIN qv
     WHERE b.sc >= floor.f
   ), ranked AS (           -- Relevance, then Own name agrees, then Specificity (fewer Payers share the text),
