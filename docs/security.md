@@ -29,6 +29,8 @@ Tokens expire after 1 hour. Refresh before expiry; the reference client handles 
 
 The search function is exposed through the Data API with a **SECURITY INVOKER** wrapper that runs as the caller. The wrapper hands off to a **SECURITY DEFINER** core function owned by a `NOLOGIN` role:
 
+The wrapper is pinned to `search_path = pg_catalog, pg_temp` and calls the core as `search_idx.search_core`, so it trusts only the system catalog and the session's temp schema, never `public`. A look-alike `public.search_core` is never called.
+
 ```sql
 -- The caller's Postgres role (created by databricks_create_role, granted to 'authenticator')
 GRANT EXECUTE ON FUNCTION api.search_insurers TO "my-service-principal-id";
