@@ -173,7 +173,7 @@ CREATE OR REPLACE FUNCTION api.search_insurers(
 RETURNS TABLE (rank int, payer_id text, payer_name text, matched_alias text,
                state text, plan_type text, score real)
 LANGUAGE plpgsql VOLATILE SECURITY INVOKER
-SET search_path = pg_catalog, public, pg_temp
+SET search_path = pg_catalog, pg_temp
 AS $fn$
 DECLARE
   -- Read the caller into a variable first. Passing current_user straight into the call made the
