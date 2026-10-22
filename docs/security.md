@@ -140,6 +140,7 @@ END IF;
 | **Authentication** | OAuth M2M token (1 h expiry) | Databricks identity service |
 | **Authorization** | `EXECUTE` on two functions (the wrapper and the core), no table access | Lakebase Postgres |
 | **Data isolation** | `SECURITY DEFINER` core, `NOLOGIN` owner | Postgres |
+| **Name resolution** | The core is pinned to `search_path = pg_catalog, pg_temp`; every extension function and operator is written as `public.<name>` / `OPERATOR(public.<op>)` with `::text` casts, so an object planted in any other schema is never chosen (`tests/test_hardening_h3.py`) | Postgres |
 | **Input validation** | Length, format, charset (error = HTTP 400) | Search function |
 | **Audit** | Per-search log + HIPAA pgaudit (if enabled) | Postgres + Databricks |
 
