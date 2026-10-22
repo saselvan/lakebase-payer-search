@@ -33,12 +33,6 @@ PUBLIC_EXEC = """
   ORDER BY 1"""
 
 
-def _require_throwaway_branch():
-    b = os.environ.get("BRANCH", "")
-    if not b.startswith("t-"):
-        pytest.skip(f"destructive: needs BRANCH=t-<id>, got {b!r}")
-
-
 def _psql(*args, check=True, extra_env=None):
     return subprocess.run([PSQL, *args], capture_output=True, text=True, check=check,
                           env={**os.environ, **(extra_env or {})})
@@ -96,8 +90,7 @@ def test_the_function_file_is_one_transaction_with_stop_on_error_first():
     assert not [s for s in inner if re.match(r"(?i)(begin|commit|end|rollback)$", s)], "a nested transaction command ends the transaction early"
 
 
-def test_a_forced_error_after_create_leaves_no_function_behind(admin_sql):
-    _require_throwaway_branch()
+def test_a_forced_error_after_create_leaves_no_function_behind(admin_sql, throwaway_branch):
     text = FUNCTION_SQL.read_text()
     assert text.rstrip().endswith("COMMIT;")
     broken = text.rstrip()[: -len("COMMIT;")] + "SELECT 1/0;   -- forced error after both CREATEs\nCOMMIT;\n"
@@ -169,8 +162,7 @@ def _fresh_install_with_poller(sql_text: str) -> dict:
     return {"done": m[1] == "t", "absent_seen": m[2] == "t", "polls": int(m[3]), "hits": int(m[4]), "first": m[5].strip()}
 
 
-def test_a_polling_session_never_sees_a_function_PUBLIC_can_execute_on_a_fresh_install(admin_sql):
-    _require_throwaway_branch()
+def test_a_polling_session_never_sees_a_function_PUBLIC_can_execute_on_a_fresh_install(admin_sql, throwaway_branch):
     try:
         r = _fresh_install_with_poller(FUNCTION_SQL.read_text())
     finally:
@@ -180,9 +172,8 @@ def test_a_polling_session_never_sees_a_function_PUBLIC_can_execute_on_a_fresh_i
     assert r["hits"] == 0, r
 
 
-def test_the_poller_does_see_the_window_when_the_file_is_not_one_transaction(admin_sql):
+def test_the_poller_does_see_the_window_when_the_file_is_not_one_transaction(admin_sql, throwaway_branch):
     # Control: proves the poller can see the window at all. Strip the transaction from the real file.
-    _require_throwaway_branch()
     unwrapped = re.sub(r"(?m)^(BEGIN|COMMIT);\s*$", "", FUNCTION_SQL.read_text())
     assert unwrapped != FUNCTION_SQL.read_text()
     try:

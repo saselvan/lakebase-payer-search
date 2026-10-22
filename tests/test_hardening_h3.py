@@ -55,14 +55,12 @@ def _baseline_install_sql() -> str:
 
 
 def _psql_file(path: Path):
-    assert os.environ.get("BRANCH", "").startswith("t-"), "live H3 tests run only on a t- branch"
     subprocess.run([str(ROOT / "scripts/psql.sh"), "-q", "-f", str(path)], check=True,
                    capture_output=True, text=True)
 
 
 @pytest.fixture(scope="session", autouse=True)
-def both_functions(tmp_path_factory):
-    assert os.environ.get("BRANCH", "").startswith("t-"), "live H3 tests run only on a t- branch"
+def both_functions(tmp_path_factory, throwaway_branch):
     d = tmp_path_factory.mktemp("h3")
     # ownership moves need search_owner to own the old copy; GRANT CREATE around it as sql/20 does
     f = d / "baseline.sql"

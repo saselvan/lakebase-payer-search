@@ -19,14 +19,6 @@ API_FUNCTIONS = ("SELECT p.oid::regprocedure::text, coalesce(p.proconfig::text, 
                  "FROM pg_proc p WHERE p.pronamespace = 'api'::regnamespace ORDER BY 1")
 
 
-@pytest.fixture(scope="module")
-def throwaway(admin_sql):
-    b = os.environ.get("BRANCH", "")
-    if not b.startswith("t-"):
-        pytest.skip("writes: needs BRANCH=t-<throwaway>")
-    return b
-
-
 def _live_pins(admin_sql):
     """{regprocedure: proconfig as the live catalog holds it}, every object in api (any kind)."""
     return {sig: cfg for sig, cfg in admin_sql(API_FUNCTIONS)}
@@ -42,7 +34,7 @@ def test_every_api_function_has_exactly_the_pin(admin_sql):
     assert _bad(pins) == {}
 
 
-def test_catalog_check_sees_every_overload(admin_sql, throwaway):
+def test_catalog_check_sees_every_overload(admin_sql, throwaway_branch):
     # HOSTILE: an unpinned overload, one pinned with public, and one pinned with nothing else but a second SET.
     admin_sql("CREATE FUNCTION api.search_insurers(q text) RETURNS int LANGUAGE sql AS 'SELECT 1'")
     admin_sql("CREATE FUNCTION api.search_insurers(q text, k int) RETURNS int LANGUAGE sql "
@@ -85,7 +77,7 @@ def _plant(admin_sql, schema):
     admin_sql(f"GRANT EXECUTE ON FUNCTION {schema}.search_core({SIG}) TO PUBLIC")
 
 
-def test_planted_look_alike_in_public_is_never_called(admin_sql, caller_sql, throwaway):
+def test_planted_look_alike_in_public_is_never_called(admin_sql, caller_sql, throwaway_branch):
     # HOSTILE: same name, same signature, raises, executable by everyone, in the schema the old pin trusted.
     _plant(admin_sql, "public")
     try:
@@ -95,7 +87,7 @@ def test_planted_look_alike_in_public_is_never_called(admin_sql, caller_sql, thr
     assert rows and any("United" in r[0] for r in rows)   # the real function ran, no PLANTED error
 
 
-def test_temp_schema_look_alike_is_never_called(caller_sql, throwaway):
+def test_temp_schema_look_alike_is_never_called(caller_sql, throwaway_branch):
     # HOSTILE: the Caller plants pg_temp.search_core in its own session; pg_temp is last in the pin.
     rows = caller_sql(
         "CREATE FUNCTION pg_temp.search_core(q text, customer_id text, lim int, off int, caller text) "
@@ -113,7 +105,7 @@ def test_wrapper_results_equal_the_core_results(caller_sql):
         assert via_wrapper and via_wrapper == direct, q
 
 
-def test_reapplying_the_sql_file_keeps_the_pin(admin_sql, throwaway):
+def test_reapplying_the_sql_file_keeps_the_pin(admin_sql, throwaway_branch):
     # A later deploy re-creates the wrapper from the file: the live function must still carry the pin.
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     import subprocess
