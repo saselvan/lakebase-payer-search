@@ -74,7 +74,7 @@ DROP MATERIALIZED VIEW IF EXISTS search_idx.alias_doc CASCADE;  -- earlier per-r
 -- A structural change cannot be refreshed into an existing view: stop, and ask for the rebuild, rather
 -- than leave a view the search function cannot read (ADR 0005 added alias_key.alias_types).
 SELECT to_regclass('search_idx.alias_key') IS NOT NULL
-   AND NOT EXISTS (SELECT 1 FROM pg_attribute WHERE attrelid = 'search_idx.alias_key'::regclass
+   AND NOT EXISTS (SELECT 1 FROM pg_attribute WHERE attrelid = to_regclass('search_idx.alias_key')
                    AND attname = 'alias_types' AND NOT attisdropped) AS keys_outdated \gset
 \if :keys_outdated
 \if :{?rebuild}
@@ -104,6 +104,8 @@ LANGUAGE sql STABLE SET search_path = pg_catalog, pg_temp AS $$
     WHERE s.expand AND ' ' || key_norm || ' ' LIKE '% ' || replace(s.word, '_', ' ') || ' %'
   ) e
 $$;
+-- A helper used only while the index is built, by the owner: nobody else needs EXECUTE (hardening H5).
+REVOKE ALL ON FUNCTION search_idx.extra_words(text) FROM PUBLIC;
 CREATE MATERIALIZED VIEW IF NOT EXISTS search_idx.alias_key AS
 WITH norm AS (
   SELECT a.payer_id, a.payer_name, a.alias, a.alias_type, a.state, a.plan_type,

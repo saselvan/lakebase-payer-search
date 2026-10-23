@@ -46,3 +46,20 @@ def caller_sql():
                              env={**os.environ, "AS_CALLER": "1"}).stdout
         return [line.split("\t") for line in out.splitlines() if line]
     return run
+
+
+def throwaway_branch_refusal(branch: str | None) -> str | None:
+    """Why a writing test must NOT run on this BRANCH, or None if it may. Pure, so it is unit-tested offline."""
+    b = branch or ""
+    if not b.startswith("t-") or b == "t-" or any(c.isspace() for c in b):
+        return f"writes: needs BRANCH=t-<id> (a throwaway branch), got {b!r}"
+    return None
+
+
+@pytest.fixture(scope="session")
+def throwaway_branch():
+    """Guard for every test that plants objects, drops functions or grants rights. Returns the branch id."""
+    why = throwaway_branch_refusal(os.environ.get("BRANCH"))
+    if why:
+        pytest.skip(why)
+    return os.environ["BRANCH"]
