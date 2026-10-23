@@ -6,6 +6,9 @@
 --   search_idx.search_core SECURITY DEFINER, owned by NOLOGIN role search_owner, which alone can
 --                         read the index and append to the log. The caller gets EXECUTE only:
 --                         no SELECT on any table, no INSERT on the log.
+--   The caller also holds EXECUTE on search_core (the INVOKER wrapper needs it), so it can log in to
+--   Postgres directly and pass any caller text. Only the Data API logs in as authenticator, so on any
+--   other login search_core records session_user, which the caller cannot set.
 \set ON_ERROR_STOP on
 
 DO $$ BEGIN
@@ -15,7 +18,7 @@ DO $$ BEGIN
 END $$;
 GRANT search_owner TO CURRENT_USER WITH SET TRUE;   -- needed to hand ownership to it
 GRANT USAGE ON SCHEMA search_idx, audit, tokenizer_ext TO search_owner;
-GRANT SELECT ON search_idx.alias_key, search_idx.vocab TO search_owner;
+GRANT SELECT ON search_idx.alias_key, search_idx.search_text, search_idx.vocab TO search_owner;
 GRANT SELECT ON tokenizer_ext.lakebase_tokenizer_synonyms TO search_owner;
 GRANT INSERT ON audit.search_log TO search_owner;
 
@@ -34,6 +37,8 @@ DECLARE
   i  int;
   n  int;
 BEGIN
+  -- A direct login records its own login name, never the caller argument (see the security model).
+  IF session_user::text <> 'authenticator' THEN caller := session_user::text; END IF;
   -- Input contract. SQLSTATE 22023 -> HTTP 400 from the Data API.
   IF length(qn) < 2 OR length(qn) > 100 THEN
     RAISE EXCEPTION 'q must be 2 to 100 characters' USING ERRCODE = '22023';
@@ -78,49 +83,69 @@ BEGIN
   END LOOP;
   qc := btrim(qc);
 
+  -- Ranking (ADR 0005). Candidates are Search texts, not Search keys: the cut takes 100 different texts, so
+  -- a text shared by hundreds of Payers takes one place. Each candidate text expands to every Payer that
+  -- has it. Relevance is then computed per Payer.
   RETURN QUERY
-  WITH qv AS MATERIALIZED (  -- the BM25 query, built once
-    SELECT to_bm25query(to_tsvector('search_idx.payer_cfg', qc), 'search_idx.alias_key_bm25') AS q
-  ), near AS (             -- typo tolerance: the 100 nearest keys by trigram word distance (GiST).
-                           -- This KNN scan is most of the CPU of a search; 100 is enough because
-                           -- every candidate is scored by BM25 below, not only the BM25 top-k.
-    SELECT k.key_id, k.key_norm
-    FROM search_idx.alias_key k
-    ORDER BY qn <<-> k.key_norm
+  WITH qv AS MATERIALIZED (  -- the query, built once: BM25 query on the keys, and "all query words" for Own name
+    SELECT to_bm25query(x.v, 'search_idx.alias_key_bm25') AS qk,
+           (SELECT string_agg(quote_literal(l), ' & ') FROM unnest(tsvector_to_array(x.v)) l)::tsquery AS qall
+    FROM (SELECT to_tsvector('search_idx.payer_cfg', qc) AS v) x
+  ), near AS (             -- typo tolerance: the 100 nearest texts by trigram word distance (GiST)
+    SELECT t.text_id, t.key_norm, t.n_payers
+    FROM search_idx.search_text t
+    ORDER BY qn <<-> t.key_norm, t.text_id   -- text_id: ties at the cut resolve the same on every build
     LIMIT 100
-  ), bm AS (               -- synonyms + exact words: BM25, index-ordered top-k
-    SELECT k.key_id,
-           -(k.tsv <@> to_bm25query(to_tsvector('search_idx.payer_cfg', qc),
-                                    'search_idx.alias_key_bm25')) AS b
+  ), bmk AS (              -- synonyms + exact words: BM25 on the keys (each key's document holds its
+                           -- Payer's state word), index-ordered
+    SELECT k.key_norm,
+           -(k.tsv <@> to_bm25query(to_tsvector('search_idx.payer_cfg', qc), 'search_idx.alias_key_bm25')) AS b
     FROM search_idx.alias_key k
-    ORDER BY k.tsv <@> to_bm25query(to_tsvector('search_idx.payer_cfg', qc),
-                                    'search_idx.alias_key_bm25')
+    ORDER BY k.tsv <@> to_bm25query(to_tsvector('search_idx.payer_cfg', qc), 'search_idx.alias_key_bm25'), k.key_id
+    LIMIT 1000
+  ), bm AS (               -- ... cut over different texts: each text's best key score, 100 texts
+    SELECT t.text_id, t.key_norm, t.n_payers
+    FROM (SELECT key_norm, max(b) AS b FROM bmk WHERE b > 0 GROUP BY key_norm) x
+    JOIN search_idx.search_text t USING (key_norm)
+    ORDER BY x.b DESC, t.text_id
     LIMIT 100
-  ), cand AS (             -- union of both candidate sets; each is scored by both methods.
-                           -- BM25 is scored for EVERY candidate (standalone <@> scoring, ~free): a
-                           -- trigram-only candidate used to get 0 BM25, so a perfect name match
-                           -- could lose to a weaker one that happened to be in the BM25 top-k.
-    SELECT u.key_id, nullif(greatest(-(k.tsv <@> qv.q), 0), 0) AS b
-    FROM (SELECT near.key_id FROM near
-          UNION
-          SELECT bm.key_id FROM bm WHERE bm.b > 0) u
-    JOIN search_idx.alias_key k USING (key_id)
+  ), tsc AS MATERIALIZED (  -- trigram scores, once per candidate text
+    SELECT t.key_norm, t.n_payers,
+           word_similarity(qn, t.key_norm) AS ws,
+           word_similarity(qn, t.key_norm) + 0.1 * similarity(qn, t.key_norm) AS tri
+    FROM (SELECT * FROM near UNION SELECT * FROM bm) t
+  ), ex AS MATERIALIZED (               -- expansion: every Payer that has a candidate text; BM25 per key (state word)
+    SELECT k.payer_id, k.payer_name, k.sample_alias, k.state, k.plan_type, k.is_canon, k.key_norm,
+           s.n_payers, s.ws, s.tri, nullif(greatest(-(k.tsv <@> qv.qk), 0), 0) AS b
+    FROM tsc s JOIN search_idx.alias_key k ON k.key_norm = s.key_norm
     CROSS JOIN qv
-  ), scored AS (           -- Relevance = trigram word similarity (+0.1 x whole-string similarity)
-                           --             + BM25 scaled to the best hit (an exact word or synonym match)
-    SELECT k.payer_id, k.payer_name, k.sample_alias, k.state, k.plan_type, k.is_canon,
-           (word_similarity(qn, k.key_norm) + 0.1 * similarity(qn, k.key_norm)
-            + coalesce(c.b / nullif(max(c.b) OVER (), 0), 0))::real AS sc,
-           word_similarity(qn, k.key_norm) AS ws, c.b
-    FROM cand c JOIN search_idx.alias_key k USING (key_id)
-  ), best AS (             -- one row per Payer: its best-matching alias
+  ), scored AS (           -- text Relevance = trigram word similarity (+0.1 x whole-string similarity)
+                           --                  + BM25 scaled to the best hit
+    SELECT e.*, (e.tri + coalesce(e.b / nullif(max(e.b) OVER (), 0), 0))::real AS sc
+    FROM ex e
+    WHERE e.ws >= 0.3 OR e.b > 0                       -- drop weak trigram-only neighbours
+  ), best AS (             -- one row per Payer: its best-matching text (Payer Relevance); of equal texts, the
+                           -- one held by the fewest Payers (its Specificity)
     SELECT DISTINCT ON (s.payer_id) s.*
     FROM scored s
-    WHERE s.ws >= 0.3 OR s.b > 0                       -- drop weak trigram-only neighbours
-    ORDER BY s.payer_id, s.sc DESC, s.is_canon DESC, s.sample_alias
-  ), ranked AS (
-    SELECT row_number() OVER (ORDER BY b.sc DESC, b.payer_name, b.payer_id)::int AS rk, b.*
-    FROM best b
+    ORDER BY s.payer_id, s.sc DESC, s.n_payers, s.is_canon DESC, s.sample_alias, s.key_norm
+  ), floor AS (            -- the 50th best Relevance: a Payer below it cannot reach the 50 results, since
+                           -- Own name and Specificity only order Payers of equal Relevance
+    SELECT coalesce((SELECT b.sc FROM best b ORDER BY b.sc DESC LIMIT 1 OFFSET 49), -1) AS f
+  ), agreed AS MATERIALIZED (  -- Own-name agreement, per Payer over ALL its Own-name texts (not only the
+                               -- text it was found by): trigram, or every query word incl. Synonyms
+    SELECT b.*,
+           EXISTS (SELECT 1 FROM search_idx.alias_key o
+                   WHERE o.payer_id = b.payer_id
+                     AND o.alias_types && ARRAY['canonical', 'brand', 'state_variant', 'state_first', 'abbreviation']
+                     AND (word_similarity(qn, o.key_norm) >= 0.6 OR o.tsv @@ qv.qall)) AS own
+    FROM best b CROSS JOIN floor CROSS JOIN qv
+    WHERE b.sc >= floor.f
+  ), ranked AS (           -- Relevance, then Own name agrees, then Specificity (fewer Payers share the text),
+                           -- then name and id. Own name and Specificity order ties only;
+                           -- as score weights every tried value lost queries on the strict bar (ADR 0005).
+    SELECT row_number() OVER (ORDER BY a.sc DESC, a.own DESC, a.n_payers, a.payer_name, a.payer_id)::int AS rk, a.*
+    FROM agreed a
   )
   SELECT r.rk, r.payer_id, r.payer_name, r.sample_alias, r.state, r.plan_type,
          round(r.sc::numeric, 4)::real

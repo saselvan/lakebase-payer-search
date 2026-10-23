@@ -18,9 +18,21 @@ _Avoid_: Synonym (that word is for the search engine's word list), variant
 A word-level equivalence the search engine applies at query time, such as `bcbs` = `blue cross blue shield`. Synonyms reduce how many Aliases must be stored.
 _Avoid_: Alias
 
+**Own name**:
+A Payer's canonical name and the forms built from it: its brand, state forms and abbreviation forms. What the Payer is called, as opposed to an Alias another source says it is also called.
+_Avoid_: Canonical alias, primary alias
+
+**Search text**:
+One normalised text (lowercase, no group numbers or punctuation). One or more Payers have it; "uhc" is one Search text that 561 Payers share. Search finds candidates by Search text.
+_Avoid_: Key, token
+
 **Search key**:
-One normalised form of a Payer's Aliases (lowercase, no group numbers or punctuation). Many Aliases share one Search key; search runs over Search keys.
+One Payer's link to one Search text. Many of a Payer's Aliases collapse into one Search key.
 _Avoid_: Index row, document
+
+**Specificity**:
+How few Payers share a Search text. A text held by one Payer is fully specific; a text shared by hundreds tells the search little about which Payer is meant.
+_Avoid_: Uniqueness, rarity
 
 ### The request
 
@@ -36,7 +48,7 @@ _Avoid_: User, app
 One request with a query text, a Tenant, and a Page. Returns Payers ranked by Relevance.
 
 **Relevance**:
-How close the query is to a Payer's best-matching Alias, by spelling and by Synonym. The only sort order.
+How well the query fits a Payer: by spelling and by Synonym, through the Payer's best-matching Search text. The first sort key. Payers of equal Relevance are ordered by Own-name match first, then by Specificity of the matched text, then by Payer name and `payer_id`.
 
 **Page**:
 A window of at most 10 results. A Search can reach at most 5 Pages (50 results); asking past that returns nothing.

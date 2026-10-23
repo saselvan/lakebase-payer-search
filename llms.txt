@@ -5,7 +5,7 @@
 Facts an agent should not get wrong:
 - Endpoint: `POST <DATA_API_BASE>/api/rpc/search_insurers`, body `{"q", "customer_id", "lim", "off"}`. 10 per page, 50 results max. Bad input returns HTTP 400.
 - Auth: Databricks OAuth M2M token for a service principal (`/oidc/v1/token`, `client_credentials`). Not a Postgres password. The built-in connection pooler is not used.
-- The caller's Postgres role can EXECUTE one function and read zero tables (`SECURITY DEFINER` function owned by a `NOLOGIN` role).
+- The caller's Postgres role can EXECUTE two functions (the wrapper and the core) and read zero tables (`SECURITY DEFINER` core function owned by a `NOLOGIN` role).
 - Deploy = `databricks bundle deploy` (project + compute, 2–16 CU) then `scripts/setup.sh` (steps 0–7). Step 0 turns on Lakebase Search for the project via `POST /api/2.0/postgres/projects/<id>/search-extensions`; it restarts the compute once and cannot be undone.
 - Measured on AWS, 3M synthetic alias rows: 9.8 ms p50 inside Postgres; 315–331 requests/s at 2–16 CU; right brand in the top 10 for 98.4% of 899 test queries. Not measured on Azure (same API).
 
@@ -19,7 +19,7 @@ Facts an agent should not get wrong:
 ## Code
 - [sql/10_search_index.sql](sql/10_search_index.sql): synonyms (replace vs expand), search keys, GiST trigram + BM25 indexes, word list, search log
 - [sql/20_search_function.sql](sql/20_search_function.sql): `api.search_insurers` -> `search_idx.search_core`: input checks, "did you mean", candidates, scoring, paging, log
-- [sql/40_caller_grants.sql](sql/40_caller_grants.sql): the caller gets EXECUTE on one function, nothing else
+- [sql/40_caller_grants.sql](sql/40_caller_grants.sql): the caller gets EXECUTE on two functions, nothing else
 - [src/insurer_search/client.py](src/insurer_search/client.py): reference client: token cache, retry 429/5xx, one refresh on 401, no retry on 400/403, 5 s timeout
 - [databricks.yml](databricks.yml): bundle: Lakebase project and read-write compute
 - [scripts/setup.sh](scripts/setup.sh): idempotent setup, steps 0–7

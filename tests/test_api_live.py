@@ -2,13 +2,19 @@
 
 Each test names the behaviour it proves. Run: uv run pytest -m live
 """
+import os
 import re
+import subprocess
 import uuid
+from pathlib import Path
 
 import pytest
 import requests
 
 from insurer_search.client import SearchError
+from insurer_search.top_hits import load_top_hits
+
+ROOT = Path(__file__).resolve().parents[1]
 
 pytestmark = pytest.mark.live
 
@@ -21,19 +27,8 @@ def names(rows):
 
 # ---- Search quality: typos, abbreviations, synonyms, word order --------------------------------
 
-@pytest.mark.parametrize("q,must_contain", [
-    ("bcbs georgia", "Blue Cross and Blue Shield of Georgia"),      # abbreviation
-    ("ga bcbs", "Blue Cross and Blue Shield of Georgia"),           # state first, both short
-    ("blue cross blue shield of georgia", "Blue Cross and Blue Shield of Georgia"),  # missing "and"
-    ("united helth", "UnitedHealthcare"),                           # typo
-    ("unitedhealth care", "UnitedHealthcare"),                      # word split
-    ("uhc", "UnitedHealthcare"),                                    # abbreviation, no shared letters
-    ("medicad", "Medicaid"),                                        # typo
-    ("masshealth", "MassHealth"),                                   # state program brand
-    ("ma blue cross", "Blue Cross Blue Shield of Massachusetts"),   # MA = state, not plan
-    ("aetna", "Aetna"),
-    ("tricare prime", "TRICARE Prime"),
-])
+# The shared top-hit list (data/test_top_hit_cases.json); the flywheel gate reads the same file.
+@pytest.mark.parametrize("q,must_contain", load_top_hits())
 def test_top_hit(client, q, must_contain):
     rows = client.search(q, T)
     assert rows, f"no results for {q!r}"
@@ -197,3 +192,46 @@ def test_every_search_is_logged_with_tenant_and_caller(client, admin_sql):
     assert [r[2] for r in rows] == ["0", "10"]
     assert all(r[0] == os.environ["SP_APPLICATION_ID"] and r[1] == "cigna ppo" for r in rows)
     assert all(int(r[3]) == 10 for r in rows)
+
+
+@pytest.mark.parametrize("forged", ["forged-caller", None])
+def test_a_direct_login_cannot_forge_the_caller(caller_sql, admin_sql, forged):
+    # The Caller holds EXECUTE on search_core, so it can skip the Data API and pass any caller text.
+    import os
+    tenant = f"t-{uuid.uuid4().hex[:12]}"
+    arg = "NULL" if forged is None else f"'{forged}'"
+    caller_sql(f"SELECT count(*) FROM search_idx.search_core('cigna ppo', '{tenant}', 10, 0, {arg})")
+    rows = admin_sql(f"SELECT caller FROM audit.search_log WHERE customer_id = '{tenant}'")
+    assert rows == [[os.environ["SP_APPLICATION_ID"]]]
+
+
+def test_caller_cannot_set_role_authenticator_to_forge_data_api_identity(admin_sql):
+    # Attacker item 3: The Caller tries `SET ROLE authenticator` to look like a Data API call.
+    # The Caller SP is not a member of the `authenticator` role (40_caller_grants.sql runs
+    # GRANT sp TO authenticator, not the reverse). So SET ROLE authenticator is refused.
+    # This test verifies the refusal, confirming the fix's session_user check cannot be bypassed
+    # by role-switching.
+    tenant = f"t-{uuid.uuid4().hex[:12]}"
+    # Attempt SET ROLE authenticator as the Caller (will fail with permission denied)
+    result = subprocess.run([str(ROOT / "scripts/psql.sh"), "-At", "-c",
+                            f"SET ROLE authenticator; SELECT 'ok'"],
+                           capture_output=True, text=True,
+                           env={**os.environ, "AS_CALLER": "1"})
+    # Assert SET ROLE is refused
+    assert result.returncode != 0, "SET ROLE authenticator should be refused"
+    assert "permission denied to set role" in result.stderr, result.stderr
+    # Verify no audit row was created (the SET ROLE failed before any search ran)
+    rows = admin_sql(f"SELECT caller FROM audit.search_log WHERE customer_id = '{tenant}'")
+    assert rows == [], f"No log row expected; got {rows}"
+
+
+def test_data_api_call_records_the_token_identity_not_a_passed_caller(client, admin_sql):
+    # Attacker item 4: A Data API call (session_user = authenticator) must still record the token's identity.
+    # The Data API wrapper (api.search_insurers) passes current_user (the Caller SP identity) as the
+    # caller parameter to search_core. The SECURITY INVOKER wrapper ensures the token identity is logged.
+    import os
+    tenant = f"t-{uuid.uuid4().hex[:12]}"
+    client.search("cigna ppo", tenant)
+    rows = admin_sql(f"SELECT caller FROM audit.search_log WHERE customer_id = '{tenant}'")
+    # The Data API logs the Caller SP identity, not the authenticator role
+    assert rows == [[os.environ["SP_APPLICATION_ID"]]]

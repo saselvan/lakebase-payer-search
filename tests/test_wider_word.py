@@ -170,6 +170,10 @@ def test_wider_word_queries_hit_matching_payers_at_top_10(client, admin_sql):
     project and on a new one (results/wider-word-2026-10-07.md). The 8 misses are parent-company
     queries ("molina az" for a Magellan product): the parent's own products rank first.
     A hit = any expected payer_id for a query is in the top 10 results.
+    KNOWN RED (2026-10-18, kept red on purpose): on the production copy the function before ADR 0005 gives
+    75/88 (0.852); after ADR 0005, 74/88. The one extra miss is "centene ct": the text cut now reaches every
+    "Centene EPO" Payer (all states, 1.2583), which outranks Ambetter Bronze/Gold/Silver CT (1.25). The floor is
+    not lowered to hide it.
     """
     if not os.environ.get("DATA_API_BASE"):
         pytest.skip("live: DATA_API_BASE not set")

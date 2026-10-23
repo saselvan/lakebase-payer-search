@@ -71,10 +71,39 @@ ALTER TEXT SEARCH DICTIONARY search_idx.payer_dict (dummy);  -- reload the synon
 -- The tokenizer dictionary cannot run inside parallel workers.
 SET max_parallel_workers_per_gather = 0;
 DROP MATERIALIZED VIEW IF EXISTS search_idx.alias_doc CASCADE;  -- earlier per-row design (ADR 0003)
+-- A structural change cannot be refreshed into an existing view: stop, and ask for the rebuild, rather
+-- than leave a view the search function cannot read (ADR 0005 added alias_key.alias_types).
+SELECT to_regclass('search_idx.alias_key') IS NOT NULL
+   AND NOT EXISTS (SELECT 1 FROM pg_attribute WHERE attrelid = 'search_idx.alias_key'::regclass
+                   AND attname = 'alias_types' AND NOT attisdropped) AS keys_outdated \gset
+\if :keys_outdated
 \if :{?rebuild}
-DROP MATERIALIZED VIEW IF EXISTS search_idx.alias_key CASCADE;
+\else
+\echo 'search_idx.alias_key predates ADR 0005 (no alias_types column): re-run with psql -v rebuild=1'
+SELECT 1/0 AS rebuild_required;
+\endif
+\endif
+\if :{?rebuild}
+DROP MATERIALIZED VIEW IF EXISTS search_idx.alias_key CASCADE;   -- also drops search_text
 DROP MATERIALIZED VIEW IF EXISTS search_idx.vocab;
 \endif
+-- The words appended to a text's document: the short form of a long form it contains (bcbs) and the
+-- wider word of a brand it contains (medicaid, centene). A function of the text alone, so the Search keys
+-- and the Search texts get exactly the same words.
+CREATE OR REPLACE FUNCTION search_idx.extra_words(key_norm text) RETURNS text
+LANGUAGE sql STABLE SET search_path = pg_catalog, pg_temp AS $$
+  SELECT string_agg(e.w, ' ')
+  FROM (
+    SELECT s.word AS w            -- long form present: add the short form that maps to it (bcbs)
+    FROM search_idx.synonym_seed s
+    WHERE NOT s.expand AND s.canonical LIKE '%\_%'
+      AND replace(key_norm, ' and ', ' ') LIKE '%' || replace(s.canonical, '_', ' ') || '%'
+    UNION ALL
+    SELECT replace(s.canonical, '_', ' ')   -- brand present: add the wider word (medicaid, centene)
+    FROM search_idx.synonym_seed s
+    WHERE s.expand AND ' ' || key_norm || ' ' LIKE '% ' || replace(s.word, '_', ' ') || ' %'
+  ) e
+$$;
 CREATE MATERIALIZED VIEW IF NOT EXISTS search_idx.alias_key AS
 WITH norm AS (
   SELECT a.payer_id, a.payer_name, a.alias, a.alias_type, a.state, a.plan_type,
@@ -87,36 +116,43 @@ WITH norm AS (
          -- show the canonical alias when it is in the group, else the shortest one
          (array_agg(alias ORDER BY alias_type <> 'canonical', length(alias), alias))[1] AS sample_alias,
          bool_or(alias_type = 'canonical') AS is_canon,
-         count(*) AS n_aliases
+         count(*) AS n_aliases,
+         -- every Alias type of this Payer for this text, as a set (Own name = any of the generator's types)
+         array_agg(DISTINCT alias_type ORDER BY alias_type) AS alias_types
   FROM norm
   WHERE key_norm <> ''
   GROUP BY payer_id, key_norm
 )
 SELECT row_number() OVER (ORDER BY g.payer_id, g.key_norm) AS key_id, g.*,
-       to_tsvector('search_idx.payer_cfg', g.key_norm || ' ' || lower(g.state) || coalesce(' ' || x.extra, '')) AS tsv
+       -- the Payer's state word stays in its key's document: "ga bcbs" matches the Georgia Payers' "bcbs"
+       to_tsvector('search_idx.payer_cfg', g.key_norm || ' ' || lower(g.state)
+                   || coalesce(' ' || search_idx.extra_words(g.key_norm), '')) AS tsv
 FROM grouped g
-LEFT JOIN LATERAL (
-  SELECT string_agg(e.w, ' ') AS extra
-  FROM (
-    SELECT s.word AS w            -- long form present: add the short form that maps to it (bcbs)
-    FROM search_idx.synonym_seed s
-    WHERE NOT s.expand AND s.canonical LIKE '%\_%'
-      AND replace(g.key_norm, ' and ', ' ') LIKE '%' || replace(s.canonical, '_', ' ') || '%'
-    UNION ALL
-    SELECT replace(s.canonical, '_', ' ')   -- brand present: add the wider word (medicaid, centene)
-    FROM search_idx.synonym_seed s
-    WHERE s.expand AND ' ' || g.key_norm || ' ' LIKE '% ' || replace(s.word, '_', ' ') || ' %'
-  ) e
-) x ON true
 WITH NO DATA;
 
 CREATE UNIQUE INDEX IF NOT EXISTS alias_key_pk ON search_idx.alias_key (key_id);
 -- Stable identity of a key across refreshes (key_id is a row number and can shift).
 CREATE UNIQUE INDEX IF NOT EXISTS alias_key_payer_norm ON search_idx.alias_key (payer_id, key_norm);
--- GiST, not GIN: it returns the nearest keys first (ORDER BY <<-> LIMIT n), so a common word such
--- as "care" does not make Postgres score thousands of matches (measured: 2-24 ms vs 79 ms).
-CREATE INDEX IF NOT EXISTS alias_key_trgm ON search_idx.alias_key USING gist (key_norm gist_trgm_ops(siglen=128));
+-- The trigram index moved to the Search texts (3a). Left on the keys, it also answered the expansion's
+-- equality join, slower than the btree below.
+DROP INDEX IF EXISTS search_idx.alias_key_trgm;
 -- (BM25 index is created after the first fill: lakebase_bm25 needs a populated table.)
+-- Expansion: every Payer that has a candidate text.
+CREATE INDEX IF NOT EXISTS alias_key_norm ON search_idx.alias_key (key_norm);
+
+-- 3a. Search texts: one row per different text, with the number of Payers that have it. The candidate
+--     cut counts texts, not keys, so a text shared by hundreds of Payers takes one place, not hundreds
+--     (ADR 0005). Built from the keys, so a key's text is always here (same normalisation by construction).
+CREATE MATERIALIZED VIEW IF NOT EXISTS search_idx.search_text AS
+SELECT row_number() OVER (ORDER BY t.key_norm) AS text_id, t.key_norm, t.n_payers,
+       to_tsvector('search_idx.payer_cfg', t.key_norm || coalesce(' ' || search_idx.extra_words(t.key_norm), '')) AS tsv
+FROM (SELECT key_norm, count(*)::int AS n_payers FROM search_idx.alias_key GROUP BY key_norm) t
+WITH NO DATA;
+CREATE UNIQUE INDEX IF NOT EXISTS search_text_pk ON search_idx.search_text (text_id);
+CREATE UNIQUE INDEX IF NOT EXISTS search_text_norm ON search_idx.search_text (key_norm);
+-- GiST, not GIN: it returns the nearest texts first (ORDER BY <<-> LIMIT n), so a common word such
+-- as "care" does not make Postgres score thousands of matches (measured on keys: 2-24 ms vs 79 ms).
+CREATE INDEX IF NOT EXISTS search_text_trgm ON search_idx.search_text USING gist (key_norm gist_trgm_ops(siglen=128));
 
 -- 3b. The corpus word list, for "did you mean" correction of query words before BM25.
 CREATE MATERIALIZED VIEW IF NOT EXISTS search_idx.vocab AS
@@ -137,6 +173,14 @@ REFRESH MATERIALIZED VIEW search_idx.alias_key;
 \endif
 CREATE INDEX IF NOT EXISTS alias_key_bm25 ON search_idx.alias_key USING lakebase_bm25 (tsv);
 VACUUM ANALYZE search_idx.alias_key;    -- also updates the BM25 statistics
+SELECT relispopulated AS texts_ready FROM pg_class WHERE oid = 'search_idx.search_text'::regclass \gset
+\if :texts_ready
+REFRESH MATERIALIZED VIEW CONCURRENTLY search_idx.search_text;
+\else
+REFRESH MATERIALIZED VIEW search_idx.search_text;
+\endif
+CREATE INDEX IF NOT EXISTS search_text_bm25 ON search_idx.search_text USING lakebase_bm25 (tsv);
+VACUUM ANALYZE search_idx.search_text;
 SELECT relispopulated AS vocab_ready FROM pg_class WHERE oid = 'search_idx.vocab'::regclass \gset
 \if :vocab_ready
 REFRESH MATERIALIZED VIEW CONCURRENTLY search_idx.vocab;

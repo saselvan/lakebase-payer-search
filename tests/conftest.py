@@ -35,3 +35,14 @@ def admin_sql():
                              capture_output=True, text=True, check=True).stdout
         return [line.split("\t") for line in out.splitlines() if line]
     return run
+
+
+@pytest.fixture(scope="session")
+def caller_sql():
+    """Run SQL as the Caller service principal over a direct Postgres login (not the Data API)."""
+    def run(sql: str) -> list[list[str]]:
+        out = subprocess.run([str(ROOT / "scripts/psql.sh"), "-At", "-F", "\t", "-c", sql],
+                             capture_output=True, text=True, check=True,
+                             env={**os.environ, "AS_CALLER": "1"}).stdout
+        return [line.split("\t") for line in out.splitlines() if line]
+    return run
