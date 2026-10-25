@@ -1,67 +1,80 @@
 <!doctype html>
 <!-- Source of docs/images/architecture.png.
      Render: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars \
-       --force-device-scale-factor=2 --window-size=1400,900 --screenshot=docs/images/architecture.png \
-       "file://$PWD/docs/images/architecture.src.html" -->
+       --force-device-scale-factor=2 --window-size=1560,700 --screenshot=docs/images/architecture.png \
+       "file://$PWD/docs/images/architecture.src.html"
+     Every label in lane B matches the production read of 2026-10-25 (grants, function settings, audit rows). -->
 <html><head><meta charset="utf-8"><title>lakebase-payer-search architecture</title>
 <style>
-  body{margin:0;background:#fff;font:15px/1.35 -apple-system,"Helvetica Neue",Arial,sans-serif;color:#0f172a}
-  .wrap{width:1360px;padding:24px 20px}
-  h1{font-size:22px;margin:0 0 4px} .sub{color:#475569;margin:0 0 18px}
-  .lane{border:1px solid #cbd5e1;border-radius:10px;padding:14px 16px 16px;margin-bottom:14px}
-  .lane h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#475569;margin:0 0 10px}
-  .row{display:flex;align-items:stretch;gap:0}
-  .box{flex:1;border:1.5px solid;border-radius:8px;padding:9px 11px;min-height:74px}
-  .box b{display:block;font-size:15px;margin-bottom:3px}
-  .box span{color:#334155;font-size:13.5px}
-  .n{display:inline-block;min-width:20px;height:20px;border-radius:10px;background:#0f172a;color:#fff;
-     font-size:12px;text-align:center;line-height:20px;margin-right:6px}
-  .box .n{color:#fff;font-size:12px}
-  .arrow{flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#475569;font-size:22px}
-  .data{background:#eef2ff;border-color:#4f46e5} .pg{background:#ecfdf5;border-color:#059669}
-  .sec{background:#fef2f2;border-color:#dc2626} .app{background:#f0f9ff;border-color:#0284c7}
-  .ops{background:#f8fafc;border-color:#64748b}
-  .note{margin-top:10px;color:#334155;font-size:13.5px}
-  .note code,.box code{font:12.5px Menlo,monospace;background:#f1f5f9;padding:1px 4px;border-radius:4px}
+  @font-face{font-family:"IBM Plex Sans";src:url("../../app/static/fonts/IBMPlexSans-var.woff2") format("woff2");font-weight:100 700}
+  @font-face{font-family:"IBM Plex Mono";src:url("../../app/static/fonts/IBMPlexMono-400.woff2") format("woff2");font-weight:400}
+  @font-face{font-family:"IBM Plex Mono";src:url("../../app/static/fonts/IBMPlexMono-500.woff2") format("woff2");font-weight:500}
+  :root{--ink:#16191D;--teal:#0B6E69;--teal-pale:#E3F1F0;--grey:#5B6572;--line:#C9D1D9;--ground:#F2F3F5}
+  body{margin:0;background:#fff;font:15px/1.4 "IBM Plex Sans",-apple-system,Arial,sans-serif;color:var(--ink)}
+  .wrap{width:1512px;padding:28px 24px}
+  h1{font:700 27px/1.2 Georgia,"Times New Roman",serif;margin:0 0 6px}
+  .sub{color:var(--grey);margin:0 0 22px;font-size:15px}
+  .lane{margin-bottom:22px}
+  .lane h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--grey);margin:0 0 10px;font-weight:600}
+  .row{display:flex;align-items:stretch}
+  section{flex:1;border:1.5px solid var(--ink);border-radius:8px;padding:10px 12px;background:#fff;min-height:96px}
+  section b{display:block;font-size:16px;margin-bottom:4px}
+  section span{display:block;color:#2b3138;font-size:13.5px}
+  section.app{background:var(--teal-pale);border:2px solid var(--teal)}
+  section.quiet{border-color:var(--line);min-height:64px}
+  section.store{border-color:var(--teal)}
+  .arrow{flex:0 0 40px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--grey);font-size:22px}
+  .arrow small{font-size:11px;color:var(--grey);line-height:1.1;text-align:center}
+  .token{display:inline-block;margin-top:6px;background:var(--teal);color:#fff;border-radius:4px;padding:1px 7px;font-size:12.5px;font-weight:600}
+  code,.mono{font:500 13px "IBM Plex Mono",Menlo,monospace}
+  section b.mono{font:500 15px "IBM Plex Mono",Menlo,monospace}
+  .outs{flex:1.1;display:flex;flex-direction:column;gap:10px}
+  .out{display:flex;flex:1}
+  .out .arrow{flex:0 0 52px}
+  .out section{min-height:0}
+  .grants{margin-top:14px;border-left:3px solid var(--teal);padding:8px 14px;background:var(--ground);font-size:14px}
 </style></head><body><div class="wrap">
-<h1>lakebase-payer-search: typo-tolerant search as a REST API on Lakebase Postgres</h1>
-<p class="sub">Three parts. Numbers show the order of the steps.</p>
+<h1>lakebase-payer-search: Postgres is the backend</h1>
+<p class="sub">A builds the index. B answers one search, from the browser to the audit row. C improves quality offline.</p>
 
 <div class="lane"><h2>A · Build the index (setup, then each data refresh)</h2>
  <div class="row">
-  <div class="box data"><b><span class="n">1</span>Payer aliases</b><span>Delta table in Unity Catalog</span></div>
+  <section class="quiet"><b>Payer aliases</b><span>Delta table in Unity Catalog</span></section>
   <div class="arrow">→</div>
-  <div class="box pg"><b><span class="n">2</span>Synced table</b><span><code>payer_serving</code>, snapshot sync into Postgres</span></div>
+  <section class="quiet"><b>Synced table</b><span><code>payer_serving</code>, snapshot sync into Postgres</span></section>
   <div class="arrow">→</div>
-  <div class="box ops"><b><span class="n">3</span>Synonyms</b><span><code>data/seed/*.csv</code>: equivalents replace, "is a kind of" rows expand</span></div>
+  <section class="quiet"><b>Synonyms</b><span><code>data/seed/*.csv</code></span></section>
   <div class="arrow">→</div>
-  <div class="box pg"><b><span class="n">4</span>Search keys</b><span><code>alias_key</code> + <code>vocab</code>, GiST trigram + BM25 indexes, <code>REFRESH … CONCURRENTLY</code></span></div>
+  <section class="quiet store"><b>The search index</b><span><code>alias_key</code> + <code>vocab</code>, trigram and BM25 indexes</span></section>
  </div>
 </div>
 
 <div class="lane"><h2>B · Answer one search</h2>
  <div class="row">
-  <div class="box app"><b><span class="n">5</span>Your backend</b><span>OAuth token of a service principal</span></div>
+  <section data-node="browser"><b>Browser</b><span>Sends only the query and the page to the app server.</span></section>
   <div class="arrow">→</div>
-  <div class="box sec"><b><span class="n">6</span>Lakebase Data API</b><span>HTTPS <code>POST /api/rpc/search_insurers</code></span></div>
+  <section class="app" data-node="app-server"><b>App server</b><span>Calls one HTTPS path: <code>POST /api/rpc/search_insurers</code></span><span class="token">Holds the app's OAuth token</span></section>
+  <div class="arrow">→<small>HTTPS</small></div>
+  <section data-node="data-api"><b>Lakebase Data API</b><span>Switches into the app's own Postgres role.</span></section>
   <div class="arrow">→</div>
-  <div class="box sec"><b><span class="n">7</span>api.search_insurers</b><span>SECURITY INVOKER; caller has EXECUTE only</span></div>
+  <section data-node="wrapper"><b class="mono">api.search_insurers</b><span>Runs with the caller's rights (SECURITY INVOKER). Calls only <code>search_core</code>.</span></section>
   <div class="arrow">→</div>
-  <div class="box pg"><b><span class="n">8</span>search_core</b><span>SECURITY DEFINER, owner <code>search_owner</code></span></div>
-  <div class="arrow">→</div>
-  <div class="box pg"><b><span class="n">9</span>Did you mean</b><span>fix query words against <code>vocab</code></span></div>
-  <div class="arrow">→</div>
-  <div class="box pg"><b><span class="n">10</span>Rank</b><span>100 trigram ∪ 100 BM25 candidates (reads step 4), score all, top 10 back to step 5</span></div>
+  <section data-node="core"><b class="mono">search_idx.search_core</b><span>Runs with the owner's rights (SECURITY DEFINER). Owner <code>search_owner</code> cannot log in.</span></section>
+  <div class="outs">
+   <div class="out"><div class="arrow">→<small>reads</small></div><section class="store" data-node="index"><b>The search index</b><span>Typo matching and BM25 ranking</span></section></div>
+   <div class="out"><div class="arrow">→<small>writes one row</small></div><section class="store" data-node="audit"><b class="mono">audit.search_log</b><span>Tenant label, caller, query, row count</span></section></div>
+  </div>
  </div>
+ <div class="grants">The app's role can run the two functions and use their two schemas (<code>api</code>, <code>search_idx</code>), plus the platform's standard defaults every role has, such as connect. It has no right on any data table. The browser never gets the token. Full list: <code>app/SECURITY.md</code>.</div>
 </div>
 
 <div class="lane"><h2>C · Improve quality (offline)</h2>
  <div class="row">
-  <div class="box ops"><b><span class="n">11</span>audit.search_log</b><span>one row per search: tenant, caller, query, count, ms</span></div>
+  <section class="quiet"><b class="mono">audit.search_log</b><span>What people searched for</span></section>
   <div class="arrow">→</div>
-  <div class="box ops"><b><span class="n">12</span>Evaluator + MLflow</b><span>brand@10, product@10, MRR, exact-name sweep</span></div>
+  <section class="quiet"><b>Evaluator + MLflow</b><span>brand@10, product@10, MRR, exact-name sweep</span></section>
   <div class="arrow">→</div>
-  <div class="box ops"><b><span class="n">13</span>Review synonyms</b><span>edit the CSV, then rebuild: back to step 3</span></div>
+  <section class="quiet"><b>Review synonyms</b><span>Edit the CSV, then rebuild the index (lane A)</span></section>
  </div>
 </div>
 </div></body></html>
