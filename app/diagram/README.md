@@ -79,7 +79,7 @@ fact once.
 |---|---|---|
 | 1 Browser | the heading and the request code | (code) |
 | 2 This app | the heading, the code, "Server sets `customer_id`." "The browser never gets the token." | C17, C7 |
-| 3 Lakebase Data API | "As the app's role: EXECUTE on 2 functions, no data table rights." | C18, C6 |
+| 3 Lakebase Data API | "App role: 2 functions, their 2 schemas, standard defaults. No data table rights." | C18, C6 |
 | 4 Postgres function `api.search_insurers` | "Typo matching and ranking run here. `search_core` runs as `search_owner`, which cannot log in." | C2, C19 |
 
 The check holds this list word for word, each line's rows, and the text each row must hold, so a short line says no
@@ -145,7 +145,7 @@ quoted from the fetched page text.
 | "Authorization: OAuth token of the app's service principal. The browser never gets it." | C7 | 1 |
 | Box 3: "Runs the function as an RPC over HTTP POST. The path names the function." | C14, "What is backed" part only | 3 + 1 |
 | "Switches into the app's own Postgres role." | C18 | 3 + 1 |
-| "That role has EXECUTE on the two search functions and no rights on any data table." | C6 | 1 |
+| "It can run the two search functions and use their two schemas, plus standard defaults. No rights on any data table." | C6 | 1 |
 | Box 4: "Typo matching and ranking run inside it." | C2 | 2 |
 | "Runs with the caller's rights and calls `search_idx.search_core`." | C19 | 1 + 2 |
 | "`search_core` runs with the rights of its owner, `search_owner`, a role that cannot log in. It is the only function that reads the search index." | C19 | 1 + 2 |

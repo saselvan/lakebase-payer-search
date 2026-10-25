@@ -67,8 +67,8 @@ CLAIMS = {
         ("C14", ["What is backed: the Data API executes functions as RPCs over HTTP POST (grade 3",
                  "this path ran `api.search_insurers` (grade 1"]),
     "Switches into the app's own Postgres role.": ("C18", ["switches into the Postgres role of the calling identity"]),
-    "That role has EXECUTE on the two search functions and no rights on any data table.":
-        ("C6", ["EXECUTE on `api.search_insurers` and `search_idx.search_core`", "no rights on any data table"]),
+    "It can run the two search functions and use their two schemas, plus standard defaults. No rights on any data table.":
+        ("C6", ["EXECUTE on `api.search_insurers` and `search_idx.search_core`", "USAGE on schemas `api` and `search_idx`", "CONNECT and TEMPORARY on the database"]),
     "Typo matching and ranking run inside it.": ("C2", ["pg_trgm for typos"]),
     "Runs with the caller's rights and calls search_idx.search_core.":
         ("C19", ["runs with the caller's rights (SECURITY INVOKER) and only calls `search_idx.search_core`"]),
@@ -79,7 +79,7 @@ CLAIMS = {
     "Both functions pin search_path to pg_catalog, pg_temp.": ("C8", ["Both search functions trust only `pg_catalog, pg_temp`"]),
 }
 CLAIM_STEPS = {"data-api", "function"}
-TABLE_SENTENCE = "That role has EXECUTE on the two search functions and no rights on any data table."
+TABLE_SENTENCE = "It can run the two search functions and use their two schemas, plus standard defaults. No rights on any data table."
 PHONE_FLOOR = 13           # DECISIONS 2026-10-24: at 390 px the drawer is a page with the app's 13 px floor
 
 # T5-1: the short text the motion shows in each box, word for word as Samuel approved it (round 6 preview,
@@ -87,21 +87,22 @@ PHONE_FLOOR = 13           # DECISIONS 2026-10-24: at 390 px the drawer is a pag
 # than its row. Headings and code are shared with the final frame.
 SHORT_LINES = {
     "app": ["Server sets customer_id. The browser never gets the token."],
-    "data-api": ["As the app's role: EXECUTE on 2 functions, no data table rights."],
+    "data-api": ["App role: 2 functions, their 2 schemas, standard defaults. No data table rights."],
     "function": ["Typo matching and ranking run here. search_core runs as search_owner, which cannot log in."],
 }
 SHORT_CLAIMS = {
     "Server sets customer_id. The browser never gets the token.": {
         "C17": ["server-set Tenant label"], "C7": ["never receives the server's OAuth token"]},
-    "As the app's role: EXECUTE on 2 functions, no data table rights.": {
+    "App role: 2 functions, their 2 schemas, standard defaults. No data table rights.": {
         "C18": ["switches into the Postgres role of the calling identity", "runs as the app's own SP role"],
         "C6": ["EXECUTE on `api.search_insurers` and `search_idx.search_core`",
+               "USAGE on schemas `api` and `search_idx`", "CONNECT and TEMPORARY on the database",
                "no right on any table, view, column or sequence in a data schema"]},
     "Typo matching and ranking run here. search_core runs as search_owner, which cannot log in.": {
         "C2": ["pg_trgm for typos", "in one SQL function"],
         "C19": ["runs with the rights of its owner `search_owner` (SECURITY DEFINER), a role that cannot log in"]},
 }
-SHORT_C6 = "As the app's role: EXECUTE on 2 functions, no data table rights."
+SHORT_C6 = "App role: 2 functions, their 2 schemas, standard defaults. No data table rights."
 
 # H14 (and T4-9, T4-10): text that must never be on the diagram or in its artifacts.
 BANNED_TEXT = ["databricksapps.com", "cloud.databricks.com", "azuredatabricks.net", "gcp.databricks.com",
@@ -340,7 +341,7 @@ MUTATIONS = {
     "json-mid-break": lambda d: _sub(d / CSS, ".pfd-tok { display: inline-block;",
                                      ".pfd-code pre { max-width: 16ch; }\n.pfd-tok { display: inline;"),
     # Copy lint, T4-44: the C6 sentence says "any table", which the role does not meet (PUBLIC platform views).
-    "c6-any-table": lambda d: _sub(d / JS, "no rights on any data table.", "no rights on any table."),
+    "c6-any-table": lambda d: _sub(d / JS, "No rights on any data table.", "No rights on any table."),
     # T4-48, T4-49: the tag shows while it is still inside box 1, so it crosses box 1's words.
     "tag-moves-visible": lambda d: _sub(d / JS, "o: clamp((y - bot(k)) / (22 * U)) * (1 - clamp", "o: (1 - clamp"),
     # T4-50: the holds use a reading rate of 400 words a minute, faster than people read aloud.
@@ -359,7 +360,7 @@ MUTATIONS = {
     # T5-1: a short line drifts from the approved text.
     "short-line-drift": lambda d: _sub(d / JS, '". The browser never gets the token."', '". The browser never sees a secret."'),
     # T5-1, H13: the C6 short line says "no table rights", wider than its row.
-    "short-says-more": lambda d: _sub(d / JS, "EXECUTE on 2 functions, no data table rights.", "EXECUTE on 2 functions, no table rights."),
+    "short-says-more": lambda d: _sub(d / JS, "standard defaults. No data table rights.", "standard defaults. No table rights."),
     # T5-1: the Data API's short line loses its C6 mark.
     "short-claim-missing": lambda d: _sub(d / JS, '"C18 C6")', '"C18")'),
     # T5-1 (T4-70): the short layer reaches screen readers, so every fact is read twice.

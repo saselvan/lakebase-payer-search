@@ -136,10 +136,10 @@
                  return note([code(k), " is " + SERVER_SET[k] + "."], "C17");
                }), [note(["Authorization: " + AUTH_NOTE], "C7")]) },
       { id: "data-api", name: ["Lakebase Data API"],
-        short: [shortLine(["As the app's role: EXECUTE on 2 functions, no data table rights."], "C18 C6")],
+        short: [shortLine(["App role: 2 functions, their 2 schemas, standard defaults. No data table rights."], "C18 C6")],
         full: [note(["Runs the function as an RPC over HTTP POST. The path names the function."], "C14"),
                note(["Switches into the app's own Postgres role."], "C18"),
-               note(["That role has EXECUTE on the two search functions and no rights on any data table."], "C6")] },
+               note(["It can run the two search functions and use their two schemas, plus standard defaults. No rights on any data table."], "C6")] },
       { id: "function", name: ["Postgres function ", code("api.search_insurers")],
         short: [shortLine(["Typo matching and ranking run here. ", code("search_core"), " runs as ",
                            code("search_owner"), ", which cannot log in."], "C2 C19")],
