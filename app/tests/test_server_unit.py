@@ -119,6 +119,34 @@ def test_403_is_not_retried():
     assert len(up.rpc_requests()) == 1
 
 
+def test_200_that_is_not_a_list_is_a_502_shape_error():
+    with make(Upstream(lambda req: httpx.Response(200, json={"x": 1}))) as tc:
+        r = tc.post("/api/search", json={"q": "aetna"})
+    assert r.status_code == 502
+    assert r.json() == {"error": "search_failed", "upstream_status": 502, "upstream_code": "shape"}
+
+
+def test_400_with_code_22023_stays_a_400():
+    with make(Upstream(lambda req: httpx.Response(400, json={"code": "22023"}))) as tc:
+        r = tc.post("/api/search", json={"q": "aetna"})
+    assert r.status_code == 400
+    assert r.json() == {"error": "search_failed", "upstream_status": 400, "upstream_code": "22023"}
+
+
+def test_400_with_another_code_is_a_502():
+    with make(Upstream(lambda req: httpx.Response(400, json={"code": "42P01"}))) as tc:
+        r = tc.post("/api/search", json={"q": "aetna"})
+    assert r.status_code == 502
+    assert r.json() == {"error": "search_failed", "upstream_status": 400, "upstream_code": "42P01"}
+
+
+def test_unreachable_data_api_is_a_502_with_no_detail():
+    with make(Upstream(_down)) as tc:
+        r = tc.post("/api/search", json={"q": "aetna"})
+    assert r.status_code == 502
+    assert r.json() == {"error": "search_unreachable"}
+
+
 # ---- What the browser may send ------------------------------------------------------------------
 
 @pytest.mark.parametrize("body", [
