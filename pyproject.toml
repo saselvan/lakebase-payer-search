@@ -12,6 +12,7 @@ load = ["locust>=2.29"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
+testpaths = ["tests"]  # app/ has its own tests: cd app && uv run pytest
 markers = ["live: calls the live Data API (needs .env)"]
 
 [build-system]

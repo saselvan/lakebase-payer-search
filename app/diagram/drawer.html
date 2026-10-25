@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>How this search ran</title>
+    <link rel="stylesheet" href="diagram.css" />
+    <style>
+      html, body { margin: 0; background: #ffffff; }
+    </style>
+  </head>
+  <body>
+    <!-- The drawer: the same diagram as index.html, opened on the final frame, with a Play button. Nothing moves
+         until the reader presses Play; under prefers-reduced-motion: reduce there is no button. -->
+    <div id="pfd" data-controls></div>
+    <!-- The same search as index.html. -->
+    <script type="application/json" id="pfd-run">
+      {"query": "bcbs georgia", "browser_body": {"q": "bcbs georgia", "page": 1},
+       "app_body_keys": ["q", "customer_id", "lim", "off"], "row_count": 10, "status": 200}
+    </script>
+    <script src="diagram.js"></script>
+  </body>
+</html>

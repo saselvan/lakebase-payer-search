@@ -1,0 +1,17 @@
+[project]
+name = "lakebase-payer-finder"
+version = "0.1.0"
+description = "Insurer finder: Lakebase Search through the Data API, as the app's own service principal"
+requires-python = ">=3.11"
+dependencies = ["fastapi==0.146.0", "uvicorn==0.54.0", "httpx==0.28.1"]
+
+[dependency-groups]
+dev = ["pytest>=8", "playwright>=1.50", "databricks-sdk>=0.81"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+markers = [
+    "live: needs a t-finder-* branch and the app SP credentials in .env",
+    "deployed: needs the running app on FEVM and a CLI OAuth token",
+]
+addopts = "-m 'not live and not deployed'"

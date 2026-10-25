@@ -1,0 +1,749 @@
+{
+ "source": "api.search_insurers on branch t-finder-1023b (from production), owner identity, 2026-10-23",
+ "queries": {
+  "united helth": {
+   "page1": [
+    {
+     "rank": 1,
+     "score": 1.506,
+     "state": "AK",
+     "payer_id": "SYN005629",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - AK",
+     "matched_alias": "UnitedHealth"
+    },
+    {
+     "rank": 2,
+     "score": 1.506,
+     "state": "AL",
+     "payer_id": "SYN005630",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - AL",
+     "matched_alias": "UnitedHealth"
+    },
+    {
+     "rank": 3,
+     "score": 1.506,
+     "state": "AR",
+     "payer_id": "SYN005631",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - AR",
+     "matched_alias": "UnitedHealth"
+    },
+    {
+     "rank": 4,
+     "score": 1.506,
+     "state": "AZ",
+     "payer_id": "SYN005632",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - AZ",
+     "matched_alias": "UnitedHealth"
+    },
+    {
+     "rank": 5,
+     "score": 1.506,
+     "state": "CA",
+     "payer_id": "SYN005633",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - CA",
+     "matched_alias": "UnitedHealth"
+    },
+    {
+     "rank": 6,
+     "score": 1.506,
+     "state": "CO",
+     "payer_id": "SYN005634",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - CO",
+     "matched_alias": "UnitedHealth"
+    },
+    {
+     "rank": 7,
+     "score": 1.506,
+     "state": "CT",
+     "payer_id": "SYN005635",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - CT",
+     "matched_alias": "UnitedHealth"
+    },
+    {
+     "rank": 8,
+     "score": 1.506,
+     "state": "DC",
+     "payer_id": "SYN005636",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - DC",
+     "matched_alias": "UnitedHealth"
+    },
+    {
+     "rank": 9,
+     "score": 1.506,
+     "state": "DE",
+     "payer_id": "SYN005637",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - DE",
+     "matched_alias": "UnitedHealth"
+    },
+    {
+     "rank": 10,
+     "score": 1.506,
+     "state": "FL",
+     "payer_id": "SYN005638",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - FL",
+     "matched_alias": "UnitedHealth"
+    }
+   ],
+   "page2": [
+    {
+     "rank": 11,
+     "score": 1.506,
+     "state": "GA",
+     "payer_id": "SYN005639",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - GA",
+     "matched_alias": "UnitedHealth"
+    },
+    {
+     "rank": 12,
+     "score": 1.506,
+     "state": "HI",
+     "payer_id": "SYN005640",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - HI",
+     "matched_alias": "UnitedHealth"
+    },
+    {
+     "rank": 13,
+     "score": 1.506,
+     "state": "IA",
+     "payer_id": "SYN005641",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - IA",
+     "matched_alias": "UnitedHealth"
+    },
+    {
+     "rank": 14,
+     "score": 1.506,
+     "state": "ID",
+     "payer_id": "SYN005642",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - ID",
+     "matched_alias": "UnitedHealth"
+    },
+    {
+     "rank": 15,
+     "score": 1.506,
+     "state": "IL",
+     "payer_id": "SYN005643",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - IL",
+     "matched_alias": "UnitedHealth"
+    },
+    {
+     "rank": 16,
+     "score": 1.506,
+     "state": "IN",
+     "payer_id": "SYN005644",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - IN",
+     "matched_alias": "UnitedHealth"
+    },
+    {
+     "rank": 17,
+     "score": 1.506,
+     "state": "KS",
+     "payer_id": "SYN005645",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - KS",
+     "matched_alias": "UnitedHealth"
+    },
+    {
+     "rank": 18,
+     "score": 1.506,
+     "state": "KY",
+     "payer_id": "SYN005646",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - KY",
+     "matched_alias": "UnitedHealth"
+    },
+    {
+     "rank": 19,
+     "score": 1.506,
+     "state": "LA",
+     "payer_id": "SYN005647",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - LA",
+     "matched_alias": "UnitedHealth"
+    },
+    {
+     "rank": 20,
+     "score": 1.506,
+     "state": "MA",
+     "payer_id": "SYN005648",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - MA",
+     "matched_alias": "UnitedHealth"
+    }
+   ]
+  },
+  "bcbs georgia": {
+   "page1": [
+    {
+     "rank": 1,
+     "score": 1.8303,
+     "state": "GA",
+     "payer_id": "SYN001553",
+     "plan_type": "commercial",
+     "payer_name": "Blue Cross and Blue Shield of Georgia Choice PPO",
+     "matched_alias": "BCBS of Georgia"
+    },
+    {
+     "rank": 2,
+     "score": 1.8303,
+     "state": "GA",
+     "payer_id": "SYN001554",
+     "plan_type": "commercial",
+     "payer_name": "Blue Cross and Blue Shield of Georgia EPO",
+     "matched_alias": "BCBS of Georgia"
+    },
+    {
+     "rank": 3,
+     "score": 1.8303,
+     "state": "GA",
+     "payer_id": "SYN001555",
+     "plan_type": "commercial",
+     "payer_name": "Blue Cross and Blue Shield of Georgia HMO",
+     "matched_alias": "BCBS of Georgia"
+    },
+    {
+     "rank": 4,
+     "score": 1.8303,
+     "state": "GA",
+     "payer_id": "SYN001556",
+     "plan_type": "commercial",
+     "payer_name": "Blue Cross and Blue Shield of Georgia Open Access",
+     "matched_alias": "BCBS of Georgia"
+    },
+    {
+     "rank": 5,
+     "score": 1.8303,
+     "state": "GA",
+     "payer_id": "SYN001557",
+     "plan_type": "commercial",
+     "payer_name": "Blue Cross and Blue Shield of Georgia POS",
+     "matched_alias": "BCBS of Georgia"
+    },
+    {
+     "rank": 6,
+     "score": 1.8303,
+     "state": "GA",
+     "payer_id": "SYN001558",
+     "plan_type": "commercial",
+     "payer_name": "Blue Cross and Blue Shield of Georgia PPO",
+     "matched_alias": "BCBS of Georgia"
+    },
+    {
+     "rank": 7,
+     "score": 1.8303,
+     "state": "GA",
+     "payer_id": "SYN001559",
+     "plan_type": "commercial",
+     "payer_name": "Blue Cross and Blue Shield of Georgia Select",
+     "matched_alias": "BCBS of Georgia"
+    },
+    {
+     "rank": 8,
+     "score": 1.3027,
+     "state": "GA",
+     "payer_id": "SYN001808",
+     "plan_type": "medicaid",
+     "payer_name": "CHIP - GA",
+     "matched_alias": "CHIP Georgia"
+    },
+    {
+     "rank": 9,
+     "score": 1.2946,
+     "state": "GA",
+     "payer_id": "SYN003897",
+     "plan_type": "medicaid",
+     "payer_name": "Medicaid - GA",
+     "matched_alias": "Medicaid Georgia"
+    },
+    {
+     "rank": 10,
+     "score": 1.2586,
+     "state": "GA",
+     "payer_id": "SYN000269",
+     "plan_type": "commercial",
+     "payer_name": "Aetna EPO - GA",
+     "matched_alias": "Aetna EPO Georgia"
+    }
+   ],
+   "page2": [
+    {
+     "rank": 11,
+     "score": 1.2586,
+     "state": "GA",
+     "payer_id": "SYN000320",
+     "plan_type": "commercial",
+     "payer_name": "Aetna HMO - GA",
+     "matched_alias": "Aetna HMO Georgia"
+    },
+    {
+     "rank": 12,
+     "score": 1.2586,
+     "state": "GA",
+     "payer_id": "SYN000422",
+     "plan_type": "commercial",
+     "payer_name": "Aetna POS - GA",
+     "matched_alias": "Aetna POS Georgia"
+    },
+    {
+     "rank": 13,
+     "score": 1.2586,
+     "state": "GA",
+     "payer_id": "SYN000473",
+     "plan_type": "commercial",
+     "payer_name": "Aetna PPO - GA",
+     "matched_alias": "Aetna PPO Georgia"
+    },
+    {
+     "rank": 14,
+     "score": 1.2586,
+     "state": "GA",
+     "payer_id": "SYN003301",
+     "plan_type": "commercial",
+     "payer_name": "Humana HMO - GA",
+     "matched_alias": "Humana HMO Georgia"
+    },
+    {
+     "rank": 15,
+     "score": 1.2571,
+     "state": "GA",
+     "payer_id": "SYN003250",
+     "plan_type": "commercial",
+     "payer_name": "Humana EPO - GA",
+     "matched_alias": "Humana EPO Georgia"
+    },
+    {
+     "rank": 16,
+     "score": 1.2571,
+     "state": "GA",
+     "payer_id": "SYN003607",
+     "plan_type": "commercial",
+     "payer_name": "Humana POS - GA",
+     "matched_alias": "Humana POS Georgia"
+    },
+    {
+     "rank": 17,
+     "score": 1.2571,
+     "state": "GA",
+     "payer_id": "SYN003658",
+     "plan_type": "commercial",
+     "payer_name": "Humana PPO - GA",
+     "matched_alias": "Humana PPO Georgia"
+    },
+    {
+     "rank": 18,
+     "score": 1.2558,
+     "state": "GA",
+     "payer_id": "SYN002090",
+     "plan_type": "commercial",
+     "payer_name": "Centene EPO - GA",
+     "matched_alias": "Centene EPO Georgia"
+    },
+    {
+     "rank": 19,
+     "score": 1.2558,
+     "state": "GA",
+     "payer_id": "SYN002141",
+     "plan_type": "commercial",
+     "payer_name": "Centene HMO - GA",
+     "matched_alias": "Centene HMO Georgia"
+    },
+    {
+     "rank": 20,
+     "score": 1.2558,
+     "state": "GA",
+     "payer_id": "SYN002243",
+     "plan_type": "commercial",
+     "payer_name": "Centene POS - GA",
+     "matched_alias": "Centene POS Georgia"
+    }
+   ]
+  },
+  "uhc": {
+   "page1": [
+    {
+     "rank": 1,
+     "score": 2.1,
+     "state": "AK",
+     "payer_id": "SYN005629",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - AK",
+     "matched_alias": "UHC"
+    },
+    {
+     "rank": 2,
+     "score": 2.1,
+     "state": "AL",
+     "payer_id": "SYN005630",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - AL",
+     "matched_alias": "UHC"
+    },
+    {
+     "rank": 3,
+     "score": 2.1,
+     "state": "AR",
+     "payer_id": "SYN005631",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - AR",
+     "matched_alias": "UHC"
+    },
+    {
+     "rank": 4,
+     "score": 2.1,
+     "state": "AZ",
+     "payer_id": "SYN005632",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - AZ",
+     "matched_alias": "UHC"
+    },
+    {
+     "rank": 5,
+     "score": 2.1,
+     "state": "CA",
+     "payer_id": "SYN005633",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - CA",
+     "matched_alias": "UHC"
+    },
+    {
+     "rank": 6,
+     "score": 2.1,
+     "state": "CO",
+     "payer_id": "SYN005634",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - CO",
+     "matched_alias": "UHC"
+    },
+    {
+     "rank": 7,
+     "score": 2.1,
+     "state": "CT",
+     "payer_id": "SYN005635",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - CT",
+     "matched_alias": "UHC"
+    },
+    {
+     "rank": 8,
+     "score": 2.1,
+     "state": "DC",
+     "payer_id": "SYN005636",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - DC",
+     "matched_alias": "UHC"
+    },
+    {
+     "rank": 9,
+     "score": 2.1,
+     "state": "DE",
+     "payer_id": "SYN005637",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - DE",
+     "matched_alias": "UHC"
+    },
+    {
+     "rank": 10,
+     "score": 2.1,
+     "state": "FL",
+     "payer_id": "SYN005638",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - FL",
+     "matched_alias": "UHC"
+    }
+   ],
+   "page2": [
+    {
+     "rank": 11,
+     "score": 2.1,
+     "state": "GA",
+     "payer_id": "SYN005639",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - GA",
+     "matched_alias": "UHC"
+    },
+    {
+     "rank": 12,
+     "score": 2.1,
+     "state": "HI",
+     "payer_id": "SYN005640",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - HI",
+     "matched_alias": "UHC"
+    },
+    {
+     "rank": 13,
+     "score": 2.1,
+     "state": "IA",
+     "payer_id": "SYN005641",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - IA",
+     "matched_alias": "UHC"
+    },
+    {
+     "rank": 14,
+     "score": 2.1,
+     "state": "ID",
+     "payer_id": "SYN005642",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - ID",
+     "matched_alias": "UHC"
+    },
+    {
+     "rank": 15,
+     "score": 2.1,
+     "state": "IL",
+     "payer_id": "SYN005643",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - IL",
+     "matched_alias": "UHC"
+    },
+    {
+     "rank": 16,
+     "score": 2.1,
+     "state": "IN",
+     "payer_id": "SYN005644",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - IN",
+     "matched_alias": "UHC"
+    },
+    {
+     "rank": 17,
+     "score": 2.1,
+     "state": "KS",
+     "payer_id": "SYN005645",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - KS",
+     "matched_alias": "UHC"
+    },
+    {
+     "rank": 18,
+     "score": 2.1,
+     "state": "KY",
+     "payer_id": "SYN005646",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - KY",
+     "matched_alias": "UHC"
+    },
+    {
+     "rank": 19,
+     "score": 2.1,
+     "state": "LA",
+     "payer_id": "SYN005647",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - LA",
+     "matched_alias": "UHC"
+    },
+    {
+     "rank": 20,
+     "score": 2.1,
+     "state": "MA",
+     "payer_id": "SYN005648",
+     "plan_type": "commercial",
+     "payer_name": "UnitedHealthcare Choice PPO - MA",
+     "matched_alias": "UHC"
+    }
+   ]
+  },
+  "medicad": {
+   "page1": [
+    {
+     "rank": 1,
+     "score": 1.7853,
+     "state": "CT",
+     "payer_id": "SYN003138",
+     "plan_type": "medicaid",
+     "payer_name": "HUSKY Medicaid",
+     "matched_alias": "HUSKY Medicaid"
+    },
+    {
+     "rank": 2,
+     "score": 1.7833,
+     "state": "AZ",
+     "payer_id": "SYN000207",
+     "plan_type": "medicaid",
+     "payer_name": "AHCCCS Medicaid",
+     "matched_alias": "AHCCCS Medicaid"
+    },
+    {
+     "rank": 3,
+     "score": 1.7833,
+     "state": "AK",
+     "payer_id": "SYN003989",
+     "plan_type": "medicaid",
+     "payer_name": "Medicaid Managed Medicaid - AK",
+     "matched_alias": "Medicaid Managed Medicaid"
+    },
+    {
+     "rank": 4,
+     "score": 1.7833,
+     "state": "AL",
+     "payer_id": "SYN003990",
+     "plan_type": "medicaid",
+     "payer_name": "Medicaid Managed Medicaid - AL",
+     "matched_alias": "Medicaid Managed Medicaid"
+    },
+    {
+     "rank": 5,
+     "score": 1.7833,
+     "state": "AR",
+     "payer_id": "SYN003991",
+     "plan_type": "medicaid",
+     "payer_name": "Medicaid Managed Medicaid - AR",
+     "matched_alias": "Medicaid Managed Medicaid"
+    },
+    {
+     "rank": 6,
+     "score": 1.7833,
+     "state": "AZ",
+     "payer_id": "SYN003992",
+     "plan_type": "medicaid",
+     "payer_name": "Medicaid Managed Medicaid - AZ",
+     "matched_alias": "Medicaid Managed Medicaid"
+    },
+    {
+     "rank": 7,
+     "score": 1.7833,
+     "state": "CA",
+     "payer_id": "SYN003993",
+     "plan_type": "medicaid",
+     "payer_name": "Medicaid Managed Medicaid - CA",
+     "matched_alias": "Medicaid Managed Medicaid"
+    },
+    {
+     "rank": 8,
+     "score": 1.7833,
+     "state": "CO",
+     "payer_id": "SYN003994",
+     "plan_type": "medicaid",
+     "payer_name": "Medicaid Managed Medicaid - CO",
+     "matched_alias": "Medicaid Managed Medicaid"
+    },
+    {
+     "rank": 9,
+     "score": 1.7833,
+     "state": "CT",
+     "payer_id": "SYN003995",
+     "plan_type": "medicaid",
+     "payer_name": "Medicaid Managed Medicaid - CT",
+     "matched_alias": "Medicaid Managed Medicaid"
+    },
+    {
+     "rank": 10,
+     "score": 1.7833,
+     "state": "DC",
+     "payer_id": "SYN003996",
+     "plan_type": "medicaid",
+     "payer_name": "Medicaid Managed Medicaid - DC",
+     "matched_alias": "Medicaid Managed Medicaid"
+    }
+   ],
+   "page2": [
+    {
+     "rank": 11,
+     "score": 1.7833,
+     "state": "DE",
+     "payer_id": "SYN003997",
+     "plan_type": "medicaid",
+     "payer_name": "Medicaid Managed Medicaid - DE",
+     "matched_alias": "Medicaid Managed Medicaid"
+    },
+    {
+     "rank": 12,
+     "score": 1.7833,
+     "state": "FL",
+     "payer_id": "SYN003998",
+     "plan_type": "medicaid",
+     "payer_name": "Medicaid Managed Medicaid - FL",
+     "matched_alias": "Medicaid Managed Medicaid"
+    },
+    {
+     "rank": 13,
+     "score": 1.7833,
+     "state": "GA",
+     "payer_id": "SYN003999",
+     "plan_type": "medicaid",
+     "payer_name": "Medicaid Managed Medicaid - GA",
+     "matched_alias": "Medicaid Managed Medicaid"
+    },
+    {
+     "rank": 14,
+     "score": 1.7833,
+     "state": "HI",
+     "payer_id": "SYN004000",
+     "plan_type": "medicaid",
+     "payer_name": "Medicaid Managed Medicaid - HI",
+     "matched_alias": "Medicaid Managed Medicaid"
+    },
+    {
+     "rank": 15,
+     "score": 1.7833,
+     "state": "IA",
+     "payer_id": "SYN004001",
+     "plan_type": "medicaid",
+     "payer_name": "Medicaid Managed Medicaid - IA",
+     "matched_alias": "Medicaid Managed Medicaid"
+    },
+    {
+     "rank": 16,
+     "score": 1.7833,
+     "state": "ID",
+     "payer_id": "SYN004002",
+     "plan_type": "medicaid",
+     "payer_name": "Medicaid Managed Medicaid - ID",
+     "matched_alias": "Medicaid Managed Medicaid"
+    },
+    {
+     "rank": 17,
+     "score": 1.7833,
+     "state": "IL",
+     "payer_id": "SYN004003",
+     "plan_type": "medicaid",
+     "payer_name": "Medicaid Managed Medicaid - IL",
+     "matched_alias": "Medicaid Managed Medicaid"
+    },
+    {
+     "rank": 18,
+     "score": 1.7833,
+     "state": "IN",
+     "payer_id": "SYN004004",
+     "plan_type": "medicaid",
+     "payer_name": "Medicaid Managed Medicaid - IN",
+     "matched_alias": "Medicaid Managed Medicaid"
+    },
+    {
+     "rank": 19,
+     "score": 1.7833,
+     "state": "KS",
+     "payer_id": "SYN004005",
+     "plan_type": "medicaid",
+     "payer_name": "Medicaid Managed Medicaid - KS",
+     "matched_alias": "Medicaid Managed Medicaid"
+    },
+    {
+     "rank": 20,
+     "score": 1.7833,
+     "state": "KY",
+     "payer_id": "SYN004006",
+     "plan_type": "medicaid",
+     "payer_name": "Medicaid Managed Medicaid - KY",
+     "matched_alias": "Medicaid Managed Medicaid"
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Payer finder</title>
+  <link rel="preload" href="/static/fonts/IBMPlexSans-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/static/diagram.css">
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="/static/diagram.js" defer></script>
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#q">Skip to search</a>
+
+  <div class="wrap">
+    <header class="top">
+      <span class="blk-red" aria-hidden="true"></span>
+      <span class="wordmark">Payer finder</span>
+      <span class="fill" aria-hidden="true"></span>
+      <span class="blk-yellow" aria-hidden="true"></span>
+      <button class="lens-btn" id="lens-toggle" type="button" aria-expanded="false" aria-controls="lens">How this search ran</button>
+    </header>
+
+    <main>
+      <section class="search-band" aria-labelledby="title">
+        <h1 id="title">Find the insurer on the card.</h1>
+        <form class="field" id="search" role="search" autocomplete="off">
+          <label class="visually-hidden" for="q">Insurer name</label>
+          <span class="icon" aria-hidden="true"></span>
+          <input id="q" name="q" type="search" inputmode="search" spellcheck="false" maxlength="100"
+                 placeholder="Type it the way you hear it" aria-describedby="hint">
+          <span class="progress" aria-hidden="true"></span>
+        </form>
+        <div class="under">
+          <div class="examples" id="examples" aria-label="Example searches"><span>Try:</span></div>
+          <p class="data-note" id="hint"><b>Payer names are public. Payer IDs and plans are synthetic.</b> No patient data.</p>
+        </div>
+      </section>
+
+      <section class="results" id="results" aria-labelledby="status" hidden>
+        <h2 class="status" id="status" aria-live="polite"></h2>
+        <div id="groups"></div>
+        <div class="more-row">
+          <button class="more" id="more" type="button" hidden>Show 10 more</button>
+          <p class="end" id="end" hidden>End of the list. A search returns at most 50 rows.</p>
+        </div>
+      </section>
+
+      <section class="state" id="empty" hidden>
+        <h2 class="state-title" id="empty-title"></h2>
+        <p class="state-body">Check the first word, or add the state, for example “aetna texas”.</p>
+      </section>
+
+      <section class="state" id="short" hidden>
+        <p class="state-body">Type at least 2 letters.</p>
+      </section>
+
+      <section class="state state-error" id="error" role="alert" hidden>
+        <h2 class="state-title">Search is not available right now.</h2>
+        <p class="state-body" id="error-body">Try again in a minute.</p>
+      </section>
+    </main>
+  </div>
+
+  <aside class="lens" id="lens" aria-labelledby="lens-title" hidden>
+    <div class="lens-head">
+      <h2 id="lens-title">How this search ran</h2>
+      <button class="lens-close" id="lens-close" type="button">Close</button>
+    </div>
+    <p class="lens-empty" id="lens-empty">Run a search to see the requests it made.</p>
+    <div class="lens-run" id="lens-run" hidden>
+      <div id="lens-diagram"></div>
+      <dl class="facts">
+        <dt>Body the app sent to the Data API</dt>
+        <dd class="code" id="lens-args"></dd>
+        <dt>Answer from the Data API</dt>
+        <dd><span class="step-meta" id="lens-meta"></span>
+          <span class="step-note" id="lens-note">Measured by the app server: from its first request to the Data API until the answer, including retries. A first search after a pause can include a database wake-up.</span></dd>
+      </dl>
+    </div>
+    <p class="lens-empty" id="lens-searching" hidden></p>
+    <div class="lens-failed" id="lens-failed" hidden>
+      <p class="step-meta" id="lens-failed-title">This search did not finish.</p>
+      <p class="step-note" id="lens-failed-body"></p>
+    </div>
+
+    <details class="proof" id="proof">
+      <summary>Evidence for this page</summary>
+      <dl class="qa">
+        <dt>Which grants does the app's identity hold?</dt>
+        <dd>Direct grants: EXECUTE on <code>api.search_insurers</code> and <code>search_idx.search_core</code>, USAGE on schemas <code>api</code> and <code>search_idx</code>. No right on any data table. Like every role in the database, it also has the defaults that all roles get, such as connect.
+          <span class="src">Checked by <code>test_app_sp_grants</code> on production, 2026-10-24. Not read live.</span></dd>
+        <dt>Can the browser get the token?</dt>
+        <dd>No. The app server holds the token; the browser never gets it.
+          <span class="src">Checked on the deployed app by <code>test_deployed_responses_hold_no_secret_by_shape</code>, 2026-10-24.</span></dd>
+        <dt>Where does the ranking run?</dt>
+        <dd>Inside Postgres, in the function <code>api.search_insurers</code>. The app server only calls it.</dd>
+        <dt>What does the raw answer hold?</dt>
+        <dd>
+          <details class="raw">
+            <summary>Response rows (JSON)</summary>
+            <pre class="code" id="lens-rows">Run a search first.</pre>
+          </details>
+        </dd>
+      </dl>
+    </details>
+  </aside>
+
+  <div class="visually-hidden" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

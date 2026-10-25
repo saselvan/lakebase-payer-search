@@ -1,0 +1,11 @@
+{
+  "name": "payer-finder-diagram",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "preview": "npx --yes hyperframes@0.8.166 preview",
+    "lint": "npx --yes hyperframes@0.8.166 lint",
+    "check": "npx --yes hyperframes@0.8.166 check",
+    "render": "npx --yes hyperframes@0.8.166 render"
+  }
+}
