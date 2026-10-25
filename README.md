@@ -15,6 +15,17 @@ suppliers). Coding agents: start with [`AGENTS.md`](AGENTS.md) and [`llms.txt`](
 > All data is synthetic or public: real public payer brand names, synthetic IDs and plans.
 > Proven on Databricks on AWS (us-east-1). The same Lakebase API runs on Azure.
 
+## Two ways in
+
+**The blog series.** Two Medium posts measure this search, and the SQL they test is in [`sql/`](sql/).
+[Part 1, Lakebase branches for search evals](https://medium.com/@samuel_selvan/lakebase-branches-for-search-evals-a-clean-copy-of-production-for-every-change-c42c599f2b8b) tests five changes to the search function, each on a
+throwaway copy of production. [Part 2, Lakebase Search BM25 vs Postgres ts_rank](https://medium.com/@samuel_selvan/lakebase-search-bm25-vs-postgres-ts-rank-the-keyword-step-of-a-payer-search-measured-on-throwaway-cbec30536a78) measures the keyword
+step on the same table. Start with [`sql/20_search_function.sql`](sql/20_search_function.sql).
+
+**The demo app.** A small web page that runs this search as the app's own service principal and shows each step
+of one search: the request, the token the browser never gets, the Postgres role and the function text. It reads
+`sql/20_search_function.sql` from this repo. Start with [`app/README.md`](app/README.md).
+
 ## What a search looks like
 
 ```bash
@@ -42,6 +53,7 @@ rank  payer_id    payer_name                    matched_alias                   
 | Add or fix a synonym | [`docs/search-quality.md`](docs/search-quality.md), [`data/seed/synonyms.csv`](data/seed/synonyms.csv) | `SKIP_DATA=1 scripts/setup.sh`, then the evaluator |
 | Run it in production | [`docs/operations.md`](docs/operations.md), [`docs/security.md`](docs/security.md) | — |
 | Check a claim | [`results/`](results/): every number in these docs links to a file there | — |
+| See one search step by step | [`app/README.md`](app/README.md), [`app/SECURITY.md`](app/SECURITY.md) | `cd app && uv run pytest` |
 
 ## Words used here
 
@@ -231,6 +243,7 @@ lakebase-payer-search/
 ├── src/insurer_search/   # client, evaluator, data + synonym generators, wider-word check
 ├── data/seed/            # payer brands, abbreviations, synonyms     (start here for synonyms)
 ├── tests/                # offline + live API suite (-m live)
+├── app/                  # demo web app: one search, step by step, as the app's own identity
 ├── jobs/quality_flywheel/# evaluator + MLflow job
 ├── loadtest/             # Locust file + in-region runner
 ├── postman/              # Postman collection

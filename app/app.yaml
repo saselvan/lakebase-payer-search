@@ -1,0 +1,8 @@
+command: ["python", "-m", "server"]
+env:
+  # Names only. scripts/stage_deploy.py writes the values into the upload copy: production's Data API base, read
+  # live, and the tenant label from the local .env. The server refuses to start while a placeholder is left.
+  - name: DATA_API_BASE
+    value: "<set by scripts/stage_deploy.py>"
+  - name: FINDER_TENANT
+    value: "<set by scripts/stage_deploy.py>"

@@ -1,6 +1,6 @@
 # Data contract — `POST /api/rpc/search_insurers`
 
-The one API this repo exposes. Anything not listed here does not exist.
+The one API this repo exposes. Anything not listed here does not exist. The demo app in `app/` adds one endpoint of its own in front of it (section 4).
 
 ## 1. What exists
 
@@ -50,3 +50,27 @@ The one API this repo exposes. Anything not listed here does not exist.
 - `matched_alias` explains *why* a row matched; show `payer_name` as the label.
 - A national payer has one row per state (`UnitedHealthcare PPO - TX`). Several rows of the same brand on one page are expected.
 - An empty array is a valid answer ("no payer looks like this"), not an error.
+
+## 4. The demo app: `POST /api/search`
+
+The app server in `app/` serves a web page and this one endpoint. It calls `search_insurers` with its own service principal's token; the browser never calls the Data API.
+
+**Request** (JSON body, no `Authorization` header)
+
+| Field | Type | Required | Rule |
+|---|---|---|---|
+| `q` | string | yes | At most 200 characters as sent; 2–100 characters after the server joins whitespace. |
+| `page` | integer | no, default 1 | 1–5. The server sends `lim` 10 and `off` (`page` − 1) × 10. |
+
+**Response** `200`: `query` (the joined text), `page`, `rows` (the section 1 fields, `score` included), `end` (true on a short page or on page 5), `elapsed_ms` (measured by the app server) and `lens` (what the page shows about the call: the body sent, the function name and its definition from `sql/20_search_function.sql`).
+
+**Errors**: `400` `{"error":"bad_request"}` for an unknown field or a wrong type; `400` `{"error":"query_length"}`; `400` or `502` `{"error":"search_failed","upstream_status":…,"upstream_code":…}` with no upstream body; `502` `{"error":"search_unreachable"}`.
+
+**What it never accepts or returns**
+
+- The browser cannot send `customer_id`, `lim` or `off`: any field other than `q` and `page` is a `400`. The server sets the tenant.
+- No token, `Bearer` header, client secret or database password in any answer.
+- No tenant value and no host in any answer: `lens` shows `customer_id` by name only and the Data API call by path only.
+- The page never shows `score` (section 3).
+- No other routes: no docs, OpenAPI or debug routes, and no file outside `app/static/`.
+

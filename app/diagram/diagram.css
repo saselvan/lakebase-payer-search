@@ -1,0 +1,172 @@
+/* The motion diagram of one search, for the blog and the video. A port of the preview Samuel approved on 2026-10-24
+   (storyboard-r6/anim.html): the same sizes in units, the same palette (static/app.css: cobalt is the path and the
+   emphasis, red and yellow are frame blocks only, 2 px black lines). One change: code and the tag at 14.3 units, not
+   14, so they meet the h/36 floor at 1440 x 900 and at 744 x 465 (T4-86).
+   The CSS default is the final frame: four boxes at full height with the full text, box 1 filled, no packet. A reader
+   with reduced motion, or with no script, sees every fact at once. */
+@font-face {
+  font-family: "IBM Plex Sans";
+  src: url("fonts/IBMPlexSans-var.woff2") format("woff2");
+  font-weight: 100 700;
+  font-display: block;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("fonts/IBMPlexMono-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: block;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("fonts/IBMPlexMono-500.woff2") format("woff2");
+  font-weight: 500;
+  font-display: block;
+}
+
+.pfd {
+  --sans: "IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --paper: #ffffff;
+  --ink: #111216;
+  --black: #111216;
+  --blue: #2445b8;
+  --fill: #cfd6ef;   /* cobalt mixed with white: a fill that also changes lightness (motion-style rule 4) */
+  --red: #e0262b;
+  --yellow: #ffd42a;
+  --code: #f3f2ed;
+  --u: 1px;          /* one unit; the frame for the blog and the video sets it from the frame width */
+  --line: 2px;
+  --sq: calc(28 * var(--u));
+  --t-body: calc(15 * var(--u)); --l-body: calc(22 * var(--u));
+  --t-name: calc(17 * var(--u));
+  --t-mono: calc(14.3 * var(--u)); --l-mono: calc(20 * var(--u));
+  --l-full: calc(16 * var(--u));
+  --t-title: calc(18 * var(--u));
+  --tag-h: calc(22 * var(--u));
+  /* The final frame's layout. The motion's short layout (36 and 14 units) is in measure() in diagram.js. */
+  --mb-full: calc(4 * var(--u)); --pad-full: calc(6 * var(--u));
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 var(--t-body) / var(--l-body) var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+.pfd *, .pfd *::before, .pfd *::after { box-sizing: border-box; }
+.pfd-card { width: 100%; background: var(--paper); }
+
+/* Frame: the same quiet strip as the page header, a narrow red block and a narrow yellow block. */
+.pfd-top {
+  display: grid; grid-template-columns: calc(20 * var(--u)) minmax(0, 1fr) calc(44 * var(--u)); gap: var(--line);
+  min-height: calc(40 * var(--u)); background: var(--black); border-bottom: var(--line) solid var(--black);
+}
+.pfd-has-play .pfd-top { grid-template-columns: calc(20 * var(--u)) minmax(0, 1fr) auto calc(44 * var(--u)); }
+.pfd-top > * { background: var(--paper); }
+.pfd-top .pfd-red { background: var(--red); }
+.pfd-top .pfd-yellow { background: var(--yellow); }
+.pfd-title {
+  margin: 0; display: flex; align-items: center; padding: 0 calc(16 * var(--u));
+  font-size: var(--t-title); font-weight: 600;
+}
+/* Play: only in the drawer, never in the video. A real button; it restarts the motion from the start. */
+.pfd-play {
+  margin: 0; border: 0; border-radius: 0; padding: 0 calc(18 * var(--u)); cursor: pointer;
+  font: 600 var(--t-title) / 1 var(--sans); color: var(--ink);
+}
+.pfd-play:hover { background: var(--fill); }
+.pfd-play:focus-visible { outline: 3px solid var(--blue); outline-offset: -3px; }
+
+.pfd-path { position: relative; }
+.pfd-hops { list-style: none; margin: 0; padding: var(--pad-full) calc(14 * var(--u)); }
+.pfd-hop {
+  position: relative; display: grid; grid-template-columns: var(--sq) minmax(0, 1fr); column-gap: calc(12 * var(--u));
+  align-items: start; margin-bottom: var(--mb-full);
+}
+.pfd-hop:last-child { margin-bottom: 0; }
+
+/* Step number: cobalt, over the line and over the answer's square as it climbs. */
+.pfd-sq {
+  position: relative; z-index: 2; width: var(--sq); height: var(--sq); display: flex; align-items: center;
+  justify-content: center; background: var(--blue); color: #fff; font-weight: 500; will-change: opacity;
+}
+/* The line, from this number's middle down to the next number's middle. */
+.pfd-link {
+  position: absolute; z-index: 1; left: calc(var(--sq) / 2 - 1px); top: calc(var(--sq) / 2);
+  height: calc(100% + var(--mb-full)); width: var(--line); background: var(--black); clip-path: inset(0px 0px 0px 0px);
+}
+
+/* A box: two layers in one place. The full layer (the final frame) carries the fill; the short layer (the motion)
+   carries the heading the reader sees. The motion shows the box at the short layer's height and grows it at the end. */
+.pfd-body { grid-column: 2; position: relative; overflow: hidden; min-width: 0; margin-left: calc(-10 * var(--u)); will-change: opacity; }
+.pfd-box {
+  position: relative; display: grid; grid-template-columns: calc(160 * var(--u)) minmax(0, 1fr);
+  column-gap: calc(12 * var(--u)); padding: calc(6 * var(--u)) calc(10 * var(--u));
+}
+.pfd-short-box { position: absolute; z-index: 1; left: 0; right: 0; top: 0; }
+.pfd-full-box { isolation: isolate; padding-top: calc(3 * var(--u)); padding-bottom: calc(3 * var(--u)); }
+.pfd-full-box > .pfd-name { visibility: hidden; }
+/* will-change: the same layers with and without motion, so the last frame and the reduced frame paint the same. */
+.pfd-fill { position: absolute; inset: 0; z-index: -1; background: var(--fill); opacity: 0; will-change: opacity; }
+.pfd-hop[data-hop="browser"] .pfd-fill { opacity: 1; }
+.pfd-name { margin: 0; font-size: var(--t-name); font-weight: 600; }
+.pfd-name code { display: block; font-weight: 400; }
+.pfd-text { min-width: 0; }
+.pfd-text p { margin: 0; }
+.pfd-full { will-change: opacity; }
+.pfd-short { opacity: 0; will-change: opacity; }
+.pfd code { font: 400 var(--t-mono) / var(--l-mono) var(--mono); }
+.pfd-code { margin: 0; padding: calc(6 * var(--u)) calc(8 * var(--u)); background: var(--code); }
+/* A token (a path, a key and its value, "body keys:") breaks to the next line whole; only a token wider than the
+   box itself breaks, at its own spaces first. */
+.pfd-code pre {
+  margin: 0; font: 400 var(--t-mono) / var(--l-mono) var(--mono); white-space: pre-wrap; overflow-wrap: break-word;
+}
+.pfd-tok { display: inline-block; max-width: 100%; vertical-align: top; }
+.pfd-full p, .pfd-full .pfd-code pre, .pfd-full .pfd-answer { line-height: var(--l-full); }
+.pfd-full .pfd-code { margin: calc(2 * var(--u)) 0; }
+
+/* The answer: its own block under the request, on white with a cobalt frame, its label on the line above the value,
+   so it never reads as part of the request (T4-41). */
+.pfd-answer { margin-top: calc(4 * var(--u)); border: var(--line) solid var(--blue); background: var(--paper); padding: calc(4 * var(--u)) calc(8 * var(--u)); }
+.pfd-answer-k { display: block; font-weight: 600; }
+
+/* Closed "Function definition" row. Placeholder: ticket 05 opens it on a click and fills it from the definition. */
+.pfd-def {
+  margin-top: calc(3 * var(--u)); border: 1px solid #d9d8d2; padding: calc(2 * var(--u)) calc(8 * var(--u));
+  font-weight: 600;
+}
+.pfd-chev::before { content: "\25B8"; }
+
+/* The packet: a small cobalt square on the line, over the numbers while it runs. The answer's square climbs under
+   them. The tag rides beside the packet and waits at the target's top edge. Final frame: all gone. */
+.pfd-pk-sq, .pfd-ans-sq {
+  position: absolute; top: 0; left: calc(23 * var(--u)); width: calc(10 * var(--u)); height: calc(10 * var(--u));
+  background: var(--blue); opacity: 0; pointer-events: none; will-change: opacity, transform;
+}
+.pfd-pk-sq { z-index: 4; }
+.pfd-ans-sq { z-index: 1; }
+.pfd-tag { position: absolute; z-index: 3; top: 0; left: calc(36 * var(--u)); height: var(--tag-h); opacity: 0; pointer-events: none; will-change: opacity, transform; }
+.pfd-tag-stack { display: grid; height: 100%; }
+.pfd-tag-stack > span {
+  grid-area: 1 / 1; justify-self: start; padding: 0 calc(6 * var(--u)); white-space: nowrap;
+  font: 400 var(--t-mono) / var(--tag-h) var(--mono); background: var(--blue); color: #fff;
+}
+
+/* The frame for the blog and the video (16:10 and wider): the preview's unit, 1.75 px at 1440 px wide. */
+@media (min-width: 720px) and (min-aspect-ratio: 3/2) {
+  .pfd { --u: calc(100vw / 1440 * 1.75); padding: 0 calc(14 * var(--u)); }
+  .pfd-card { border: var(--line) solid var(--black); }
+}
+/* A wide page that is not a frame (a laptop browser): the card at reading width, in the middle. */
+@media (min-width: 720px) and (not (min-aspect-ratio: 3/2)) {
+  .pfd { padding: calc(24 * var(--u)); }
+  .pfd-card { width: calc(720 * var(--u)); max-width: 100%; border: var(--line) solid var(--black); }
+}
+/* A phone: the heading over its text. */
+@media (max-width: 719px) {
+  .pfd-box { grid-template-columns: minmax(0, 1fr); }
+}
