@@ -155,7 +155,7 @@ def test_drawer_shows_a_real_ms(deployed):
         meta = page.inner_text("#lens-meta")
         browser.close()
     assert re.search(r"\b([1-9]\d*) ms\b", meta), f"no real ms in drawer: {meta!r}"
-    assert "0 ms" not in meta
+    assert not re.search(r"(?<![\d.])0 ms\b", meta), f"drawer shows 0 ms: {meta!r}"
 
 
 def test_token_leak_on_the_deployed_page(deployed):
