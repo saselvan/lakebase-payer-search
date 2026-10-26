@@ -612,3 +612,14 @@ def test_evidence_text_stays_inside_the_drawer(app, browser, width):
         .map(e => e.textContent.trim().slice(0, 60))""")
     page.close()
     assert over == [], over
+
+
+def test_data_api_box_names_both_schemas_and_the_standard_defaults():
+    """Sage Gold item 6: the Data API box gives the app's role no fewer rights than SECURITY.md lists."""
+    js = (STATIC / "diagram.js").read_text()
+    box = js[js.index('{ id: "data-api"'):js.index('{ id: "function"')]
+    short = re.search(r"short: \[(.*?)\],\n", box, re.S).group(1)
+    for part, need in (("short", short), ("full", box)):
+        for word in ("2 functions" if part == "short" else "two search functions", "schemas", "standard defaults"):
+            assert word in need, f"the {part} Data API text leaves out {word!r}"
+    assert (ROOT / "diagram/diagram.js").read_text() == js, "app/diagram/diagram.js and app/static/diagram.js differ"
